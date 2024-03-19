@@ -29,15 +29,7 @@ public class ASTArguments extends ASTElement {
             }
             return children;
         }
-
-        @Override
-        public int countChildren() {
-            int numChild = 1;
-            if (annotation != null) {
-                numChild += annotation.countChildren();
-            }
-            return numChild;
-        }
+        
 
         @Override
         public void printByPos(StringBuilder str) {

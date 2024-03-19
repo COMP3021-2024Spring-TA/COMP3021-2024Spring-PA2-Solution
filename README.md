@@ -49,7 +49,7 @@ emp.display2()
 </td>
 </tr>
 <tr>
-<td> Methods using a boolean parameter as an if-condition </td>
+<td> Functions using a boolean parameter as an if-condition </td>
 <td>
 
 ```Python
@@ -70,6 +70,72 @@ switch = LightSwitch()
 # Use the method with a boolean parameter
 switch.toggle_light(True)  # Should turn the light on
 switch.toggle_light(False) # Should turn the light off
+```
+
+</td>
+</tr>
+<tr>
+<td> Can method A directly or transitively call method B or C  </td>
+<td>
+
+```Python
+def baz():
+    print("baz invoked")
+
+def bar():
+    print("bar invoked")
+    baz()
+
+def intermediary():
+    print("intermediary invoked")
+    bar()
+
+def foo():
+    print("foo invoked")
+    intermediary()
+
+# Call foo, which will transitively invoke bar and baz
+foo()
+```
+
+</td>
+</tr>
+
+<tr>
+<td> Function parameters that are never read from or assigned to before it's read  </td>
+<td>
+
+```Python
+def foo(param1, param2, param3):
+    print(param1) # param1 is read
+    param2 = 4  # param2 is written to, but never read before, hence is unused
+    print(param2)
+    # param3 is unused
+```
+
+</td>
+</tr>
+
+<tr>
+<td> Overriding methods of classes </td>
+<td>
+
+```Python
+class ParentClass:
+    def common_method(self):
+        print("Method of ParentClass")
+
+class ChildClass(ParentClass):
+    def common_method(self):
+        print("Overridden method in ChildClass")
+
+# Create instances of the classes
+parent = ParentClass()
+child = ChildClass()
+
+# Call the method on the instances
+parent.common_method()  # Output: Method of ParentClass
+child.common_method()   # Output: Overridden method in ChildClass
 ```
 
 </td>

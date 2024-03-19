@@ -41,13 +41,7 @@ public class AttributeExpr extends ASTExpr {
     public String getAttr() {
         return attr;
     }
-
-    @Override
-    public int countChildren() {
-        int numChild = 1;
-        numChild += value.countChildren();
-        return numChild;
-    }
+    
 
     @Override
     public ArrayList<ASTElement> getChildren() {

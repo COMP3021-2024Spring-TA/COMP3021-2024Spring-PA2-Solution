@@ -2,6 +2,9 @@ package hk.ust.comp3021.misc;
 
 import hk.ust.comp3021.utils.*;
 import java.util.*;
+import java.util.function.BinaryOperator;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 public abstract class ASTElement {
     private int lineno;
@@ -23,6 +26,7 @@ public abstract class ASTElement {
         this.endLineno = endLineno;
         this.endColOffset = endColOffset;
     }
+
     public ASTElement(XMLNode node) {
         if (node.hasAttribute("lineno")) {
             this.lineno = Integer.parseInt(node.getAttribute("lineno"));
@@ -144,10 +148,35 @@ public abstract class ASTElement {
      * Noticed that field whose class type is `ASTEnumOp` should not be regarded as children.
      */
     public abstract ArrayList<ASTElement> getChildren();
+    
+    public ArrayList<ASTElement> filter(Predicate<ASTElement> predicate) {
+        ArrayList<ASTElement> filteredNodes = new ArrayList<>();
 
-    /*
-     * Count the number of descendants of current node.
-     * Noticed that you need to count both the number of direct children and all descendants
-     */
-    public abstract int countChildren();
+        if (predicate.test(this)) {
+            filteredNodes.add(this);
+        }
+
+        for (ASTElement child : this.getChildren()) {
+            filteredNodes.addAll(child.filter(predicate));
+        }
+        return filteredNodes;
+    }
+
+    public void traverse(Consumer<ASTElement> consumer) {
+        consumer.accept(this);
+
+        for (ASTElement child : this.getChildren()) {
+            child.traverse(consumer);
+        }
+    }
+    
+    public <T> T reduce(T identify, BinaryOperator<T> accumulator) {
+        T curValue = identify;
+        for (ASTElement child : this.getChildren()) {
+            curValue = accumulator.apply(curValue, child.reduce(identify, accumulator));
+        }
+        return curValue;
+    }
+    
+    
 }

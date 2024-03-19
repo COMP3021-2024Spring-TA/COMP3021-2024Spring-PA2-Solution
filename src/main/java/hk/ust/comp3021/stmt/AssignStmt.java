@@ -49,4 +49,3 @@ public class AssignStmt extends ASTStmt {
     }
 }
 
-a = b = 1 + 2

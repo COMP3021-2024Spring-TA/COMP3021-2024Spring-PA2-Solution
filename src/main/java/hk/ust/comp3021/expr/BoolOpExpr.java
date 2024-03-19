@@ -53,5 +53,3 @@ public class BoolOpExpr extends ASTExpr {
         this.fillEndBlanks(str);
     }
 }
-
-a and b and c

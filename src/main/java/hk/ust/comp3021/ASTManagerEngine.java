@@ -4,8 +4,11 @@ import hk.ust.comp3021.expr.*;
 import hk.ust.comp3021.misc.*;
 import hk.ust.comp3021.stmt.*;
 import hk.ust.comp3021.utils.*;
+
 import java.io.*;
 import java.util.*;
+import java.util.function.BinaryOperator;
+import java.util.function.Consumer;
 
 public class ASTManagerEngine {
     private final String defaultXMLFileDir;
@@ -27,11 +30,14 @@ public class ASTManagerEngine {
     public void userInterface() {
         System.out.println("----------------------------------------------------------------------");
         System.out.println("ASTManager is running...");
-
+        int xmlFileTot = countXMLFiles(defaultXMLFileDir);
+        for (int i = 0; i < xmlFileTot; i++) {
+            processXMLParsing(String.valueOf(i));
+        }
+        System.out.println("All XML Files are loaded...");
         while (true) {
             System.out.println("----------------------------------------------------------------------");
             System.out.println("Please select the following operations with the corresponding numbers:");
-            System.out.println("  0: Given AST ID, parse AST from XML files");
             System.out.println("  1: Print all functions with # arguments greater than user specified N");
             System.out.println("  2: Find the most commonly used operators in all ASTs");
             System.out.println("  3: Print all functions names and the functions invoked by each function");
@@ -44,49 +50,27 @@ public class ASTManagerEngine {
             if (scan1.hasNextInt()) {
                 int i = scan1.nextInt();
                 if (i < 0 || i > 7) {
-                    System.out.println("You should enter 0~7.");
+                    System.out.println("You should enter 1~7.");
                     continue;
-                }
-
-                switch (i) {
-                case 0: {
-                    userInterfaceParseXML();
-                    break;
-                }
-                case 1: {
-                    userInterfaceParamNum();
-                    break;
-                }
-                case 2: {
-                    userInterfaceCommonOp();
-                    break;
-                }
-                case 3: {
-                    userInterfaceCallFuncs();
-                    break;
-                }
-                case 4: {
-                    userInterfaceCountNum();
-                    break;
-                }
-                case 5: {
-                    userInterfaceSortByChild();
-                    break;
-                }
-                case 6: {
-                    userInterfaceRecoverCode();
-                    break;
-                }
-                default: {
-
-                }
                 }
                 if (i == 7) {
                     break;
                 }
+
             } else {
-                System.out.println("You should enter integer 0~6.");
+                System.out.println("You should enter integer 1~7.");
             }
+        }
+    }
+
+    public void processASTSearchingByLambda(int taskID) {
+        switch (taskID) {
+            case 1:
+
+
+                id2ASTModules.values().forEach(module -> {
+
+                });
         }
     }
 
@@ -111,8 +95,8 @@ public class ASTManagerEngine {
 
 
     /*
-    * Task 0: Given AST ID, parse AST from XML files
-    */
+     * Task 0: Given AST ID, parse AST from XML files
+     */
 
     public void processXMLParsing(String xmlID) {
         ASTParser parser = new ASTParser(xmlID);
@@ -159,6 +143,14 @@ public class ASTManagerEngine {
      * Task 1: Print all functions with # arguments greater than user specified N
      */
 
+    public void findFuncWithArgGtNLambda(int paramN) {
+        id2ASTModules.values().forEach(module -> {
+            module.filter(node -> node instanceof FunctionDefStmt)
+                    .stream().filter(func -> ((FunctionDefStmt) func).getParamNum() > paramN)
+                    .forEach(func -> System.out.println(module.getASTID() + "_" + ((FunctionDefStmt) func).getName() + "_" + func.getLineNo()));
+        });
+    }
+
     public void findFuncWithArgGtN(int paramN) {
         for (String key : id2ASTModules.keySet()) {
             ASTModule module = id2ASTModules.get(key);
@@ -190,54 +182,50 @@ public class ASTManagerEngine {
      * Task 2: Find the most commonly used operators in all ASTs
      */
 
-
     /*
      * Calculate the frequency of each node in the AST
      * @return: HashMap that records the mapping from operator name to the
      *          frequency of this operator
      */
-    public HashMap<String, Integer> calculateOp2Nums() {
-        HashMap<String, Integer> op2Num = new HashMap<>();
-
-        for (String key : id2ASTModules.keySet()) {
-            ASTModule module = id2ASTModules.get(key);
-            for (ASTEnumOp enumOp : module.getAllOperators()) {
-                op2Num.put(enumOp.getOperatorName(), op2Num.getOrDefault(enumOp.getOperatorName(), 0) + 1);
-            }
-        }
-        return op2Num;
-    }
-
-    /*
-     * Find the operator whose has the largest frequency
-     * @return: return the operator name with largest frequency
-     */
-    public String mostCommonUsedOp(HashMap<String, Integer> op2Num) {
-        String maxOp = null;
-        int maxValue = Integer.MIN_VALUE;
-
-        for (Map.Entry<String, Integer> entry : op2Num.entrySet()) {
-            String curOp = entry.getKey();
-            int curValue = entry.getValue();
-
-            if (curValue > maxValue) {
-                maxOp = curOp;
-                maxValue = curValue;
-            }
-        }
-        return maxOp;
-    }
 
 
     public void userInterfaceCommonOp() {
-        HashMap<String, Integer> op2Num = calculateOp2Nums();
-        String maxOp = mostCommonUsedOp(op2Num);
-        if (maxOp != null) {
-            System.out.println("Most common operator is " + maxOp + " with frequency " + op2Num.get(maxOp));
-        } else {
-            System.out.println("Failed to find most common operator!");
-        }
+        HashMap<String, Integer> op2Num = new HashMap<>();
+
+        Consumer<ASTElement> binOp = node -> {
+            if (node instanceof BinOpExpr) {
+                op2Num.merge(((BinOpExpr) node).getOp().getOperatorName(), 1, Integer::sum);
+            }
+        };
+
+        Consumer<ASTElement> boolOp = node -> {
+            if (node instanceof BoolOpExpr) {
+                op2Num.merge(((BoolOpExpr) node).getOp().getOperatorName(), 1, Integer::sum);
+            }
+        };
+
+        Consumer<ASTElement> unaryOp = node -> {
+            if (node instanceof UnaryOpExpr) {
+                op2Num.merge(((UnaryOpExpr) node).getOp().getOperatorName(), 1, Integer::sum);
+            }
+        };
+
+        Consumer<ASTElement> augAssignOp = node -> {
+            if (node instanceof AugAssignStmt) {
+                ASTEnumOp op = ((AugAssignStmt) node).getOp();
+                op2Num.merge(op.getOperatorName(), 1, Integer::sum);
+            }
+        };
+
+        id2ASTModules.values().forEach(module -> {
+            module.traverse(binOp.andThen(boolOp).andThen(unaryOp).andThen(augAssignOp));
+        });
+
+        Map.Entry<String, Integer> maxEntry = Collections.max(op2Num.entrySet(), Comparator.comparing(Map.Entry::getValue));
+        System.out.println("Most common operator is " + maxEntry.getKey()
+                + " with frequency " + maxEntry.getValue());
     }
+
 
     /*
      * Task 3: Print all functions names and the functions invoked by each function")
