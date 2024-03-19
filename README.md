@@ -55,7 +55,8 @@ emp.display2()
 ```Python
 class LightSwitch:
     def __init__(self):
-        self.state = False  # False means the light is off, True means it's on.
+        self.state = False  # False means the light is off
+                            # True means it's on.
 
     def toggle_light(self, turn_on: bool):
         if turn_on:
@@ -108,7 +109,8 @@ foo()
 ```Python
 def foo(param1, param2, param3):
     print(param1) # param1 is read
-    param2 = 4  # param2 is written to, but never read before, hence is unused
+    param2 = 4  # param2 is written to, 
+                # but never read before, hence is unused
     print(param2)
     # param3 is unused
 ```
