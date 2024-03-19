@@ -36,16 +36,6 @@ public class CompareExpr extends ASTExpr {
     }
 
     @Override
-    public int countChildren() {
-        int numChild = 1;
-        numChild += left.countChildren();
-        for (ASTExpr comp: comparators) {
-            numChild += comp.countChildren();
-        }
-        return numChild;
-    }
-
-    @Override
     public void printByPos(StringBuilder str) {
         fillStartBlanks(str);
         left.printByPos(str);

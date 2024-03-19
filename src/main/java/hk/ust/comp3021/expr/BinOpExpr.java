@@ -31,14 +31,6 @@ public class BinOpExpr extends ASTExpr {
     }
 
     @Override
-    public int countChildren() {
-        int numChild = 1;
-        numChild += left.countChildren();
-        numChild += right.countChildren();
-        return numChild;
-    }
-
-    @Override
     public void printByPos(StringBuilder str) {
         this.fillStartBlanks(str);
         boolean left_write_parens = false;

@@ -35,19 +35,6 @@ public class WhileStmt extends ASTStmt {
     }
 
     @Override
-    public int countChildren() {
-        int numChild = 1;
-        numChild += test.countChildren();
-        for (ASTStmt bodyStmt: body) {
-            numChild += bodyStmt.countChildren();
-        }
-        for (ASTStmt orelseStmt: orelse) {
-            numChild += orelseStmt.countChildren();
-        }
-        return numChild;
-    }
-
-    @Override
     public void printByPos(StringBuilder str) {
         this.fillStartBlanks(str);
         str.append("while");

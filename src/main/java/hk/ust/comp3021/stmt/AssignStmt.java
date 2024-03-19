@@ -26,17 +26,7 @@ public class AssignStmt extends ASTStmt {
         children.add(value);
         return children;
     }
-
-    @Override
-    public int countChildren() {
-        int numChild = 1;
-        for (ASTExpr target: targets) {
-            numChild += target.countChildren();
-        }
-
-        numChild += value.countChildren();
-        return numChild;
-    }
+    
     @Override
     public void printByPos(StringBuilder str) {
         this.fillStartBlanks(str);

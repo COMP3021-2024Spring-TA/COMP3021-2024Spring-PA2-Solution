@@ -22,13 +22,6 @@ public class ExprStmt extends ASTStmt {
     }
 
     @Override
-    public int countChildren() {
-        int numChild = 1;
-        numChild += value.countChildren();
-        return numChild;
-    }
-
-    @Override
     public void printByPos(StringBuilder str) {
         this.fillStartBlanks(str);
         value.printByPos(str);

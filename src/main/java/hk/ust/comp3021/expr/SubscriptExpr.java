@@ -25,15 +25,6 @@ public class SubscriptExpr extends ASTExpr {
         children.add(slice);
         return children;
     }
-
-    @Override
-    public int countChildren() {
-        int numChild = 1;
-        numChild += value.countChildren();
-        numChild += slice.countChildren();
-        return numChild;
-    }
-
     @Override
     public void printByPos(StringBuilder str) {
         this.fillStartBlanks(str);

@@ -17,12 +17,6 @@ public class ContinueStmt extends ASTStmt {
     }
 
     @Override
-    public int countChildren() {
-        int numChild = 1;
-        return numChild;
-    }
-
-    @Override
     public void printByPos(StringBuilder str) {
         this.fillStartBlanks(str);
         str.append("continue");

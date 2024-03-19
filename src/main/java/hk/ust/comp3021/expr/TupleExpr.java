@@ -56,14 +56,6 @@ public class TupleExpr extends ASTExpr {
         children.addAll(elts);
         return children;
     }
-
-    @Override
-    public int countChildren() {
-        int numChild = 1;
-        for (ASTExpr elt: elts) {
-            numChild += elt.countChildren();
-        }
-        return numChild;
-    }
+    
 }
 

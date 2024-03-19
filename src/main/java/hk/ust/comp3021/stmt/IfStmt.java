@@ -33,20 +33,7 @@ public class IfStmt extends ASTStmt {
         children.addAll(orelse);
         return children;
     }
-
-    @Override
-    public int countChildren() {
-        int numChild = 1;
-        numChild += test.countChildren();
-        for (ASTStmt bodyStmt: body) {
-            numChild += bodyStmt.countChildren();
-        }
-        for (ASTStmt orelseStmt: orelse) {
-            numChild += orelseStmt.countChildren();
-        }
-        return numChild;
-    }
-
+    
     @Override
     public void printByPos(StringBuilder str) {
         fillStartBlanks(str);

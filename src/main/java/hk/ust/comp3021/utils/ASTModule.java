@@ -43,16 +43,7 @@ public class ASTModule extends ASTElement {
         children.addAll(body);
         return children;
     }
-
-    @Override
-    public int countChildren() {
-        int numChild = 1;
-        for (ASTStmt bodyStmt: body) {
-            numChild += bodyStmt.countChildren();
-        }
-        return numChild;
-    }
-
+    
     @Override
     public void printByPos(StringBuilder str) {
         ArrayList<ASTElement> sortedBody = this.getChildren();

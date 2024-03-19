@@ -18,12 +18,7 @@ public class ConstantExpr extends ASTExpr {
             this.kind = node.getAttribute("kind");
         }
     }
-
-    @Override
-    public int countChildren() {
-        int numChild = 1;
-        return numChild;
-    }
+    
     @Override
     public ArrayList<ASTElement> getChildren() {
         ArrayList<ASTElement> children = new ArrayList<>();

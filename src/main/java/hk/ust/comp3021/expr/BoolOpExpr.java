@@ -28,14 +28,6 @@ public class BoolOpExpr extends ASTExpr {
         children.addAll(values);
         return children;
     }
-    @Override
-    public int countChildren() {
-        int numChild = 1;
-        for (ASTElement value : values) {
-            numChild += value.countChildren();
-        }
-        return numChild;
-    }
 
     @Override
     public void printByPos(StringBuilder str) {

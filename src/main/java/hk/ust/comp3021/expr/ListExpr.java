@@ -27,15 +27,6 @@ public class ListExpr extends ASTExpr {
     }
 
     @Override
-    public int countChildren() {
-        int numChild = 1;
-        for (ASTExpr elt: elts) {
-            numChild += elt.countChildren();
-        }
-        return numChild;
-    }
-
-    @Override
     public void printByPos(StringBuilder str) {
         fillStartBlanks(str);
         str.append("[");

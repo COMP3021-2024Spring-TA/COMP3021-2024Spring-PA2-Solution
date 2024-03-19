@@ -7,8 +7,9 @@ import hk.ust.comp3021.utils.*;
 
 import java.io.*;
 import java.util.*;
-import java.util.function.BinaryOperator;
+import java.util.AbstractMap;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class ASTManagerEngine {
     private final String defaultXMLFileDir;
@@ -30,14 +31,11 @@ public class ASTManagerEngine {
     public void userInterface() {
         System.out.println("----------------------------------------------------------------------");
         System.out.println("ASTManager is running...");
-        int xmlFileTot = countXMLFiles(defaultXMLFileDir);
-        for (int i = 0; i < xmlFileTot; i++) {
-            processXMLParsing(String.valueOf(i));
-        }
-        System.out.println("All XML Files are loaded...");
+
         while (true) {
             System.out.println("----------------------------------------------------------------------");
             System.out.println("Please select the following operations with the corresponding numbers:");
+            System.out.println("  0: Given AST ID, parse AST from XML files");
             System.out.println("  1: Print all functions with # arguments greater than user specified N");
             System.out.println("  2: Find the most commonly used operators in all ASTs");
             System.out.println("  3: Print all functions names and the functions invoked by each function");
@@ -50,29 +48,53 @@ public class ASTManagerEngine {
             if (scan1.hasNextInt()) {
                 int i = scan1.nextInt();
                 if (i < 0 || i > 7) {
-                    System.out.println("You should enter 1~7.");
+                    System.out.println("You should enter 0~7.");
                     continue;
+                }
+
+                switch (i) {
+                    case 0: {
+                        userInterfaceParseXML();
+                        break;
+                    }
+                    case 1: {
+                        userInterfaceParamNum();
+                        break;
+                    }
+                    case 2: {
+                        userInterfaceCommonOp();
+                        break;
+                    }
+                    case 3: {
+                        userInterfaceCallFuncs();
+                        break;
+                    }
+                    case 4: {
+                        userInterfaceCountNum();
+                        break;
+                    }
+                    case 5: {
+                        userInterfaceSortByChild();
+                        break;
+                    }
+                    case 6: {
+                        userInterfaceRecoverCode();
+                        break;
+                    }
+                    default: {
+
+                    }
                 }
                 if (i == 7) {
                     break;
                 }
-
             } else {
-                System.out.println("You should enter integer 1~7.");
+                System.out.println("You should enter integer 0~6.");
             }
         }
     }
 
-    public void processASTSearchingByLambda(int taskID) {
-        switch (taskID) {
-            case 1:
-
-
-                id2ASTModules.values().forEach(module -> {
-
-                });
-        }
-    }
+    
 
     public int countXMLFiles(String dirPath) {
         int count = 0;
@@ -143,24 +165,14 @@ public class ASTManagerEngine {
      * Task 1: Print all functions with # arguments greater than user specified N
      */
 
-    public void findFuncWithArgGtNLambda(int paramN) {
+    public void findFuncWithArgGtN(int paramN) {
         id2ASTModules.values().forEach(module -> {
             module.filter(node -> node instanceof FunctionDefStmt)
-                    .stream().filter(func -> ((FunctionDefStmt) func).getParamNum() > paramN)
+                    .stream().filter(func -> ((FunctionDefStmt) func).getParamNum() >= paramN)
                     .forEach(func -> System.out.println(module.getASTID() + "_" + ((FunctionDefStmt) func).getName() + "_" + func.getLineNo()));
         });
     }
-
-    public void findFuncWithArgGtN(int paramN) {
-        for (String key : id2ASTModules.keySet()) {
-            ASTModule module = id2ASTModules.get(key);
-            for (FunctionDefStmt func : module.getAllFunctions()) {
-                if (func.getParamNum() >= paramN) {
-                    System.out.println(module.getASTID() + "_" + func.getName() + "_" + func.getLineNo());
-                }
-            }
-        }
-    }
+    
 
     public void userInterfaceParamNum() {
         System.out.println("Please indicate the value of N (recommended range 0~5):");
@@ -188,8 +200,7 @@ public class ASTManagerEngine {
      *          frequency of this operator
      */
 
-
-    public void userInterfaceCommonOp() {
+    public HashMap<String, Integer> calculateOp2Nums() {
         HashMap<String, Integer> op2Num = new HashMap<>();
 
         Consumer<ASTElement> binOp = node -> {
@@ -220,7 +231,11 @@ public class ASTManagerEngine {
         id2ASTModules.values().forEach(module -> {
             module.traverse(binOp.andThen(boolOp).andThen(unaryOp).andThen(augAssignOp));
         });
-
+        return op2Num;
+    }
+    
+    public void userInterfaceCommonOp() {
+        HashMap<String, Integer> op2Num = calculateOp2Nums();
         Map.Entry<String, Integer> maxEntry = Collections.max(op2Num.entrySet(), Comparator.comparing(Map.Entry::getValue));
         System.out.println("Most common operator is " + maxEntry.getKey()
                 + " with frequency " + maxEntry.getValue());
@@ -243,16 +258,16 @@ public class ASTManagerEngine {
      */
     public HashMap<String, Set<String>> calculateCalledFunc() {
         HashMap<String, Set<String>> func2CalledFuncs = new HashMap<String, Set<String>>();
-        for (String key : id2ASTModules.keySet()) {
-            ASTModule module = id2ASTModules.get(key);
-            for (FunctionDefStmt func : module.getAllFunctions()) {
-                Set<String> calledFuncNames = new HashSet<String>();
-                for (CallExpr call : func.getAllCalledFunc()) {
-                    calledFuncNames.add(module.getASTID() + "_" + call.getCalledFuncName() + "_" + call.getLineNo());
-                }
-                func2CalledFuncs.put(module.getASTID() + "_" + func.getName() + "_" + func.getLineNo(), calledFuncNames);
-            }
-        }
+//        for (String key : id2ASTModules.keySet()) {
+//            ASTModule module = id2ASTModules.get(key);
+//            for (FunctionDefStmt func : module.getAllFunctions()) {
+//                Set<String> calledFuncNames = new HashSet<String>();
+//                for (CallExpr call : func.getAllCalledFunc()) {
+//                    calledFuncNames.add(module.getASTID() + "_" + call.getCalledFuncName() + "_" + call.getLineNo());
+//                }
+//                func2CalledFuncs.put(module.getASTID() + "_" + func.getName() + "_" + func.getLineNo(), calledFuncNames);
+//            }
+//        }
         return func2CalledFuncs;
     }
 
@@ -271,24 +286,11 @@ public class ASTManagerEngine {
      * Task 4: Given AST ID, count the number of all node types
      */
 
-    /*
-     * First, you need to obtain all nodes into an arraylist.
-     * Then, count the frequency of each node type.
-     *
-     * Hints: we have prepared some methods for you, e.g., getNodeName.
-     *
-     * @return: Hashmap that stores the mapping from node name to its frequency.
-     */
-    public HashMap<String, Integer> calculateNode2Nums(String astID) {
-        ASTModule module = id2ASTModules.get(astID);
-        HashMap<String, Integer> node2Nums = new HashMap<>();
-
-        for (ASTElement node : module.getAllNodes()) {
-            node2Nums.put(node.getNodeType(), node2Nums.getOrDefault(node.getNodeType(), 0) + 1);
-        }
-        return node2Nums;
+    public Map<String, Long> calculateNode2Nums(String astID) {
+        // TODO: complete the definition of the method `calculateNode2Nums`
+        return id2ASTModules.get(astID).groupingBy(ASTElement::getNodeType, Collectors.counting());
     }
-
+    
     public void userInterfaceCountNum() {
         System.out.println("Please specify the AST ID to count Node (" + id2ASTModules.keySet() + ") or -1 for all:");
         Scanner scan1 = new Scanner(System.in);
@@ -296,26 +298,26 @@ public class ASTManagerEngine {
             String astID = scan1.nextLine();
             if (!astID.equals("-1")) {
                 if (id2ASTModules.containsKey(astID)) {
-                    HashMap<String, Integer> node2Num = calculateNode2Nums(astID);
-                    for (Map.Entry<String, Integer> entry : node2Num.entrySet()) {
-                        System.out.print(astID + entry.getKey() + " node with frequency " + entry.getValue());
+                    var node2Num = calculateNode2Nums(astID);
+                    for (Map.Entry<String, Long> entry : node2Num.entrySet()) {
+                        System.out.println(astID + entry.getKey() + " node with frequency " + entry.getValue());
                     }
                 }
             } else {
-                HashMap<String, Integer> totNode2Num = new HashMap<>();
+                HashMap<String, Long> totNode2Num = new HashMap<>();
                 for (String key : id2ASTModules.keySet()) {
-                    HashMap<String, Integer> node2Num = calculateNode2Nums(key);
-                    for (Map.Entry<String, Integer> entry : node2Num.entrySet()) {
+                    var node2Num = calculateNode2Nums(astID);
+                    for (Map.Entry<String, Long> entry : node2Num.entrySet()) {
                         if (totNode2Num.containsKey(entry.getKey())) {
-                            int currentValue = totNode2Num.get(entry.getKey());
+                            Long currentValue = totNode2Num.get(entry.getKey());
                             totNode2Num.put(entry.getKey(), currentValue + entry.getValue());
                         } else {
                             totNode2Num.put(entry.getKey(), entry.getValue());
                         }
                     }
                 }
-                for (Map.Entry<String, Integer> entry : totNode2Num.entrySet()) {
-                    System.out.print("All " + entry.getKey() + " node with frequency " + entry.getValue() + "\n");
+                for (Map.Entry<String, Long> entry : totNode2Num.entrySet()) {
+                    System.out.println("All " + entry.getKey() + " node with frequency " + entry.getValue() + "\n");
                 }
             }
         }
@@ -336,52 +338,31 @@ public class ASTManagerEngine {
     public HashMap<String, Integer> processNodeFreq() {
         HashMap<String, Integer> funcName2NodeNum = new HashMap<>();
 
-        for (String key : id2ASTModules.keySet()) {
-            ASTModule module = id2ASTModules.get(key);
-            for (FunctionDefStmt func : module.getAllFunctions()) {
-                String uniqueFuncName = module.getASTID() + "_" + func.getName() + "_" + func.getLineNo();
-                if (!funcName2NodeNum.containsKey(uniqueFuncName)) {
-                    funcName2NodeNum.put(
-                            uniqueFuncName,
-                            func.countChildren());
-                } else {
-                    System.out.println("Found func with same name! " + uniqueFuncName);
-                }
-            }
-        }
+        id2ASTModules.values().forEach(module -> {
+            module.filter(node -> node instanceof FunctionDefStmt)
+                    .stream()
+                    .map(func -> {
+                        final int[] nodeCount = {0};
+                        func.traverse(node -> nodeCount[0]++);
+                        String uniqueFuncName = module.getASTID() + "_" +
+                                ((FunctionDefStmt) func).getName() + "_" + func.getLineNo();
+                        return new AbstractMap.SimpleEntry<>(uniqueFuncName, nodeCount[0]);
+                    })
+                    .forEach(entry -> funcName2NodeNum.merge(
+                            entry.getKey(),
+                            entry.getValue(),
+                            (value1, value2) -> value1));
+        });
         return funcName2NodeNum;
-
     }
-
-    /*
-     * Sort the hashmap based on the complexity
-     * @return: list of entry whose complexity is sorted in ascending order
-     */
-    public List<Map.Entry<String, Integer>> sortHashMapByValue(HashMap<String, Integer> map) {
-        List<Map.Entry<String, Integer>> entries = new ArrayList<>(map.entrySet());
-
-        // Manual implementation of bubble sort
-        int n = entries.size();
-        for (int i = 0; i < n - 1; i++) {
-            for (int j = 0; j < n - i - 1; j++) {
-                Map.Entry<String, Integer> entry1 = entries.get(j);
-                Map.Entry<String, Integer> entry2 = entries.get(j + 1);
-                if (entry1.getValue() > entry2.getValue()) {
-                    Collections.swap(entries, j, j + 1);
-                }
-            }
-        }
-
-        return entries;
-    }
-
+    
     public void userInterfaceSortByChild() {
         HashMap<String, Integer> funcName2NodeNum = processNodeFreq();
-        List<Map.Entry<String, Integer>> sortedEntries = sortHashMapByValue(funcName2NodeNum);
 
-        for (Map.Entry<String, Integer> entry : sortedEntries) {
-            System.out.println("Func " + entry.getKey() + " has complexity " + entry.getValue());
-        }
+        funcName2NodeNum.entrySet()
+                .stream()
+                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                .forEach(entry -> System.out.println("Func " + entry.getKey() + " has complexity " + entry.getValue()));
     }
 
     /*

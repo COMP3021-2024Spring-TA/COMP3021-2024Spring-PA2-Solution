@@ -2,9 +2,8 @@ package hk.ust.comp3021.misc;
 
 import hk.ust.comp3021.utils.*;
 import java.util.*;
-import java.util.function.BinaryOperator;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
+import java.util.function.*;
+import java.util.stream.Collector;
 
 public abstract class ASTElement {
     private int lineno;
@@ -127,7 +126,7 @@ public abstract class ASTElement {
     public abstract String getNodeType();
 
     /*
-     * Three abstract methods in ASTElement. You need to implement them in subclasses.
+     * Two abstract methods in ASTElement. You need to implement them in subclasses.
      */
 
     /*
@@ -170,6 +169,38 @@ public abstract class ASTElement {
         }
     }
     
+//    public void stream(Supplier<>) {
+//        
+//    }
+
+    public <K, D, A> Map<K, D> groupingBy(Function<ASTElement, K> classifier,
+                                        Collector<ASTElement, A, D> collector) {
+        
+        Map<K, A> hashMap = new HashMap<>();
+        groupingBbyRecursive(classifier, collector, hashMap);
+        Map<K, D> results = new HashMap<>();
+        for (Map.Entry<K, A> entry : hashMap.entrySet()) {
+            results.put(entry.getKey(), collector.finisher().apply(entry.getValue()));
+        }
+        return results;
+    }
+    
+    public <K, A> void groupingBbyRecursive(Function<ASTElement, K> classifier,
+                                          Collector<ASTElement, A, ?> collector,
+                                          Map<K, A> results) {
+
+
+        K key = classifier.apply(this);
+        A container = results.computeIfAbsent(key, k -> collector.supplier().get());
+        collector.accumulator().accept(container, this);
+        
+        for (ASTElement child: this.getChildren()) {
+            child.groupingBbyRecursive(classifier, collector, results);
+        }
+    }
+    
+
+
     public <T> T reduce(T identify, BinaryOperator<T> accumulator) {
         T curValue = identify;
         for (ASTElement child : this.getChildren()) {

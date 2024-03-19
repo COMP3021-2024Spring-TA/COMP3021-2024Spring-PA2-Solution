@@ -24,15 +24,7 @@ public class ReturnStmt extends ASTStmt {
         }
         return children;
     }
-
-    @Override
-    public int countChildren() {
-        int numChild = 1;
-        if (value != null) {
-            numChild += value.countChildren();
-        }
-        return numChild;
-    }
+    
     @Override
     public void printByPos(StringBuilder str) {
         this.fillStartBlanks(str);

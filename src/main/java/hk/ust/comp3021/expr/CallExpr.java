@@ -89,19 +89,7 @@ public class CallExpr extends ASTExpr {
         children.addAll(keywords);
         return children;
     }
-
-    @Override
-    public int countChildren() {
-        int numChild = 1;
-        numChild += func.countChildren();
-        for (ASTExpr arg: args) {
-            numChild += arg.countChildren();
-        }
-        for (ASTKeyWord keyword: keywords) {
-            numChild += keyword.countChildren();
-        }
-        return numChild;
-    }
+    
 
     @Override
     public void printByPos(StringBuilder str) {

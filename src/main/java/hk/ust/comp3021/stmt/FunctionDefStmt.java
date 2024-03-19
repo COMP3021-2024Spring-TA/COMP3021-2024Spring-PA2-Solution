@@ -76,23 +76,7 @@ public class FunctionDefStmt extends ASTStmt {
         }
         return children;
     }
-
-    @Override
-    public int countChildren() {
-        int numChild = 1;
-        numChild += args.countChildren();
-        for (ASTStmt bodyStmt : body) {
-            numChild += bodyStmt.countChildren();
-        }
-        for (ASTExpr listExpr : decoratorList) {
-            numChild += listExpr.countChildren();
-        }
-        if (returns != null) {
-            numChild += returns.countChildren();
-        }
-        return numChild;
-    }
-
+    
     @Override
     public void printByPos(StringBuilder str) {
         this.fillStartBlanks(str);

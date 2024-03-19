@@ -98,19 +98,7 @@ public class ASTManagerEngineTest {
         expectedOp2Num.put("NotIn", 76);
         assertEquals(expectedOp2Num, op2Num);
     }
-
-    @Tag(TestKind.PUBLIC)
-    @Test
-    void testMostCommonUsedOp() {
-        ASTManagerEngine engine = new ASTManagerEngine();
-        int xmlFileTot = engine.countXMLFiles(engine.getDefaultXMLFileDir());
-        for (int i = 0; i < xmlFileTot; i++) {
-            engine.processXMLParsing(String.valueOf(i));
-        }
-        HashMap<String, Integer> op2Num = engine.calculateOp2Nums();
-        String maxOp = engine.mostCommonUsedOp(op2Num);
-        assertEquals(maxOp, "Add");
-    }
+    
 
 
     @Tag(TestKind.PUBLIC)
@@ -121,31 +109,31 @@ public class ASTManagerEngineTest {
         for (int i = 0; i < xmlFileTot; i++) {
             engine.processXMLParsing(String.valueOf(i));
         }
-        HashMap<String, Integer> node2Num = engine.calculateNode2Nums("0");
-        HashMap<String, Integer> expectedNode2Num = new HashMap<>();
-        expectedNode2Num.put("Module", 1);
-        expectedNode2Num.put("ClassDef", 1);
-        expectedNode2Num.put("FunctionDef", 2);
-        expectedNode2Num.put("arguments", 2);
+        Map<String, Long> node2Num = engine.calculateNode2Nums("0");
+        Map<String, Long> expectedNode2Num = new HashMap<>();
+        expectedNode2Num.put("Module", 1L);
+        expectedNode2Num.put("ClassDef", 1L);
+        expectedNode2Num.put("FunctionDef", 2L);
+        expectedNode2Num.put("arguments", 2L);
 
-        expectedNode2Num.put("arg", 4);
-        expectedNode2Num.put("Name", 29);
-        expectedNode2Num.put("Assign", 7);
-        expectedNode2Num.put("Constant", 1);
+        expectedNode2Num.put("arg", 4L);
+        expectedNode2Num.put("Name", 29L);
+        expectedNode2Num.put("Assign", 7L);
+        expectedNode2Num.put("Constant", 1L);
 
-        expectedNode2Num.put("While", 2);
+        expectedNode2Num.put("While", 2L);
 
-        expectedNode2Num.put("BoolOp", 1);
-        expectedNode2Num.put("Compare", 2);
-        expectedNode2Num.put("Attribute", 13);
+        expectedNode2Num.put("BoolOp", 1L);
+        expectedNode2Num.put("Compare", 2L);
+        expectedNode2Num.put("Attribute", 13L);
 
-        expectedNode2Num.put("Tuple", 2);
-        expectedNode2Num.put("Return", 2);
+        expectedNode2Num.put("Tuple", 2L);
+        expectedNode2Num.put("Return", 2L);
 
-        expectedNode2Num.put("Subscript", 2);
+        expectedNode2Num.put("Subscript", 2L);
 
-        expectedNode2Num.put("Call", 1);
-        expectedNode2Num.put("If", 1);
+        expectedNode2Num.put("Call", 1L);
+        expectedNode2Num.put("If", 1L);
         assertEquals(expectedNode2Num, node2Num);
     }
 
@@ -157,14 +145,14 @@ public class ASTManagerEngineTest {
         for (int i = 0; i < xmlFileTot; i++) {
             engine.processXMLParsing(String.valueOf(i));
         }
-        HashMap<String, Integer> expectedNode2Num = new HashMap<>();
+        HashMap<String, Long> expectedNode2Num = new HashMap<>();
 
-        HashMap<String, Integer> totNode2Num = new HashMap<>();
+        HashMap<String, Long> totNode2Num = new HashMap<>();
         for (String key : engine.getId2ASTModules().keySet()) {
-            HashMap<String, Integer> node2Num = engine.calculateNode2Nums(key);
-            for (Map.Entry<String, Integer> entry : node2Num.entrySet()) {
+            Map<String, Long> node2Num = engine.calculateNode2Nums(key);
+            for (Map.Entry<String, Long> entry : node2Num.entrySet()) {
                 if (totNode2Num.containsKey(entry.getKey())) {
-                    int currentValue = totNode2Num.get(entry.getKey());
+                    Long currentValue = totNode2Num.get(entry.getKey());
                     totNode2Num.put(entry.getKey(), currentValue + entry.getValue());
                 } else {
                     totNode2Num.put(entry.getKey(), entry.getValue());
@@ -172,42 +160,42 @@ public class ASTManagerEngineTest {
             }
         }
 
-        expectedNode2Num.put("Module", 837);
-        expectedNode2Num.put("ClassDef", 647);
-        expectedNode2Num.put("FunctionDef", 1126);
-        expectedNode2Num.put("arguments", 1126);
+        expectedNode2Num.put("Module", 837L);
+        expectedNode2Num.put("ClassDef", 647L);
+        expectedNode2Num.put("FunctionDef", 1126L);
+        expectedNode2Num.put("arguments", 1126L);
 
-        expectedNode2Num.put("arg", 2508);
-        expectedNode2Num.put("Name", 22230);
-        expectedNode2Num.put("Assign", 3624);
-        expectedNode2Num.put("Constant", 5627);
+        expectedNode2Num.put("arg", 2508L);
+        expectedNode2Num.put("Name", 22230L);
+        expectedNode2Num.put("Assign", 3624L);
+        expectedNode2Num.put("Constant", 5627L);
 
-        expectedNode2Num.put("While", 431);
+        expectedNode2Num.put("While", 431L);
 
-        expectedNode2Num.put("BoolOp", 354);
-        expectedNode2Num.put("Compare", 1809);
-        expectedNode2Num.put("Attribute", 3480);
+        expectedNode2Num.put("BoolOp", 354L);
+        expectedNode2Num.put("Compare", 1809L);
+        expectedNode2Num.put("Attribute", 3480L);
 
-        expectedNode2Num.put("Tuple", 466);
-        expectedNode2Num.put("Return", 1365);
+        expectedNode2Num.put("Tuple", 466L);
+        expectedNode2Num.put("Return", 1365L);
 
-        expectedNode2Num.put("Subscript", 2425);
+        expectedNode2Num.put("Subscript", 2425L);
 
-        expectedNode2Num.put("Call", 3708);
-        expectedNode2Num.put("If", 1505);
+        expectedNode2Num.put("Call", 3708L);
+        expectedNode2Num.put("If", 1505L);
 
-        expectedNode2Num.put("AugAssign", 730);
-        expectedNode2Num.put("Break", 87);
+        expectedNode2Num.put("AugAssign", 730L);
+        expectedNode2Num.put("Break", 87L);
 
-        expectedNode2Num.put("Continue", 29);
+        expectedNode2Num.put("Continue", 29L);
 
-        expectedNode2Num.put("List", 454);
-        expectedNode2Num.put("keyword", 66);
+        expectedNode2Num.put("List", 454L);
+        expectedNode2Num.put("keyword", 66L);
 
-        expectedNode2Num.put("For", 658);
-        expectedNode2Num.put("BinOp", 1939);
-        expectedNode2Num.put("Expr", 1199);
-        expectedNode2Num.put("UnaryOp", 489);
+        expectedNode2Num.put("For", 658L);
+        expectedNode2Num.put("BinOp", 1939L);
+        expectedNode2Num.put("Expr", 1199L);
+        expectedNode2Num.put("UnaryOp", 489L);
         assertEquals(expectedNode2Num, totNode2Num);
     }
 
@@ -288,30 +276,10 @@ public class ASTManagerEngineTest {
         assertEquals(engine.getId2ASTModules().size(), 837);
         HashMap<String, Integer> funcName2NodeNum = engine.processNodeFreq();
         assertEquals(funcName2NodeNum.size(), 1126);
-        assertEquals(Collections.max(funcName2NodeNum.values()), 15);
-        assertEquals(Collections.min(funcName2NodeNum.values()), 2);
+        assertEquals(Collections.max(funcName2NodeNum.values()), 221);
+        assertEquals(Collections.min(funcName2NodeNum.values()), 6);
     }
-
-    @Tag(TestKind.PUBLIC)
-    @Test
-    public void testSortHashMapByValue() {
-        ASTManagerEngine engine = new ASTManagerEngine();
-        HashMap<String, Integer> map = new HashMap<>();
-        map.put("A", 5);
-        map.put("B", 2);
-        map.put("C", 7);
-        map.put("D", 1);
-
-        // Call the sortHashMapByValue method
-        List<Map.Entry<String, Integer>> result = engine.sortHashMapByValue(map);
-
-        // Create an expected sorted list based on values
-        List<Map.Entry<String, Integer>> expected = new ArrayList<>(map.entrySet());
-        expected.sort(Map.Entry.comparingByValue());
-
-        // Assert that the result matches the expected sorted list
-        assertEquals(expected, result);
-    }
+    
 
     @Tag(TestKind.PUBLIC)
     @Test

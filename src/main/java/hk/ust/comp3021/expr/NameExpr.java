@@ -29,12 +29,7 @@ public class NameExpr extends ASTExpr {
         ArrayList<ASTElement> children = new ArrayList<>();
         return children;
     }
-
-    @Override
-    public int countChildren() {
-        int numChild = 1;
-        return numChild;
-    }
+    
     @Override
     public void printByPos(StringBuilder str) {
         fillStartBlanks(str);

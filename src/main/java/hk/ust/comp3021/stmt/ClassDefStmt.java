@@ -52,24 +52,7 @@ public class ClassDefStmt extends ASTStmt {
 
         return children;
     }
-
-    @Override
-    public int countChildren() {
-        int numChild = 1;
-        for (ASTExpr base : bases) {
-            numChild += base.countChildren();
-        }
-        for (ASTKeyWord keyword : keywords) {
-            numChild += keyword.countChildren();
-        }
-        for (ASTStmt bodyStmt : body) {
-            numChild += bodyStmt.countChildren();
-        }
-        for (ASTExpr list : decoratorList) {
-            numChild += list.countChildren();
-        }
-        return numChild;
-    }
+    
 
     @Override
     public void printByPos(StringBuilder str) {

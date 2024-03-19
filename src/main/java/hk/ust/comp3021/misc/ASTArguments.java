@@ -109,18 +109,7 @@ public class ASTArguments extends ASTElement {
 
         return children;
     }
-
-    @Override
-    public int countChildren() {
-        int numChild = 1;
-        for (ASTArg arg: args) {
-            numChild += arg.countChildren();
-        }
-        for (ASTExpr def: defaults) {
-            numChild += def.countChildren();
-        }
-        return numChild;
-    }
+    
 
     @Override
     public String getNodeType() {

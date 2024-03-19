@@ -38,21 +38,6 @@ public class ForStmt extends ASTStmt {
         return children;
     }
 
-    @Override
-    public int countChildren() {
-        int numChild = 1;
-        numChild += target.countChildren();
-        numChild += iter.countChildren();
-
-        for (ASTStmt bodyStmt : body) {
-            numChild += bodyStmt.countChildren();
-        }
-        for (ASTStmt elseStmt : orelse) {
-            numChild += elseStmt.countChildren();
-        }
-        return numChild;
-    }
-
 
     @Override
     public void printByPos(StringBuilder str) {
