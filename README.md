@@ -67,6 +67,11 @@ All of the above functions can take lambda repression as parameters. These funct
 3. `public Function<String, Map<String, Long>> calculateNode2Nums`
 4. `public Supplier<HashMap<String, Integer>> processNodeFreq`
 
+Moreover, you should finish the remaining functionalities in the following user interfaces using the above functional interfaces.
+1. `userInterfaceCommonOp`
+2. `userInterfaceCountNum`
+3. `userInterfaceSortByChild`
+
 #### Task 2: Support code search of five patterns with lambda expressions (50%)
 
 @bowen, you can add more tasks on top
