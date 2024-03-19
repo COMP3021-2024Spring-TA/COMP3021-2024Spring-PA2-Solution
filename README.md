@@ -15,6 +15,15 @@ PA2 aims to practice the lambda expression and generics. ASTManager should be en
 
 Similar to PA1, each test case is an XML file that represents a Python AST.
 
+Before task specification, we first explain the grading policy as follows for your reference so that you will get it.
+
+| Item                                                      | Ratio | Notes                                                        |
+| --------------------------------------------------------- | ----- | ------------------------------------------------------------ |
+| Keeping your GitHub repository private                    | 5%    | You must keep your repository **priavte** at all times.      |
+| Having at least three commits on different days           | 5%    | You should commit three times during different days in your repository |
+| Code style                                                | 10%   | You get 10% by default, and every 5 warnings from CheckStyle deducts 1%. |
+| Public test cases (Task 1 + Task 2 + Task 3 + Bonus Task) | 30%   | (# of passing tests / # of provided tests) * 30%             |
+| Hidden test cases (Task 1 + Task 2 + Task 3 + Bonus Task) | 50%   | (# of passing tests / # of provided tests) * 50%             |
 
 ### What YOU need to do
 
@@ -191,8 +200,8 @@ child.common_method()   # Output: Overridden method in ChildClass
 
 In PA1, the Python code recovery task is set as a bonus task, and you can use positional information to help you get the recovery process aligned with the original Python code. In PA2, we release the implementation of PA1, but now you need to rewrite the code to satisfy the following two requirements:
 
-- DO NOT use positional information. You need to recover the Python code following the Python format. For instance, we should add indent and new lines when there is a `if` condition.
-- USE the aforementioned helper functions and lambda expressions to finish the code.
+- **DO NOT** use positional information. You need to recover the Python code following the Python format. For instance, we should add indent and new lines when there is a `if` condition.
+- **USE** the aforementioned helper functions and lambda expressions to finish the code.
 
 #### Bonus Task: Implement an API misuse bug detector (10%)
 
@@ -203,14 +212,14 @@ In PA1, the Python code recovery task is set as a bonus task, and you can use po
 
 ### Submission Policy
 
-Please submit your code on Canvas before the deadline **March 23, 2024, 23:59:59.** You should submit a single text file specified as follows:
+Please submit your code on Canvas before the deadline **April 13, 2024, 23:59:59.** You should submit a single text file specified as follows:
 
 - A file named `<itsc-id>.txt` containing the URL of your private repository at the first line. We will ask you to add the TAs' accounts as collaborators near the deadline.
 
 For example, a student CHAN, Tai Man with ITSC ID `tmchanaa` having a repository at `https://github.com/tai-man-chan/COMP3021-PA2` should submit a file named `tmchanaa.txt` with the following content:
 
 ```txt
-https://github.com/tai-man-chan/COMP3021-PA1
+https://github.com/tai-man-chan/COMP3021-PA2
 ```
 
 Note that we are using automatic scripts to process your submission on test cases rather than testing via the console manually. **DO NOT add extra explanation** to the file; otherwise, they will prevent our scripts from correctly processing your submission. 
@@ -237,4 +246,5 @@ If you have any questions on the PA1, please email TA Wei Chen via wei.chen@conn
 
 ---
 
-Last Update: Feb 24, 2024
+Last Update: March 24, 2024
+
