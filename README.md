@@ -41,14 +41,17 @@ First, we need to understand the mechanism of common collectors and the function
     * @return: a Map where keys are of type K and values are of type D
     */
    public <K, D, A> Map<K, D> groupingBy(Function<ASTElement, K> classifier,
-                                        Collector<ASTElement, A, D> collector)
+                                        Collector<ASTElement, A, D> collector);
    ```
-3. Implementing the following method to mimic
+3. Implementing the following method to mimic `void forEach(Consumer<? super T> action)` on AST.
    ```Java
-   public void traverse(Consumer<ASTElement> consumer) {
+    /**
+    * @param: consumer representing an operation that accepts ASTElement as input and performs some action on it without returning any result.
+    */
+   public void forEach(Consumer<ASTElement> action);
    ```
 
-Then, you should utilize them to implement the following methods with lambda expressions following the original logic of those in PA1.
+You can know that all of the above functions can take lambda repression as parameters. Then, you should utilize them to implement the following methods with lambda expressions following the original logic of those in PA1.
 
 1. `findFuncWithArgGtN`
 2. `calculateOp2Nums`
