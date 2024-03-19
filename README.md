@@ -208,6 +208,52 @@ In PA1, the Python code recovery task is set as a bonus task, and you can use po
 - **DO NOT** use positional information. You need to recover the Python code following the Python format. For instance, we should add indent and new lines when there is a `if` condition.
 - **USE** the aforementioned helper functions and lambda expressions to finish the code.
 
+A Sample
+```Java
+import java.util.function.Function;
+
+// Define a functional interface for handling AST nodes
+@FunctionalInterface
+interface NodeHandler {
+    String generateCode(ASTNode node);
+}
+
+class ASTNode {
+    // AST node properties and methods
+}
+
+class PythonCodeGenerator {
+    public static void main(String[] args) {
+        // Example of handling a specific type of AST node with a lambda expression
+        NodeHandler binaryOperationHandler = (node) -> {
+            // Assuming 'node' has left, operator, and right properties
+            ASTNode left = ...; // retrieve the left node
+            ASTNode right = ...; // retrieve the right node
+            String operator = ...; // retrieve the operator
+            return generateCode(left) + operator + generateCode(right);
+        };
+
+        // More handlers for different types of AST nodes can be defined here
+
+        // Function to convert the AST to Python code
+        Function<ASTNode, String> generateCode = (ASTNode node) -> {
+            // Switch or if-else statements to handle different types of nodes
+            // Delegate to the appropriate NodeHandler
+            if (node.type.equals("BinaryOperation")) {
+                return binaryOperationHandler.generateCode(node);
+            }
+            // Additional type checks and handlers here...
+            return "";
+        };
+
+        // Example usage
+        ASTNode rootNode = ...; // This would be the root of the AST
+        String pythonCode = generateCode.apply(rootNode);
+        System.out.println(pythonCode);
+    }
+}
+```
+
 #### Bonus Task: Implement an API misuse bug detector (10%)
 
 
