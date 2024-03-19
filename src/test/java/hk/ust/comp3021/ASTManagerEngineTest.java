@@ -43,7 +43,7 @@ public class ASTManagerEngineTest {
         PrintStream originalPrintStream = System.out;
         System.setOut(printStream);
 
-        engine.findFuncWithArgGtN(4);
+        engine.findFuncWithArgGtN.accept(4);
         System.setOut(originalPrintStream);
         String printedOutput = outputStream.toString();
 
@@ -63,7 +63,7 @@ public class ASTManagerEngineTest {
         for (int i = 0; i < xmlFileTot; i++) {
            engine.processXMLParsing(String.valueOf(i));
         }
-        HashMap<String, Integer> op2Num = engine.calculateOp2Nums();
+        HashMap<String, Integer> op2Num = engine.calculateOp2Nums.get();
         HashMap<String, Integer> expectedOp2Num = new HashMap<>();
 
         expectedOp2Num.put("And", 253);
@@ -109,7 +109,7 @@ public class ASTManagerEngineTest {
         for (int i = 0; i < xmlFileTot; i++) {
             engine.processXMLParsing(String.valueOf(i));
         }
-        Map<String, Long> node2Num = engine.calculateNode2Nums("0");
+        Map<String, Long> node2Num = engine.calculateNode2Nums.apply("0");
         Map<String, Long> expectedNode2Num = new HashMap<>();
         expectedNode2Num.put("Module", 1L);
         expectedNode2Num.put("ClassDef", 1L);
@@ -149,7 +149,7 @@ public class ASTManagerEngineTest {
 
         HashMap<String, Long> totNode2Num = new HashMap<>();
         for (String key : engine.getId2ASTModules().keySet()) {
-            Map<String, Long> node2Num = engine.calculateNode2Nums(key);
+            Map<String, Long> node2Num = engine.calculateNode2Nums.apply(key);
             for (Map.Entry<String, Long> entry : node2Num.entrySet()) {
                 if (totNode2Num.containsKey(entry.getKey())) {
                     Long currentValue = totNode2Num.get(entry.getKey());
@@ -274,7 +274,7 @@ public class ASTManagerEngineTest {
         }
 
         assertEquals(engine.getId2ASTModules().size(), 837);
-        HashMap<String, Integer> funcName2NodeNum = engine.processNodeFreq();
+        HashMap<String, Integer> funcName2NodeNum = engine.processNodeFreq.get();
         assertEquals(funcName2NodeNum.size(), 1126);
         assertEquals(Collections.max(funcName2NodeNum.values()), 221);
         assertEquals(Collections.min(funcName2NodeNum.values()), 6);

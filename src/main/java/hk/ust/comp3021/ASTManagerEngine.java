@@ -9,15 +9,16 @@ import java.io.*;
 import java.util.*;
 import java.util.AbstractMap;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class ASTManagerEngine {
     private final String defaultXMLFileDir;
-    private final HashMap<String, ASTModule> id2ASTModules;
+    private final HashMap<String, ASTModule> id2ASTModules = new HashMap<>();
 
     public ASTManagerEngine() {
         defaultXMLFileDir = "resources/pythonxml/";
-        id2ASTModules = new HashMap<>();
     }
 
     public String getDefaultXMLFileDir() {
@@ -165,13 +166,13 @@ public class ASTManagerEngine {
      * Task 1: Print all functions with # arguments greater than user specified N
      */
 
-    public void findFuncWithArgGtN(int paramN) {
+    public Consumer<Integer> findFuncWithArgGtN = paramN -> {
         id2ASTModules.values().forEach(module -> {
             module.filter(node -> node instanceof FunctionDefStmt)
                     .stream().filter(func -> ((FunctionDefStmt) func).getParamNum() >= paramN)
                     .forEach(func -> System.out.println(module.getASTID() + "_" + ((FunctionDefStmt) func).getName() + "_" + func.getLineNo()));
         });
-    }
+    };
     
 
     public void userInterfaceParamNum() {
@@ -182,7 +183,7 @@ public class ASTManagerEngine {
             try {
                 int number = Integer.parseInt(paramN);
                 System.out.println("Parsed number: " + number);
-                findFuncWithArgGtN(number);
+                findFuncWithArgGtN.accept(number);
             } catch (NumberFormatException e) {
                 System.out.println("Error! Invalid number format");
             }
@@ -200,7 +201,7 @@ public class ASTManagerEngine {
      *          frequency of this operator
      */
 
-    public HashMap<String, Integer> calculateOp2Nums() {
+    public Supplier<HashMap<String, Integer>> calculateOp2Nums = () -> {
         HashMap<String, Integer> op2Num = new HashMap<>();
 
         Consumer<ASTElement> binOp = node -> {
@@ -229,14 +230,15 @@ public class ASTManagerEngine {
         };
 
         id2ASTModules.values().forEach(module -> {
-            module.traverse(binOp.andThen(boolOp).andThen(unaryOp).andThen(augAssignOp));
+            module.forEach(binOp.andThen(boolOp).andThen(unaryOp).andThen(augAssignOp));
         });
         return op2Num;
-    }
+    };
     
     public void userInterfaceCommonOp() {
-        HashMap<String, Integer> op2Num = calculateOp2Nums();
-        Map.Entry<String, Integer> maxEntry = Collections.max(op2Num.entrySet(), Comparator.comparing(Map.Entry::getValue));
+        HashMap<String, Integer> op2Num = calculateOp2Nums.get();
+        Map.Entry<String, Integer> maxEntry = Collections.max(op2Num.entrySet(), 
+                Comparator.comparing(Map.Entry::getValue));
         System.out.println("Most common operator is " + maxEntry.getKey()
                 + " with frequency " + maxEntry.getValue());
     }
@@ -286,10 +288,10 @@ public class ASTManagerEngine {
      * Task 4: Given AST ID, count the number of all node types
      */
 
-    public Map<String, Long> calculateNode2Nums(String astID) {
+    public Function<String, Map<String, Long>> calculateNode2Nums = astID -> {
         // TODO: complete the definition of the method `calculateNode2Nums`
-        return id2ASTModules.get(astID).groupingBy(ASTElement::getNodeType, Collectors.counting());
-    }
+        return this.id2ASTModules.get(astID).groupingBy(ASTElement::getNodeType, Collectors.counting());
+    };
     
     public void userInterfaceCountNum() {
         System.out.println("Please specify the AST ID to count Node (" + id2ASTModules.keySet() + ") or -1 for all:");
@@ -298,27 +300,18 @@ public class ASTManagerEngine {
             String astID = scan1.nextLine();
             if (!astID.equals("-1")) {
                 if (id2ASTModules.containsKey(astID)) {
-                    var node2Num = calculateNode2Nums(astID);
-                    for (Map.Entry<String, Long> entry : node2Num.entrySet()) {
-                        System.out.println(astID + entry.getKey() + " node with frequency " + entry.getValue());
-                    }
+                    calculateNode2Nums.apply(astID).entrySet().stream().forEach(
+                            entry -> System.out.println(astID + entry.getKey() + " node with frequency " + entry.getValue())
+                    );
                 }
             } else {
                 HashMap<String, Long> totNode2Num = new HashMap<>();
-                for (String key : id2ASTModules.keySet()) {
-                    var node2Num = calculateNode2Nums(astID);
-                    for (Map.Entry<String, Long> entry : node2Num.entrySet()) {
-                        if (totNode2Num.containsKey(entry.getKey())) {
-                            Long currentValue = totNode2Num.get(entry.getKey());
-                            totNode2Num.put(entry.getKey(), currentValue + entry.getValue());
-                        } else {
-                            totNode2Num.put(entry.getKey(), entry.getValue());
-                        }
-                    }
-                }
-                for (Map.Entry<String, Long> entry : totNode2Num.entrySet()) {
-                    System.out.println("All " + entry.getKey() + " node with frequency " + entry.getValue() + "\n");
-                }
+                id2ASTModules.keySet().forEach(key ->
+                        calculateNode2Nums.apply(key).forEach(
+                                (nodeKey, nodeValue) -> totNode2Num.merge(nodeKey, nodeValue, Long::sum)
+                        )
+                );
+                totNode2Num.forEach((node, num) -> System.out.println("All" + node + " node with frequency " + num + "\n"));
             }
         }
     }
@@ -335,7 +328,7 @@ public class ASTManagerEngine {
      * @return: Hashmap that stores the mapping from function name
      *          to the number of children nodes
      */
-    public HashMap<String, Integer> processNodeFreq() {
+    public Supplier<HashMap<String, Integer>> processNodeFreq = () -> {
         HashMap<String, Integer> funcName2NodeNum = new HashMap<>();
 
         id2ASTModules.values().forEach(module -> {
@@ -354,10 +347,10 @@ public class ASTManagerEngine {
                             (value1, value2) -> value1));
         });
         return funcName2NodeNum;
-    }
+    };
     
     public void userInterfaceSortByChild() {
-        HashMap<String, Integer> funcName2NodeNum = processNodeFreq();
+        HashMap<String, Integer> funcName2NodeNum = processNodeFreq.get();
 
         funcName2NodeNum.entrySet()
                 .stream()
