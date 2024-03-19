@@ -25,7 +25,7 @@ We have marked the methods you need to implement using `TODO` in the skeleton. S
 
 First, we need to understand the mechanism of common collectors and the functional interface. You are requested to implement the following functional interface fully in the class `ASTElement`.
 
-1. Implementing the following method to mimic the behavior of `Stream<T> filter(Predicate<? super T> predicate);` on AST.
+1. Implementing the following method to mimic the behavior of `Stream.filter` on AST.
    ```Java
    /**
     * @param: predicate representing a boolean-valued function that takes ASTElement as input parameter and returns a bool result
@@ -43,7 +43,7 @@ First, we need to understand the mechanism of common collectors and the function
    public <K, D, A> Map<K, D> groupingBy(Function<ASTElement, K> classifier,
                                         Collector<ASTElement, A, D> collector);
    ```
-3. Implementing the following method to mimic `void forEach(Consumer<? super T> action)` on AST.
+3. Implementing the following method to mimic `Iterable.forEach` on AST.
    ```Java
     /**
     * @param: consumer representing an operation that accepts ASTElement as input and performs some action on it without returning any result.
