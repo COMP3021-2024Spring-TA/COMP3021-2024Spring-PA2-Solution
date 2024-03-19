@@ -343,7 +343,7 @@ public class ASTManagerEngine {
                     .stream()
                     .map(func -> {
                         final int[] nodeCount = {0};
-                        func.traverse(node -> nodeCount[0]++);
+                        func.forEach(node -> nodeCount[0]++);
                         String uniqueFuncName = module.getASTID() + "_" +
                                 ((FunctionDefStmt) func).getName() + "_" + func.getLineNo();
                         return new AbstractMap.SimpleEntry<>(uniqueFuncName, nodeCount[0]);

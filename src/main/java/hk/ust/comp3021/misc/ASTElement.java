@@ -161,11 +161,11 @@ public abstract class ASTElement {
         return filteredNodes;
     }
 
-    public void traverse(Consumer<ASTElement> consumer) {
-        consumer.accept(this);
+    public void forEach(Consumer<ASTElement> action) {
+        action.accept(this);
 
         for (ASTElement child : this.getChildren()) {
-            child.traverse(consumer);
+            child.forEach(action);
         }
     }
     
@@ -177,7 +177,7 @@ public abstract class ASTElement {
                                         Collector<ASTElement, A, D> collector) {
         
         Map<K, A> hashMap = new HashMap<>();
-        groupingBbyRecursive(classifier, collector, hashMap);
+        groupingByRecursive(classifier, collector, hashMap);
         Map<K, D> results = new HashMap<>();
         for (Map.Entry<K, A> entry : hashMap.entrySet()) {
             results.put(entry.getKey(), collector.finisher().apply(entry.getValue()));
@@ -185,7 +185,7 @@ public abstract class ASTElement {
         return results;
     }
     
-    public <K, A> void groupingBbyRecursive(Function<ASTElement, K> classifier,
+    public <K, A> void groupingByRecursive(Function<ASTElement, K> classifier,
                                           Collector<ASTElement, A, ?> collector,
                                           Map<K, A> results) {
 
@@ -195,7 +195,7 @@ public abstract class ASTElement {
         collector.accumulator().accept(container, this);
         
         for (ASTElement child: this.getChildren()) {
-            child.groupingBbyRecursive(classifier, collector, results);
+            child.groupingByRecursive(classifier, collector, results);
         }
     }
     
