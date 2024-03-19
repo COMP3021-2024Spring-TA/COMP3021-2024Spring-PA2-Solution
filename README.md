@@ -62,10 +62,10 @@ First, we need to understand the mechanism of common collectors and the function
 
 All of the above functions can take lambda repression as parameters. These functions will be used as helper functions in the following tasks. Then, you should utilize them to implement the following methods with lambda expressions, following the original logic of those in PA1.
 
-1. `findFuncWithArgGtN`
-2. `calculateOp2Nums`
-3. `calculateNode2Nums`
-4. `processNodeFreq`
+1. `public Consumer<Integer> findFuncWithArgGtN`
+2. `public Supplier<HashMap<String, Integer>> calculateOp2Nums`
+3. `public Function<String, Map<String, Long>> calculateNode2Nums`
+4. `public Supplier<HashMap<String, Integer>> processNodeFreq`
 
 #### Task 2: Support code search of five patterns with lambda expressions (50%)
 
