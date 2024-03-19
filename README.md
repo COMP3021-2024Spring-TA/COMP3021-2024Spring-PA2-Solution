@@ -2,11 +2,11 @@
 
 ## **Python AST Management System**
 
-[AST (Abstract Syntax Tree)](https://en.wikipedia.org/wiki/Abstract_syntax_tree) is a tree representation that represents the syntactic structure of source code. It is widely used in compilers and interpreters to reason about relationships between program elements. In this project, you are required to implement your own management system, named ASTManager, for parsing and analyzing Python ASTs.
+[AST (Abstract Syntax Tree)](https://en.wikipedia.org/wiki/Abstract_syntax_tree) is a tree representation that represents the syntactic structure of source code. It is widely used in compilers and interpreters to reason about relationships between program elements. In this project, you are required to implement your own management system, named ASTManager, to parse and analyze Python ASTs.
 
 ### **Grading System**
 
-PA2 aims to practice the lambda expression and generics. ASTManager should be enhanced to support the following additional functionalities:
+PA2 aims to practice the lambda expression and generics. **ASTManager** should be enhanced to support the following additional functionalities:
 
 - Task 1: Finish generic tree traversal skeleton that takes lambda expressions as the node visitor and rewrite the task in PA1 (30%)
 - Task 2: Support code searching of five patterns with lambda expressions. (50%)
