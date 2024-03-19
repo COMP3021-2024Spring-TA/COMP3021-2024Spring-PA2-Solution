@@ -6,15 +6,14 @@
 
 ### **Grading System**
 
-In PA2, ASTManager should support the following functionalities:
+PA2 aims to practice the lambda expression and generics. ASTManager should be enhanced to support the following additional functionalities:
 
-- Task 1: Finish generic tree traversal skeleton that takes any lambda expressions as the node visitor and rewrite the task in PA1 (20%)
-- Task 2: Enable simple code pattern searching with lambda expressions. (50%)
-- Task 3: Rewrite the given Python code recovery code with lambda expressions. (30%)
+- Task 1: Finish generic tree traversal skeleton that takes lambda expressions as the node visitor and rewrite the task in PA1 (20%)
+- Task 2: Support code searching of five patterns with lambda expressions. (50%)
+- Task 3: Rewrite the given Python code recovery code with lambda expressions without the guidance of positional information. (30%)
 - Bonus Task: Support simple bug detection with lambda expressions. (10%)
 
 Similar to PA1, each test case is an XML file that represents a Python AST.
-
 
 
 ### What YOU need to do
