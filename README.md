@@ -8,9 +8,9 @@
 
 PA2 aims to practice the lambda expression and generics. ASTManager should be enhanced to support the following additional functionalities:
 
-- Task 1: Finish generic tree traversal skeleton that takes lambda expressions as the node visitor and rewrite the task in PA1 (20%)
+- Task 1: Finish generic tree traversal skeleton that takes lambda expressions as the node visitor and rewrite the task in PA1 (30%)
 - Task 2: Support code searching of five patterns with lambda expressions. (50%)
-- Task 3: Rewrite the given Python code recovery code with lambda expressions without the guidance of positional information. (30%)
+- Task 3: Rewrite the given Python code recovery code with lambda expressions without the guidance of positional information. (20%)
 - Bonus Task: Support simple bug detection with lambda expressions. (10%)
 
 Similar to PA1, each test case is an XML file that represents a Python AST.
@@ -18,7 +18,46 @@ Similar to PA1, each test case is an XML file that represents a Python AST.
 
 ### What YOU need to do
 
-We have marked the methods you need to implement using `TODO` in the skeleton. Specifically, please
+We have marked the methods you need to implement using `TODO` in the skeleton. Specifically, the specifications of each task you need to implement are shown below.
+
+
+#### Task 1: Rewrite tasks in PA1 with lambda expression
+
+First, we need to understand the mechanism of common collectors and the functional interface. You are requested to implement the following functional interface fully in the class `ASTElement`.
+
+1. Implementing the following method to mimic the behavior of `Stream<T> filter(Predicate<? super T> predicate);` on AST.
+   ```Java
+   /**
+    * @param: predicate representing a boolean-valued function that takes ASTElement as input parameter and returns a bool result
+    * @return: an ArrayList of ASTElement where predicate returns true
+    */
+   public ArrayList<ASTElement> filter(Predicate<ASTElement> predicate);
+   ```
+2. Implementing the following method to mimic the behavior of `Collectors.groupingBy` on AST.
+   ```Java
+   /**
+    * @param: classifier representing a function that classifies an ASTElement argument and produces an object of generic type K
+    *         collector representing a collector used to accumulate the ASTElement object into result D, and A is an intermediate accumulation type
+    * @return: a Map where keys are of type K and values are of type D
+    */
+   public <K, D, A> Map<K, D> groupingBy(Function<ASTElement, K> classifier,
+                                        Collector<ASTElement, A, D> collector)
+   ```
+3. Implementing the following method to mimic
+   ```Java
+   public void traverse(Consumer<ASTElement> consumer) {
+   ```
+
+Then, you should utilize them to implement the following methods with lambda expressions following the original logic of those in PA1.
+
+1. `findFuncWithArgGtN`
+2. `calculateOp2Nums`
+3. `calculateNode2Nums`
+4. `processNodeFreq`
+
+#### Task 2: Support code search of five patterns with lambda expressions
+
+Task 1 only focuses on querying the attributes of singleton nodes. In task 2, you are required to support the code searching for the following patterns, which consider the correlation between multiple nodes. We have given the sample code that conforms to the patterns to ease your understanding. You should utilize the functions mentioned earlier, e.g., `filter` and `groupingBy`, as much as possible. 
 
 <table>
 <tr>
