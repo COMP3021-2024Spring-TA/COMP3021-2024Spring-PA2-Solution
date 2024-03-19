@@ -21,7 +21,7 @@ Similar to PA1, each test case is an XML file that represents a Python AST.
 We have marked the methods you need to implement using `TODO` in the skeleton. Specifically, the specifications of each task you need to implement are shown below.
 
 
-#### Task 1: Rewrite tasks in PA1 with lambda expression
+#### Task 1: Rewrite tasks in PA1 with lambda expression (30%)
 
 First, we need to understand the mechanism of common collectors and the functional interface. You are requested to implement the following functional interface fully in the class `ASTElement`.
 
@@ -51,14 +51,14 @@ First, we need to understand the mechanism of common collectors and the function
    public void forEach(Consumer<ASTElement> action);
    ```
 
-You can know that all of the above functions can take lambda repression as parameters. Then, you should utilize them to implement the following methods with lambda expressions following the original logic of those in PA1.
+You can know that all of the above functions can take lambda repression as parameters. These functions will be used as helper functions in the following tasks. Then, you should utilize them to implement the following methods with lambda expressions following the original logic of those in PA1.
 
 1. `findFuncWithArgGtN`
 2. `calculateOp2Nums`
 3. `calculateNode2Nums`
 4. `processNodeFreq`
 
-#### Task 2: Support code search of five patterns with lambda expressions
+#### Task 2: Support code search of five patterns with lambda expressions (50%)
 
 Task 1 only focuses on querying the attributes of singleton nodes. In task 2, you are required to support the code searching for the following patterns, which consider the correlation between multiple nodes. We have given the sample code that conforms to the patterns to ease your understanding. You should utilize the functions mentioned earlier, e.g., `filter` and `groupingBy`, as much as possible. 
 
@@ -176,7 +176,7 @@ class ChildClass(ParentClass):
 parent = ParentClass()
 child = ChildClass()
 
-# Call the method on the instances
+# Call the method on the instance
 parent.common_method()  # Output: Method of ParentClass
 child.common_method()   # Output: Overridden method in ChildClass
 ```
@@ -184,6 +184,13 @@ child.common_method()   # Output: Overridden method in ChildClass
 </td>
 </tr>
 </table>
+
+#### Task 3: Rewrite the given Python code recovery code 
+
+In PA1, the Python code recovery task is set as a bonus task, and you can use positional information to help you get the recovery process aligned with the original Python code. In PA2, we release the implementation of PA1, but now you need to rewrite the code to satisfy the following two requirements:
+
+- DO NOT use positional information. You need to recover the Python code following the Python format. For instance, we should add indent and new lines when there is a `if` condition.
+- USE the aforementioned helper functions and lambda expressions to finish the code.
 
 ### Submission Policy
 
