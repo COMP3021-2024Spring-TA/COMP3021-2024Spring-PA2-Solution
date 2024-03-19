@@ -60,14 +60,14 @@ First, we need to understand the mechanism of common collectors and the function
    public void forEach(Consumer<ASTElement> action);
    ```
 
-All of the above functions can take lambda repression as parameters. These functions will be used as helper functions in the following tasks. Then, you should utilize them to implement the following methods with lambda expressions, following the original logic of those in PA1.
+All of the above functions can take lambda repression as parameters. These functions will be used as helper functions in the following tasks. Then, you should utilize them to implement the following functional interfaces with lambda expressions, following the original logic of those in PA1.
 
 1. `public Consumer<Integer> findFuncWithArgGtN`
 2. `public Supplier<HashMap<String, Integer>> calculateOp2Nums`
 3. `public Function<String, Map<String, Long>> calculateNode2Nums`
 4. `public Supplier<HashMap<String, Integer>> processNodeFreq`
 
-Moreover, you should finish the remaining functionalities in the following user interfaces using the above functional interfaces.
+Moreover, you should finish the following methods within `ASTManagerEngine` by achieving the requried functionalities using the above functional interfaces.
 1. `userInterfaceCommonOp`
 2. `userInterfaceCountNum`
 3. `userInterfaceSortByChild`
