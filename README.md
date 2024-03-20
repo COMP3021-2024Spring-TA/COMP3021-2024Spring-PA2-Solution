@@ -74,7 +74,7 @@ Moreover, you should finish the following methods within `ASTManagerEngine` by a
 
 #### Task 2: Support code search of five patterns with lambda expressions (50%)
 
-@bowen, you can add more tasks on top
+<!--@bowen, you can add more tasks on top-->
 
 Task 1 only focuses on querying the attributes of singleton nodes. In task 2, you are required to support the code searching for the following patterns, which consider the correlation between multiple nodes. We have given the sample code that conforms to the patterns to ease your understanding. You should utilize the functions mentioned earlier, e.g., `filter` and `groupingBy`, as much as possible. 
 
