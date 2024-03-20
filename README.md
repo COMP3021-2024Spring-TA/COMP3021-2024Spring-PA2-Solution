@@ -110,7 +110,7 @@ class C:
     pass
 class B(C):
     pass
-class A(B):  # super classeso f A: B, C
+class A(B):  # super classes of A: B, C
     pass 
 ```
 
