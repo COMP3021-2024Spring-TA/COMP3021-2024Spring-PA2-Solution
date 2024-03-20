@@ -83,6 +83,95 @@ Task 1 only focuses on querying the attributes of singleton nodes. In task 2, yo
 <td> Code Pattern  </td> <td> Code Example </td>
 </tr>
 <tr>
+<td> Function A has been directly called by some function other than B </td>
+<td>
+
+```python
+def A():
+    print("A")
+
+def B():
+    print("B")
+    A()
+
+def C():
+    A() # A being called by C, not B
+```
+
+</td>
+</tr>
+
+<tr>
+<td>All the super classes of A</td>
+<td>
+
+```python
+class C:
+    pass
+class B(C):
+    pass
+class A(B):  # super classeso f A: B, C
+    pass 
+```
+
+</td>
+</tr>
+
+<tr>
+<td>All the methods of A</td>
+<td>
+
+```python
+class C:
+    def foo():
+        pass
+class B(C):
+    def bar():
+        pass
+class A(B):  # methods: foo(), bar(), baz()
+    def baz():
+        pass 
+```
+
+</td>
+</tr>
+<tr>
+<td>All the classes with main function</td>
+<td>
+
+```python
+class A:  # Yes
+    def main():
+        pass
+class B(A):  # Yes
+    def foo():
+        pass
+
+class C: # No
+    def bar():
+        pass
+```
+
+</td>
+
+
+</tr>
+
+<tr>
+<td> All the comparison expressions with "=="</td>
+<td>
+
+```python
+def foo():
+    if "foo" == "bar":   # first
+        x = "foo" == "bar" # second
+    else:
+        x = "bar" == "foo" # third
+```
+</td>
+</tr>
+
+<tr>
 <td> Classes having a subclass  </td>
 <td>
 
@@ -199,6 +288,8 @@ child.common_method()   # Output: Overridden method in ChildClass
 
 </td>
 </tr>
+
+
 </table>
 
 #### Task 3: Rewrite the given Python code recovery code （20%）
