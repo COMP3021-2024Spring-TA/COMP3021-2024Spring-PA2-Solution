@@ -303,7 +303,7 @@ class C: # No
 
 In PA1, the Python code recovery task is set as a bonus task, and you can use positional information to help you get the recovery process aligned with the original Python code. In PA2, we release the implementation of PA1, but now you need to rewrite the code to satisfy the following two requirements:
 
-- **DO NOT** use positional information. You need to recover the Python code following the Python format. For instance, we should add indent and new lines when there is a `if` condition.
+- **DO NOT** use positional information. You need to recover the Python code following the Python format. For instance, we should add indents and new lines when there is an `if` condition.
 - **USE** the aforementioned helper functions and lambda expressions to finish the code.
 
 A Sample
