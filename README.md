@@ -82,80 +82,6 @@ Task 1 only focuses on querying the attributes of singleton nodes. In task 2, yo
 <tr>
 <td> Code Pattern  </td> <td> Code Example </td>
 </tr>
-<tr>
-<td> Function A has been directly called by some function other than B </td>
-<td>
-
-```python
-def A():
-    print("A")
-
-def B():
-    print("B")
-    A()
-
-def C():
-    A() # A being called by C, not B
-```
-
-</td>
-</tr>
-
-<tr>
-<td>All the super classes of A</td>
-<td>
-
-```python
-class C:
-    pass
-class B(C):
-    pass
-class A(B):  # super classes of A: B, C
-    pass 
-```
-
-</td>
-</tr>
-
-<tr>
-<td>All the methods of A</td>
-<td>
-
-```python
-class C:
-    def foo():
-        pass
-class B(C):
-    def bar():
-        pass
-class A(B):  # methods: foo(), bar(), baz()
-    def baz():
-        pass 
-```
-
-</td>
-</tr>
-<tr>
-<td>All the classes with main function</td>
-<td>
-
-```python
-class A:  # Yes
-    def main():
-        pass
-class B(A):  # Yes
-    def foo():
-        pass
-
-class C: # No
-    def bar():
-        pass
-```
-
-</td>
-
-
-</tr>
 
 <tr>
 <td> All the comparison expressions with "=="</td>
@@ -171,29 +97,6 @@ def foo():
 </td>
 </tr>
 
-<tr>
-<td> Classes having a subclass  </td>
-<td>
-
-```Python
-# superclass
-class Person():
-    def display1(self):
-        print("This is superclass")
- 
-# subclass		
-class Employee(Person):
-    def display2(self):
-        print("This is subclass")
-		
-emp = Employee()  # creating object of subclass
- 
-emp.display1()
-emp.display2()
-```
-
-</td>
-</tr>
 <tr>
 <td> Functions using a boolean parameter as an if-condition </td>
 <td>
@@ -221,6 +124,43 @@ switch.toggle_light(False) # Should turn the light off
 
 </td>
 </tr>
+
+<tr>
+<td> Function parameters that are never read from or assigned to before it's read  </td>
+<td>
+
+```Python
+def foo(param1, param2, param3):
+    print(param1) # param1 is read
+    param2 = 4  # param2 is written to, 
+                # but never read before, hence is unused
+    print(param2)
+    # param3 is unused
+```
+
+</td>
+</tr>
+
+
+<tr>
+<td> Function A has been directly called by some function other than B </td>
+<td>
+
+```python
+def A():
+    print("A")
+
+def B():
+    print("B")
+    A()
+
+def C():
+    A() # A being called by C, not B
+```
+
+</td>
+</tr>
+
 <tr>
 <td> Can method A directly or transitively call method B or C  </td>
 <td>
@@ -248,21 +188,48 @@ foo()
 </td>
 </tr>
 
+
 <tr>
-<td> Function parameters that are never read from or assigned to before it's read  </td>
+<td>All the superclasses of A</td>
 <td>
 
-```Python
-def foo(param1, param2, param3):
-    print(param1) # param1 is read
-    param2 = 4  # param2 is written to, 
-                # but never read before, hence is unused
-    print(param2)
-    # param3 is unused
+```python
+class C:
+    pass
+class B(C):
+    pass
+class A(B):  # superclasses of A: B, C
+    pass 
 ```
 
 </td>
 </tr>
+
+
+<tr>
+<td> Classes having a subclass  </td>
+<td>
+
+```Python
+# superclass
+class Person():
+    def display1(self):
+        print("This is superclass")
+ 
+# subclass		
+class Employee(Person):
+    def display2(self):
+        print("This is subclass")
+		
+emp = Employee()  # creating object of subclass
+ 
+emp.display1()
+emp.display2()
+```
+
+</td>
+</tr>
+
 
 <tr>
 <td> Overriding methods of classes </td>
@@ -289,6 +256,46 @@ child.common_method()   # Output: Overridden method in ChildClass
 </td>
 </tr>
 
+<tr>
+<td>All the methods of A</td>
+<td>
+
+```python
+class C:
+    def foo():
+        pass
+class B(C):
+    def bar():
+        pass
+class A(B):  # methods: foo(), bar(), baz()
+    def baz():
+        pass 
+```
+
+</td>
+</tr>
+
+
+
+<tr>
+<td>All the classes with main function</td>
+<td>
+
+```python
+class A:  # Yes
+    def main():
+        pass
+class B(A):  # Yes
+    def foo():
+        pass
+
+class C: # No
+    def bar():
+        pass
+```
+
+</td>
+</tr>
 
 </table>
 
