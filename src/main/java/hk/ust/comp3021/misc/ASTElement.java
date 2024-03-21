@@ -160,7 +160,7 @@ public abstract class ASTElement {
         }
         return filteredNodes;
     }
-
+    
     public void forEach(Consumer<ASTElement> action) {
         action.accept(this);
 
@@ -199,7 +199,8 @@ public abstract class ASTElement {
         }
     }
     
-
+    
+    
 
     public <T> T reduce(T identify, BinaryOperator<T> accumulator) {
         T curValue = identify;

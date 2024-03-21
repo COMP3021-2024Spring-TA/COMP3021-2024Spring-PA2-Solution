@@ -1,1 +1,0 @@
-np.vstack((array8, array9))

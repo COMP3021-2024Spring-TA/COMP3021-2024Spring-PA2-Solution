@@ -164,101 +164,106 @@ public class ASTEnumOp extends ASTElement {
     }
 
     @Override
-    public void printByPos(StringBuilder str) {
+    public String toString() {
         switch (this.op) {
             case OP_And:
-                str.append("and");
-                break;
+                return "and";
+                
             case OP_Or:
-                str.append("or");
-                break;
+                return "or";
+                
             case OP_Add:
-                str.append("+");
-                break;
+                return "+";
+                
             case OP_Sub:
-                str.append("-");
-                break;
+                return "-";
+                
             case OP_Mult:
-                str.append("*");
-                break;
+                return "*";
+                
             case OP_MatMult:
-                str.append("@");
-                break;
+                return "@";
+                
             case OP_Div:
-                str.append("/");
-                break;
+                return "/";
+                
             case OP_Mod:
-                str.append("%");
-                break;
+                return "%";
+                
             case OP_Pow:
-                str.append("**");
-                break;
+                return "**";
+                
             case OP_LShift:
-                str.append("<<");
-                break;
+                return "<<";
+                
             case OP_RShift:
-                str.append(">>");
-                break;
+                return ">>";
+                
             case OP_BitOr:
-                str.append("|");
-                break;
+                return "|";
+                
             case OP_BitXor:
-                str.append("^");
-                break;
+                return "^";
+                
             case OP_BitAnd:
-                str.append("&");
-                break;
+                return "&";
+                
             case OP_FloorDiv:
-                str.append("//");
-                break;
+                return "//";
+                
             case OP_Invert:
-                str.append("~");
-                break;
+                return "~";
+                
             case OP_Not:
-                str.append("not");
-                break;
+                return "not";
+                
             case OP_UAdd:
-                str.append("+");
-                break;
+                return "+";
+                
             case OP_USub:
-                str.append("-");
-                break;
+                return "-";
+                
             case OP_Eq:
-                str.append("==");
-                break;
+                return "==";
+                
             case OP_NotEq:
-                str.append("!=");
-                break;
+                return "!=";
+                
             case OP_Lt:
-                str.append("<");
-                break;
+                return "<";
+                
             case OP_LtE:
-                str.append("<=");
-                break;
+                return "<=";
+                
             case OP_Gt:
-                str.append(">");
-                break;
+                return ">";
+                
             case OP_GtE:
-                str.append(">=");
-                break;
+                return ">=";
+                
             case OP_Is:
-                str.append("is");
-                break;
+                return "is";
+                
             case OP_IsNot:
-                str.append("is not");
-                break;
+                return "is not";
+                
             case OP_In:
-                str.append("in");
-                break;
+                return "in";
+                
             case OP_NotIn:
-                str.append("not in");
-                break;
+                return "not in";
+                
             default:
-                str.append("unknown operator");
-                break;
+                return "unknown operator";
+                
         }
     }
-    
+
+    @Override
+    public void printByPos(StringBuilder str) {
+        str.append(toString());
+    }
+
     public int getPrecedence() {
         switch (this.op) {
             case OP_And:

@@ -1,1 +1,0 @@
-arr = ['python', 'java', ['asp', 'php'], 'c']

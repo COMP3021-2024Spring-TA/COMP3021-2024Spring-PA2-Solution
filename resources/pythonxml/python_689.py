@@ -1,1 +1,0 @@
-index.overlaps(pd.Interval(1.5, 3.5))

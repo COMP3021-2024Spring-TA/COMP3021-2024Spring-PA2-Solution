@@ -21,6 +21,10 @@ public class ASTArguments extends ASTElement {
             }
         }
 
+        public ASTExpr getAnnotation() {
+            return annotation;
+        }
+
         @Override
         public ArrayList<ASTElement> getChildren() {
             ArrayList<ASTElement> children = new ArrayList<>();

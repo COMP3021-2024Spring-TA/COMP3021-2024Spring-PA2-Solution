@@ -1,1 +1,0 @@
-map_chart.render_notebook()

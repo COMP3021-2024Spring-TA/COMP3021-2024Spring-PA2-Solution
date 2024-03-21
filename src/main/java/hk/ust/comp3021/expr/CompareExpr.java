@@ -47,5 +47,14 @@ public class CompareExpr extends ASTExpr {
         fillEndBlanks(str);
     }
 
-
+    @Override
+    public String toString() {
+        String ret = "";
+        ret += left.toString();
+        for (int i = 0; i < ops.size(); i++) {
+            ret += " " +  ops.get(i).toString() + " " 
+                    + comparators.get(i).toString();
+        }
+        return ret;
+    }
 }

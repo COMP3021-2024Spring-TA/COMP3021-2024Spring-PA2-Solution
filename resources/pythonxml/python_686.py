@@ -1,1 +1,0 @@
-ser.groupby(level=1).sum()

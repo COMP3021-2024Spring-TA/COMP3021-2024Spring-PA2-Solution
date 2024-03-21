@@ -37,4 +37,8 @@ public class NameExpr extends ASTExpr {
         fillEndBlanks(str);
     }
 
+    @Override
+    public String toString() {
+        return this.id;
+    }
 }

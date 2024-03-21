@@ -115,11 +115,6 @@ class LightSwitch:
             self.state = False
             print("The light is now OFF.")
 
-switch = LightSwitch()
-
-# Use the method with a boolean parameter
-switch.toggle_light(True)  # Should turn the light on
-switch.toggle_light(False) # Should turn the light off
 ```
 
 </td>

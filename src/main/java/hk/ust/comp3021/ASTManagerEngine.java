@@ -2,6 +2,7 @@ package hk.ust.comp3021;
 
 import hk.ust.comp3021.expr.*;
 import hk.ust.comp3021.misc.*;
+import hk.ust.comp3021.query.QueryOnMethod;
 import hk.ust.comp3021.stmt.*;
 import hk.ust.comp3021.utils.*;
 
@@ -17,6 +18,8 @@ public class ASTManagerEngine {
     private final String defaultXMLFileDir;
     private final HashMap<String, ASTModule> id2ASTModules = new HashMap<>();
 
+    private QueryOnMethod queryOnMethod = new QueryOnMethod(id2ASTModules);
+    
     public ASTManagerEngine() {
         defaultXMLFileDir = "resources/pythonxml/";
     }
@@ -43,12 +46,14 @@ public class ASTManagerEngine {
             System.out.println("  4: Given AST ID, count the number of all node types");
             System.out.println("  5: Sort all functions based on # children nodes");
             System.out.println("  6: Given AST ID, recover Python Code (Bonus Task)");
-            System.out.println("  7: Exit");
+            System.out.println("  7: Given func name, find all comparison expressions with \"==\"");
+            System.out.println("  8: Find all functions using boolean parameter as an if-condition");
+            System.out.println("  9: Exit");
             System.out.println("----------------------------------------------------------------------");
             Scanner scan1 = new Scanner(System.in);
             if (scan1.hasNextInt()) {
                 int i = scan1.nextInt();
-                if (i < 0 || i > 7) {
+                if (i < 0 || i > 9) {
                     System.out.println("You should enter 0~7.");
                     continue;
                 }
@@ -82,11 +87,19 @@ public class ASTManagerEngine {
                         userInterfaceRecoverCode();
                         break;
                     }
+                    case 7: {
+                        queryOnMethod.findEqualCompareInFunc.apply("1_foo_1");
+                        break;
+                    }
+                    case 8: {
+                        queryOnMethod.findFuncWithBoolParam.get();
+                        break;
+                    }
                     default: {
 
                     }
                 }
-                if (i == 7) {
+                if (i == 9) {
                     break;
                 }
             } else {

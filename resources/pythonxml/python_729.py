@@ -1,1 +1,0 @@
-np.resize(array1, (5, 3))

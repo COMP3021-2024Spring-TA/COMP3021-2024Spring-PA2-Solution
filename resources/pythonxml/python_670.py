@@ -1,1 +1,0 @@
-emp_df[(emp_df.sal > 3500) & (emp_df.dno == 20)]

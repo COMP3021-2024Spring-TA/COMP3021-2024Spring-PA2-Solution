@@ -22,8 +22,12 @@ public class ConstantExpr extends ASTExpr {
     @Override
     public ArrayList<ASTElement> getChildren() {
         ArrayList<ASTElement> children = new ArrayList<>();
-
         return children;
+    }
+
+    @Override
+    public String toString() {
+        return this.value;
     }
 
     @Override

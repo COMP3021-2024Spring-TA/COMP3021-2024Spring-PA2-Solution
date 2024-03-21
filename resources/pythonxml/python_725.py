@@ -1,1 +1,0 @@
-np.select([array1 <= 3, array1 >= 7], [array1 * 10, array1 ** 2])
