@@ -79,11 +79,13 @@ Task 1 only focuses on querying the attributes of singleton nodes. In task 2, yo
 
 <table>
 <tr>
-<td> Code Pattern  </td> <td> Code Example </td>
+<td> Code Pattern  </td> <td> TODO Methods  </td>  <td> Code Example </td>
 </tr>
 
 <tr>
 <td> All the comparison expressions with "=="</td>
+<td> findEqualCompareInFunc </td>
+
 <td>
 
 ```python
@@ -98,6 +100,7 @@ def foo():
 
 <tr>
 <td> Functions using a boolean parameter as an if-condition </td>
+<td> findFuncWithBoolParam </td>
 <td>
 
 ```Python
@@ -116,6 +119,7 @@ def toggle_light(turn_on: bool):
 
 <tr>
 <td> Function parameters that are never read from or assigned to before it's read  </td>
+<td> findUnusedParamInFunc </td>
 <td>
 
 ```Python
@@ -133,6 +137,7 @@ def foo(param1, param2, param3):
 
 <tr>
 <td> Find all functions that are directly called by some functions other than B</td>
+<td> findDirectCalledOtherB </td>
 <td>
 
 ```python
@@ -152,6 +157,7 @@ def C():
 
 <tr>
 <td> Can method A directly or transitively call method B  </td>
+<td> answerIfACalledB </td>
 <td>
 
 ```Python
@@ -177,6 +183,7 @@ def foo():
 
 <tr>
 <td>All the superclasses of A</td>
+<td> </td>
 <td>
 
 ```python
@@ -194,6 +201,7 @@ class A(B):  # superclasses of A: B, C
 
 <tr>
 <td> Classes having a subclass  </td>
+<td>  </td>
 <td>
 
 ```Python
@@ -219,6 +227,7 @@ emp.display2()
 
 <tr>
 <td> Overriding methods of classes </td>
+<td>  </td>
 <td>
 
 ```Python
@@ -244,6 +253,7 @@ child.common_method()   # Output: Overridden method in ChildClass
 
 <tr>
 <td>All the methods of A</td>
+<td>  </td>
 <td>
 
 ```python
@@ -265,6 +275,7 @@ class A(B):  # methods: foo(), bar(), baz()
 
 <tr>
 <td>All the classes with main function</td>
+<td>  </td>
 <td>
 
 ```python
@@ -291,6 +302,39 @@ class C: # No
 
 @Bowen, we need an example here.
 
+
+
+### What YOU need to do
+
+We have marked the methods you need to implement using `TODO` in the skeleton. Specifically, please
+
+- Learn three functional interfaces, design, and implement them in `ASTElement`.
+- Fully implement the lambda expressions in `QueryOnNode`.
+- Fully implement the lambda expressions in `QueryOnMethod`.
+- Fully implement the methods in the class `QueryOnClass`.
+- @bowen, update info for bonus taks
+
+
+You need to follow the comments on the methods to be implemented in the provided skeleton. We have provided detailed descriptions and even several hints for these methods. To convenience the testing and debugging, you can just run the `main` method of `ASTManager` to interact with the system.
+
+We use the JUnit test to verify the functionalities of all methods you implement. Please do not modify the type signatures of these functions.
+
+### How to TEST
+
+Public test cases are released in `src/test/java/hk.ust.comp3021/query` and `src/test/java/hk.ust.comp3021/misc`. Please try to test your code with `./gradlew test` before submission to ensure your implementation can pass all public test cases.
+
+We use JUnit test to validate the correctness of individual methods that you need to implement. The mapping between public test cases and methods to be tested is shown below.
+
+| Test Case      | Target Method |
+| ----------- | ----------- |
+| `ASTElementTest`        | Three functional interfaces    |
+| `QueryOnNodeTest`        | Methods in `QueryOnNode`     |
+| `QueryOnMethodTest`   | Methods in `QueryOnMethod`  |
+| `QueryOnClassTest` | Methods in `QueryOnClass` |
+| `testBonusPrintByPos` | `module.printByPos` (For Bonus Task Only) |
+@bowen, update the information for bonus task
+
+You can fix the problem of your implementation based on the failed test cases.
 
 
 ### Submission Policy
@@ -325,7 +369,7 @@ We trust that you are familiar with the Honor Code of HKUST. If not, refer to [t
 
 ### Contact US
 
-If you have any questions on the PA1, please email TA Wei Chen via wei.chen@connect.ust.hk
+If you have any questions on the PA2, please email TA Wei Chen via wei.chen@connect.ust.hk
 
 ---
 
