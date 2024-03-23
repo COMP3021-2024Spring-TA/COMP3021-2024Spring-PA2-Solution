@@ -82,7 +82,8 @@ public abstract class ASTElement {
         }
 
         for (ASTElement child : this.getChildren()) {
-            filteredNodes.addAll(child.filter(predicate));
+            if(child != null)
+                filteredNodes.addAll(child.filter(predicate));
         }
         return filteredNodes;
     }
@@ -102,7 +103,8 @@ public abstract class ASTElement {
         action.accept(this);
 
         for (ASTElement child : this.getChildren()) {
-            child.forEach(action);
+            if(child != null)
+                child.forEach(action);
         }
     }
 
@@ -140,7 +142,8 @@ public abstract class ASTElement {
         collector.accumulator().accept(container, this);
 
         for (ASTElement child : this.getChildren()) {
-            child.groupingByRecursive(classifier, collector, results);
+            if(child != null)
+                child.groupingByRecursive(classifier, collector, results);
         }
     }
 

@@ -1,5 +1,4 @@
 package hk.ust.comp3021;
-
 import hk.ust.comp3021.query.*;
 import hk.ust.comp3021.utils.*;
 
@@ -37,6 +36,12 @@ public class ASTManagerEngine {
             System.out.println("  7: Given func name, find all unused parameters");
             System.out.println("  8: Given name of func B, find all functions being directly called by functions other than B");
             System.out.println("  9: Can func A directly or transitively call by method B");
+            System.out.println("  10: Given name of class A, find all the super classes of it.");
+            System.out.println("  11: Given the names of two classes, A and B, check whether A has super class B.");
+            System.out.println("  12: Find all the overriding methods in all classes.");
+            System.out.println("  13: Given the name of a class, find all the methods that it possesses.");
+            System.out.println("  14: Find all the classes that possesses main function.");
+            
 
             // PA2 tasks code patterns for class  10-14
 
@@ -94,23 +99,23 @@ public class ASTManagerEngine {
                         break;
                     }
                     case 10: {
-
+                        userInterfaceFindSuperClasses();
                         break;
                     }
                     case 11: {
-
+                        userInterfaceHaveSuperClass();
                         break;
                     }
                     case 12: {
-
+                        userInterfaceFindOverridingMethods();
                         break;
                     }
                     case 13: {
-
+                        userInterfaceFindAllMethods();
                         break;
                     }
                     case 14: {
-
+                        userInterfaceFindClassesWithMain();
                         break;
                     }
                     case 15: {
@@ -322,6 +327,74 @@ public class ASTManagerEngine {
                 System.out.println("Answer is " + queryOnMethod.answerIfACalledB.test(funcNameA, funcNameB));
             }
         }
+    }
+
+    /*
+     * Task 10: Given name of class A, find all the super classes of it.
+     */
+    public void userInterfaceFindSuperClasses() {
+        String queryID = this.parseQueryASTID();
+        QueryOnClass queryOnClass = new QueryOnClass(id2ASTModules.get(queryID));
+        System.out.println("Please indicate the name of the class");
+        Scanner scan2 = new Scanner(System.in);
+        if (scan2.hasNextLine()) {
+            String className = scan2.nextLine();
+            System.out.println("Answer is " + queryOnClass.findSuperClasses.apply(className));
+        }
+    }
+
+    /*
+     * Task 11: Given the names of two classes, A and B, check whether A has super class B.
+     */
+    public void userInterfaceHaveSuperClass() {
+        String queryID = this.parseQueryASTID();
+        QueryOnClass queryOnClass = new QueryOnClass(id2ASTModules.get(queryID));
+        System.out.println("Please indicate the two classes");
+        Scanner scan2 = new Scanner(System.in);
+        if (scan2.hasNextLine()) {
+            String classA = scan2.nextLine();
+            if(scan2.hasNextLine()) {
+                String classB = scan2.nextLine();
+                System.out.println("Answer is " + queryOnClass.haveSuperClass.apply(classA, classB));
+            }
+            
+        }
+    }
+
+
+    /*
+     * Task 12: Find all the overriding methods in all classes.
+     */
+    public void userInterfaceFindOverridingMethods() {
+        String queryID = this.parseQueryASTID();
+        QueryOnClass queryOnClass = new QueryOnClass(id2ASTModules.get(queryID));
+        Scanner scan2 = new Scanner(System.in);
+        System.out.println("Answer is " + queryOnClass.findOverridingMethods.get());
+    }
+
+    /*
+     * Task 13: Given the name of a class, find all the methods that it possesses.
+     */
+    public void userInterfaceFindAllMethods() {
+        String queryID = this.parseQueryASTID();
+        QueryOnClass queryOnClass = new QueryOnClass(id2ASTModules.get(queryID));
+        System.out.println("Please indicate the the class");
+        Scanner scan2 = new Scanner(System.in);
+        if (scan2.hasNextLine()) {
+            String className = scan2.nextLine();
+            System.out.println("Answer is " + queryOnClass.findAllMethods.apply(className));
+        }
+    }
+
+     /*
+     * Task 14: Find all the classes that possesses main function.
+     */
+    public void userInterfaceFindClassesWithMain() {
+        String queryID = this.parseQueryASTID();
+        QueryOnClass queryOnClass = new QueryOnClass(id2ASTModules.get(queryID));
+        Scanner scan2 = new Scanner(System.in);
+        System.out.println("Answer is " + queryOnClass.findClassesWithMain.get());
+        
     }
 
 
