@@ -40,20 +40,28 @@ public class ASTManagerEngine {
             System.out.println("----------------------------------------------------------------------");
             System.out.println("Please select the following operations with the corresponding numbers:");
             System.out.println("  0: Given AST ID, parse AST from XML files");
+            // PA1 tasks, need to be rewritten with lambda expression
             System.out.println("  1: Print all functions with # arguments greater than user specified N");
             System.out.println("  2: Find the most commonly used operators in all ASTs");
             System.out.println("  3: Print all functions names and the functions invoked by each function");
             System.out.println("  4: Given AST ID, count the number of all node types");
             System.out.println("  5: Sort all functions based on # children nodes");
             System.out.println("  6: Given AST ID, recover Python Code (Bonus Task)");
+            // PA2 tasks code patterns for methods
             System.out.println("  7: Given func name, find all comparison expressions with \"==\"");
             System.out.println("  8: Find all functions using boolean parameter as an if-condition");
-            System.out.println("  9: Exit");
+            System.out.println("  9: Given func name, find all unused parameters");
+            System.out.println("  10: Given name of func B, find all functions being directly called by functions other than B");
+            System.out.println("  11: Can func A directly or transitively call by method B or C");
+
+            // PA2 tasks code patterns for class 12-16
+            
+            System.out.println("  17: Exit");
             System.out.println("----------------------------------------------------------------------");
             Scanner scan1 = new Scanner(System.in);
             if (scan1.hasNextInt()) {
                 int i = scan1.nextInt();
-                if (i < 0 || i > 9) {
+                if (i < 0 || i > 18) {
                     System.out.println("You should enter 0~7.");
                     continue;
                 }
@@ -95,11 +103,14 @@ public class ASTManagerEngine {
                         queryOnMethod.findFuncWithBoolParam.get();
                         break;
                     }
+                    case 9: {
+                        queryOnMethod.findUnusedParamInFunc.apply("3_foo_1");
+                    }
                     default: {
 
                     }
                 }
-                if (i == 9) {
+                if (i == 17) {
                     break;
                 }
             } else {

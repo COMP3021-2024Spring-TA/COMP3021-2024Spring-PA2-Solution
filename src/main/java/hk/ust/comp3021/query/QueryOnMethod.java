@@ -1,17 +1,13 @@
 package hk.ust.comp3021.query;
 
-import hk.ust.comp3021.expr.BoolOpExpr;
-import hk.ust.comp3021.expr.CompareExpr;
-import hk.ust.comp3021.expr.NameExpr;
-import hk.ust.comp3021.misc.ASTArguments;
-import hk.ust.comp3021.misc.ASTElement;
-import hk.ust.comp3021.stmt.FunctionDefStmt;
-import hk.ust.comp3021.utils.ASTModule;
+import hk.ust.comp3021.expr.*;
+import hk.ust.comp3021.misc.*;
+import hk.ust.comp3021.stmt.*;
+import hk.ust.comp3021.utils.*;
 
-import javax.naming.Name;
 import java.util.*;
 import java.util.function.*;
-import java.util.stream.Collectors;
+import java.util.stream.*;
 
 public class QueryOnMethod {
 
@@ -24,7 +20,8 @@ public class QueryOnMethod {
     public Function<String, List<String>> findEqualCompareInFunc = funcName -> {
         List<ASTElement> nameMatchedFunc = new ArrayList<>();
         id2ASTModules.values().forEach(module -> {
-            nameMatchedFunc.addAll(module.filter(node -> node instanceof FunctionDefStmt)
+            nameMatchedFunc.addAll(module
+                    .filter(node -> node instanceof FunctionDefStmt)
                     .stream()
                     .filter(func -> funcName.equals(
                             module.getASTID() + "_" + ((FunctionDefStmt) func).getName() + "_" + func.getLineNo()))
@@ -70,7 +67,70 @@ public class QueryOnMethod {
     
     public Function<String, List<String>> findUnusedParamInFunc = funcName -> {
         List<String> results = new ArrayList<>();
+        List<ASTElement> nameMatchedFunc = new ArrayList<>();
         
+        // find all functions whose name matches funcName
+        id2ASTModules.values().forEach(module -> {
+            nameMatchedFunc.addAll(module
+                    .filter(node -> node instanceof FunctionDefStmt)
+                    .stream()
+                    .filter(func -> funcName.equals(
+                            module.getASTID() + "_" + ((FunctionDefStmt) func).getName() + "_" + func.getLineNo()))
+                    .collect(Collectors.toList()));
+        });
+        
+        Map<ASTElement, Map<String, ASTElement>> func2Arg2FirstReadLoc = new HashMap<>();
+        nameMatchedFunc.forEach(
+                func -> {
+                    Map<String, List<ASTElement>> readVariables =
+                            func.filter(node -> node instanceof ASTArguments.ASTArg)
+                                    .stream()
+                                    .map(arg -> ((ASTArguments.ASTArg) arg).getArg())
+                                    .collect(Collectors.toMap(
+                                                    argName -> argName,
+                                                    argName -> func
+                                                            .filter(readVar -> readVar instanceof NameExpr
+                                                                && ((NameExpr) readVar).getId().equals(argName)
+                                                                && ((NameExpr) readVar).getCtx().getOp() == ASTEnumOp.ASTOperator.Ctx_Load)
+                                                            .stream()
+                                                            .collect(Collectors.toList())
+                                            )
+                                    );
+                    Map<String, ASTElement> arg2FirstReadLoc = new HashMap<>();
+                    readVariables.forEach((argName, readLocs) -> {
+                        if (readLocs.isEmpty()) {
+                            results.add(argName);
+                        } else {
+                            ASTElement firstRead = readLocs.stream()
+                                    .min((loc1, loc2) -> {
+                                        int lineComparison = Integer.compare(loc1.getLineNo(), loc2.getLineNo());
+                                        if (lineComparison == 0) {
+                                            return Integer.compare(loc1.getColOffset(), loc2.getColOffset());
+                                        }
+                                        return lineComparison;
+                                    })
+                                    .orElse(null);
+                            if (firstRead != null) {
+                                arg2FirstReadLoc.put(argName, firstRead);
+                            }
+                        }
+                    });
+                    func2Arg2FirstReadLoc.put(func, arg2FirstReadLoc);
+                });
+
+
+        func2Arg2FirstReadLoc.forEach((func, readLocs) -> {
+            readLocs.entrySet().stream().filter(entry ->
+                    // there is write before first read
+                    func.filter(writeVar -> writeVar instanceof NameExpr)
+                            .stream()
+                            .map(writeVar -> (NameExpr) writeVar)
+                            .anyMatch(writeVar -> writeVar.getCtx().getOp() == ASTEnumOp.ASTOperator.Ctx_Store
+                                    && writeVar.getId().equals(((NameExpr) entry.getValue()).getId())
+                                    && writeVar.getLineNo() < entry.getValue().getLineNo()
+                                    && writeVar.getColOffset() < entry.getValue().getColOffset())
+            ).forEach(entry -> results.add(entry.getKey()));
+        });
         return results;
     };
     
