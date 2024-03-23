@@ -317,9 +317,9 @@ class C: # No
 We have marked the methods you need to implement using `TODO` in the skeleton. Specifically, please
 
 - Learn three collectors, design, and implement them in `ASTElement`.
-- Fully implement the lambda expressions in `QueryOnNode`.
-- Fully implement the lambda expressions in `QueryOnMethod`.
-- Fully implement the methods in the class `QueryOnClass`.
+- Fully implement the lambda expressions in the class `QueryOnNode`.
+- Fully implement the lambda expressions in the class `QueryOnMethod`.
+- Fully implement the lambda expressions in the class `QueryOnClass`.
 - @bowen, update info for bonus task
 
 
