@@ -96,7 +96,7 @@ public class ASTManagerEngine {
                         break;
                     }
                     case 7: {
-                        queryOnMethod.findEqualCompareInFunc.apply("1_foo_1");
+                        queryOnMethod.findEqualCompareInFunc.apply("1_foo");
                         break;
                     }
                     case 8: {
@@ -104,7 +104,16 @@ public class ASTManagerEngine {
                         break;
                     }
                     case 9: {
-                        queryOnMethod.findUnusedParamInFunc.apply("3_foo_1");
+                        queryOnMethod.findUnusedParamInFunc.apply("3_foo");
+                        break;
+                    }
+                    case 10: {
+                       System.out.println(queryOnMethod.findDirectCalledOtherB.apply("4_B"));
+                       break;
+                    }
+                    case 11: {
+                       System.out.println(queryOnMethod.answerIfACalledB.test("5_foo", "5_baz"));
+                       break;
                     }
                     default: {
 

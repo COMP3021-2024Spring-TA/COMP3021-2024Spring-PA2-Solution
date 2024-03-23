@@ -17,26 +17,27 @@ public class QueryOnMethod {
         this.id2ASTModules = id2ASTModules;
     }
     
-    public Function<String, List<String>> findEqualCompareInFunc = funcName -> {
-        List<ASTElement> nameMatchedFunc = new ArrayList<>();
-        id2ASTModules.values().forEach(module -> {
-            nameMatchedFunc.addAll(module
-                    .filter(node -> node instanceof FunctionDefStmt)
+    public BiFunction<String, ASTModule, Optional<ASTElement>> findFuncInModule = (name, curModule) ->
+            curModule.filter(node -> node instanceof FunctionDefStmt)
                     .stream()
-                    .filter(func -> funcName.equals(
-                            module.getASTID() + "_" + ((FunctionDefStmt) func).getName() + "_" + func.getLineNo()))
-                    .collect(Collectors.toList()));
-        });
-
+                    .filter(func -> name.equals(curModule.getASTID() + "_" + ((FunctionDefStmt) func).getName()))
+                    .findFirst();
+    
+    public Function<String, List<String>> findEqualCompareInFunc = funcName -> {
         List<String> results = new ArrayList<>();
-        nameMatchedFunc.forEach(func -> {
+
+        String moduleId = Arrays.stream(funcName.split("_")).findFirst().get();
+        ASTModule curModule = id2ASTModules.get(moduleId);
+        
+        if (findFuncInModule.apply(funcName, curModule).isPresent()) {
+            ASTElement func = findFuncInModule.apply(funcName, curModule).get();
             results.addAll(func.filter(node -> node instanceof CompareExpr)
                     .stream()
                     .map(expr -> (CompareExpr) expr)
                     .filter(expr -> expr.getOps().stream().anyMatch(op -> op.getOperatorName().equals("Eq")))
-                    .map(Object::toString) 
+                    .map(Object::toString)
                     .toList());
-        });
+        }
         return results;
     };
     
@@ -67,82 +68,137 @@ public class QueryOnMethod {
     
     public Function<String, List<String>> findUnusedParamInFunc = funcName -> {
         List<String> results = new ArrayList<>();
-        List<ASTElement> nameMatchedFunc = new ArrayList<>();
         
         // find all functions whose name matches funcName
-        id2ASTModules.values().forEach(module -> {
-            nameMatchedFunc.addAll(module
-                    .filter(node -> node instanceof FunctionDefStmt)
+        String moduleId = Arrays.stream(funcName.split("_")).findFirst().get();
+        ASTModule curModule = id2ASTModules.get(moduleId);
+
+        if (findFuncInModule.apply(funcName, curModule).isPresent()) {
+            ASTElement func = findFuncInModule.apply(funcName, curModule).get();
+            Map<String, ASTElement> arg2FirstReadLoc = new HashMap<>();
+
+            Map<String, List<ASTElement>> readVariables = func.filter(node -> node instanceof ASTArguments.ASTArg)
                     .stream()
-                    .filter(func -> funcName.equals(
-                            module.getASTID() + "_" + ((FunctionDefStmt) func).getName() + "_" + func.getLineNo()))
-                    .collect(Collectors.toList()));
-        });
-        
-        Map<ASTElement, Map<String, ASTElement>> func2Arg2FirstReadLoc = new HashMap<>();
-        nameMatchedFunc.forEach(
-                func -> {
-                    Map<String, List<ASTElement>> readVariables =
-                            func.filter(node -> node instanceof ASTArguments.ASTArg)
-                                    .stream()
-                                    .map(arg -> ((ASTArguments.ASTArg) arg).getArg())
-                                    .collect(Collectors.toMap(
-                                                    argName -> argName,
-                                                    argName -> func
-                                                            .filter(readVar -> readVar instanceof NameExpr
-                                                                && ((NameExpr) readVar).getId().equals(argName)
-                                                                && ((NameExpr) readVar).getCtx().getOp() == ASTEnumOp.ASTOperator.Ctx_Load)
-                                                            .stream()
-                                                            .collect(Collectors.toList())
-                                            )
-                                    );
-                    Map<String, ASTElement> arg2FirstReadLoc = new HashMap<>();
-                    readVariables.forEach((argName, readLocs) -> {
-                        if (readLocs.isEmpty()) {
-                            results.add(argName);
-                        } else {
-                            ASTElement firstRead = readLocs.stream()
-                                    .min((loc1, loc2) -> {
-                                        int lineComparison = Integer.compare(loc1.getLineNo(), loc2.getLineNo());
-                                        if (lineComparison == 0) {
-                                            return Integer.compare(loc1.getColOffset(), loc2.getColOffset());
-                                        }
-                                        return lineComparison;
-                                    })
-                                    .orElse(null);
-                            if (firstRead != null) {
-                                arg2FirstReadLoc.put(argName, firstRead);
-                            }
-                        }
-                    });
-                    func2Arg2FirstReadLoc.put(func, arg2FirstReadLoc);
-                });
-
-
-        func2Arg2FirstReadLoc.forEach((func, readLocs) -> {
-            readLocs.entrySet().stream().filter(entry ->
-                    // there is write before first read
-                    func.filter(writeVar -> writeVar instanceof NameExpr)
+                    .map(arg -> ((ASTArguments.ASTArg) arg).getArg())
+                    .collect(Collectors.toMap(argName -> argName, 
+                            argName -> new ArrayList<>(func.filter(readVar -> readVar instanceof NameExpr
+                                                    && ((NameExpr) readVar).getId().equals(argName)
+                                                    && ((NameExpr) readVar).getCtx().getOp() == ASTEnumOp.ASTOperator.Ctx_Load))
+                            )
+                    );
+            readVariables.forEach((argName, readLocs) -> {
+                if (readLocs.isEmpty()) {
+                    results.add(argName);
+                } else {
+                    ASTElement firstRead = readLocs.stream()
+                            .min((loc1, loc2) -> {
+                                int lineComparison = Integer.compare(loc1.getLineNo(), loc2.getLineNo());
+                                if (lineComparison == 0) {
+                                    return Integer.compare(loc1.getColOffset(), loc2.getColOffset());
+                                }
+                                return lineComparison;
+                            })
+                            .orElse(null);
+                    if (firstRead != null) {
+                        arg2FirstReadLoc.put(argName, firstRead);
+                    }
+                }
+            });
+            
+            arg2FirstReadLoc.entrySet()
+                    .stream()
+                    .filter(entry -> func.filter(writeVar -> writeVar instanceof NameExpr)  // there is write before first read
                             .stream()
                             .map(writeVar -> (NameExpr) writeVar)
                             .anyMatch(writeVar -> writeVar.getCtx().getOp() == ASTEnumOp.ASTOperator.Ctx_Store
                                     && writeVar.getId().equals(((NameExpr) entry.getValue()).getId())
                                     && writeVar.getLineNo() < entry.getValue().getLineNo()
                                     && writeVar.getColOffset() < entry.getValue().getColOffset())
-            ).forEach(entry -> results.add(entry.getKey()));
-        });
+                    )
+                    .forEach(entry -> results.add(entry.getKey()));
+        }
+        
         return results;
     };
     
+    public Function<ASTElement, Optional<String>> getCallExprName = callexpr ->
+            callexpr.filter(node -> node instanceof NameExpr)
+                    .stream()
+                    .map(node -> (NameExpr) node)
+                    .map(node -> node.getId()).findFirst();
+    
+    public Function<ASTElement, List<ASTElement>> findAllCalledFuncs = func -> 
+            func.filter(expr -> expr instanceof CallExpr).stream().collect(Collectors.toList());
     
     public Function<String, List<String>> findDirectCalledOtherB = funcName -> {
         List<String> results = new ArrayList<>();
-        
+
+        String moduleId = Arrays.stream(funcName.split("_")).findFirst().get();
+        ASTModule curModule = id2ASTModules.get(moduleId);
+        Map<FunctionDefStmt, List<ASTElement>> func2CalledFuncs =
+                curModule.filter(func -> func instanceof FunctionDefStmt)
+                        .stream()
+                        .map(func -> (FunctionDefStmt) func)
+                        .collect(Collectors.toMap(func -> func,
+                                func -> findAllCalledFuncs.apply(func)));
+        Map<String, List<String>> callee2AllCallers = new HashMap<>();
+        func2CalledFuncs.entrySet()
+                .stream()
+                .forEach(entry -> entry.getValue().forEach(callee -> {
+                    if (getCallExprName.apply(callee).isPresent()) {
+                        
+                        String calleeName = moduleId + "_" + getCallExprName.apply(callee).get();
+                        if (findFuncInModule.apply(calleeName, curModule).isPresent()) {
+                            if (!callee2AllCallers.containsKey(calleeName)) {
+                                callee2AllCallers.put(calleeName, new ArrayList<>());
+                            }
+                            callee2AllCallers.get(calleeName).add(moduleId + "_" + entry.getKey().getName());
+                        }
+                    }
+                }));
+        results.addAll(callee2AllCallers
+                .entrySet()
+                .stream()
+                .filter(entry -> !entry.getValue()
+                        .stream()
+                        .filter(callerName -> !callerName.equals(funcName))
+                        .collect(Collectors.toList()).isEmpty())
+                .map(Map.Entry::getKey).collect(Collectors.toList()));
         return results;
     };
     
+    
     public BiPredicate<String, String> answerIfACalledB = (funcNameA, funcNameB) -> {
+        String moduleIdA = Arrays.stream(funcNameA.split("_")).findFirst().get();
+        String moduleIdB = Arrays.stream(funcNameB.split("_")).findFirst().get();
+        if (!moduleIdA.equals(moduleIdB)) {
+            return false;
+        }
+        ASTModule curModule = id2ASTModules.get(moduleIdA);
         
+        List<String> tobeProcessed = new ArrayList<>();
+        tobeProcessed.add(funcNameA);
+
+        while (!tobeProcessed.isEmpty()) {
+            String curFuncName = tobeProcessed.get(0);
+            tobeProcessed.remove(0);
+
+            if (curFuncName.equals(funcNameB)) {
+                return true;
+            }
+            if (!findFuncInModule.apply(curFuncName, curModule).isPresent()) {
+                continue;
+            }
+
+            ASTElement curFuncNode = findFuncInModule.apply(curFuncName, curModule).get();
+            for (ASTElement called : findAllCalledFuncs.apply(curFuncNode)) {
+                if (!getCallExprName.apply(called).isPresent()) {
+                    continue;
+                }
+                String calledFuncName = getCallExprName.apply(called).get();
+                tobeProcessed.add(moduleIdA + "_" + calledFuncName);
+            }
+        }
         return false;
     };
     

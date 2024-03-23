@@ -138,7 +138,7 @@ def foo(param1, param2, param3):
 
 
 <tr>
-<td> Function A has been directly called by some function other than B </td>
+<td> Find all functions that are directly called by some functions other than B</td>
 <td>
 
 ```python
@@ -150,14 +150,14 @@ def B():
     A()
 
 def C():
-    A() # A being called by C, not B
+    A() # A being called both B and C
 ```
 
 </td>
 </tr>
 
 <tr>
-<td> Can method A directly or transitively call method B or C  </td>
+<td> Can method A directly or transitively call method B  </td>
 <td>
 
 ```Python
@@ -175,9 +175,6 @@ def intermediary():
 def foo():
     print("foo invoked")
     intermediary()
-
-# Call foo, which will transitively invoke bar and baz
-foo()
 ```
 
 </td>
