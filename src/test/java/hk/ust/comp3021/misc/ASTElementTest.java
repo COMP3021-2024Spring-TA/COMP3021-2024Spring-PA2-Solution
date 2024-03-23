@@ -1,7 +1,6 @@
 package hk.ust.comp3021.misc;
 
 import hk.ust.comp3021.ASTManagerEngine;
-import hk.ust.comp3021.query.QueryOnMethod;
 import hk.ust.comp3021.utils.TestKind;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;

@@ -74,19 +74,7 @@ public abstract class ASTElement {
      * 
      * Hints: traverse the tree and put those satisfy predicates into array list
      */
-    public ArrayList<ASTElement> filter(Predicate<ASTElement> predicate) {
-        ArrayList<ASTElement> filteredNodes = new ArrayList<>();
-
-        if (predicate.test(this)) {
-            filteredNodes.add(this);
-        }
-
-        for (ASTElement child : this.getChildren()) {
-            if(child != null)
-                filteredNodes.addAll(child.filter(predicate));
-        }
-        return filteredNodes;
-    }
+  
 
     /**
      * TODO `forEach` mimic {@link Iterable#forEach(Consumer)} but operates on AST tree structure instead of List 
@@ -99,14 +87,6 @@ public abstract class ASTElement {
      * Hints: traverse the tree and perform the action on every node in the tree
      */
     
-    public void forEach(Consumer<ASTElement> action) {
-        action.accept(this);
-
-        for (ASTElement child : this.getChildren()) {
-            if(child != null)
-                child.forEach(action);
-        }
-    }
 
     /**
      * TODO `groupingBy` mimic {@link java.util.stream.Collectors#groupingBy(Function, Collector)} )} but operates on AST tree structure instead of List 
@@ -120,31 +100,5 @@ public abstract class ASTElement {
      * Hints: please refer to the usage of {@link java.util.stream.Collectors#groupingBy(Function, Collector)}} to learn more about this method
      */
 
-    public <K, D, A> Map<K, D> groupingBy(Function<ASTElement, K> classifier,
-                                          Collector<ASTElement, A, D> collector) {
-
-        Map<K, A> hashMap = new HashMap<>();
-        groupingByRecursive(classifier, collector, hashMap);
-        Map<K, D> results = new HashMap<>();
-        for (Map.Entry<K, A> entry : hashMap.entrySet()) {
-            results.put(entry.getKey(), collector.finisher().apply(entry.getValue()));
-        }
-        return results;
-    }
-
-    public <K, A> void groupingByRecursive(Function<ASTElement, K> classifier,
-                                           Collector<ASTElement, A, ?> collector,
-                                           Map<K, A> results) {
-
-
-        K key = classifier.apply(this);
-        A container = results.computeIfAbsent(key, k -> collector.supplier().get());
-        collector.accumulator().accept(container, this);
-
-        for (ASTElement child : this.getChildren()) {
-            if(child != null)
-                child.groupingByRecursive(classifier, collector, results);
-        }
-    }
 
 }

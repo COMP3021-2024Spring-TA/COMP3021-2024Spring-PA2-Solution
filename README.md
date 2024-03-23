@@ -12,9 +12,7 @@ PA2 aims to practice the lambda expression and generics. **ASTManager** should b
 - Task 2: Support code searching of ten patterns with lambda expressions. (70%)
 - Bonus Task: Support simple bug detection with lambda expressions. (10%)
 
-Similar to PA1, each test case is an XML file that represents a Python AST.
-
-Before task specification, we first explain the grading policy as follows for your reference so that you will get it.
+Similar to PA1, each test case is an XML file that represents a Python AST. The XML files used to test rewrite logics of PA1 are resided in `resources/pythonxmlPA1` while those for ten code patterns and bonus tasks are located in `resources/pythonxml`. Before task specification, we first explain the grading policy as follows for your reference so that you will get it.
 
 | Item                                                      | Ratio | Notes                                                        |
 | --------------------------------------------------------- | ----- | ------------------------------------------------------------ |
@@ -24,66 +22,78 @@ Before task specification, we first explain the grading policy as follows for yo
 | Public test cases (Task 1 + Task 2 + Task 3 + Bonus Task) | 30%   | (# of passing tests / # of provided tests) * 30%             |
 | Hidden test cases (Task 1 + Task 2 + Task 3 + Bonus Task) | 50%   | (# of passing tests / # of provided tests) * 50%             |
 
-### What YOU need to do
+### Task Description
 
-We have marked the methods you need to implement using `TODO` in the skeleton. The specifications of each task are shown below.
+The specifications of each task are shown below.
 
 
 #### Task 1: Rewrite tasks in PA1 with lambda expression (30%)
 
 First, we need to understand the mechanism of common collectors and the functional interface. You are requested to implement the following functional interface fully in the class `ASTElement`.
 
-1. Implementing the following method to mimic the behavior of `Stream.filter` on AST.
-   ```Java
-   /**
-    * @param: predicate representing a boolean-valued function that takes ASTElement as input parameter and returns a bool result
-    * @return: an ArrayList of ASTElement where predicate returns true
-    */
-   public ArrayList<ASTElement> filter(Predicate<ASTElement> predicate);
-   ```
-2. Implementing the following method to mimic the behavior of `Collectors.groupingBy` on AST.
-   ```Java
-   /**
-    * @param: classifier representing a function that classifies an ASTElement argument and produces an object of generic type K
-    *         collector representing a collector used to accumulate the ASTElement object into result D, and A is an intermediate accumulation type
-    * @return: a Map where keys are of type K and values are of type D
-    */
-   public <K, D, A> Map<K, D> groupingBy(Function<ASTElement, K> classifier,
-                                        Collector<ASTElement, A, D> collector);
-   ```
-3. Implementing the following method to mimic `Iterable.forEach` on AST.
+1. Implementing a method in `ASTElement` named `filter` to mimic the behavior of `Stream.filter` on AST.
    ```Java
     /**
-    * @param: consumer representing an operation that accepts ASTElement as input and performs some action on it without returning any result.
-    */
-   public void forEach(Consumer<ASTElement> action);
+     * TODO `filter` mimic {@link java.util.stream.Stream#filter(Predicate)} but operates on AST tree structure instead of List 
+     * TODO please design the function by yourself to pass complication and the provided test cases
+     *
+     * @param predicate representing a boolean-valued function that takes ASTElement as input parameter and returns a bool result
+     * @return an ArrayList of ASTElement where predicate returns true
+     * 
+     * Hints: traverse the tree and put those satisfy predicates into array list
+     */
+   ```
+2. Implementing a method in `ASTElement` named `groupingBy` to mimic the behavior of `Collectors.groupingBy` on AST.
+   ```Java
+    /**
+     * TODO `groupingBy` mimic {@link java.util.stream.Collectors#groupingBy(Function, Collector)} )} but operates on AST tree structure instead of List 
+     * TODO please design the function by yourself to pass complication and the provided test cases
+     *
+     * @param classifier representing a function that classifies an ASTElement argument and produces the classification result with generic type
+     * @param collector representing a collector used to accumulate the ASTElement object into results
+     * @return a map whose key and value are all generic types
+     * 
+     * Hints: traverse the tree and group them if they belong to the same categories
+     * Hints: please refer to the usage of {@link java.util.stream.Collectors#groupingBy(Function, Collector)}} to learn more about this method
+     */
+   ```
+3. Implementing a method in `ASTElement` named `forEach` to mimic `Iterable.forEach` on AST.
+   ```Java
+    /**
+     * TODO `forEach` mimic {@link Iterable#forEach(Consumer)} but operates on AST tree structure instead of List 
+     * TODO please design the function by yourself to pass complication and the provided test cases
+     *
+     * @param action representing an operation that accepts ASTElement as input and performs some action 
+     *               on it without returning any result.
+     * @return null
+     * 
+     * Hints: traverse the tree and perform the action on every node in the tree
+     */
    ```
 
-All of the above functions can take lambda repression as parameters. These functions will be used as helper functions in the following tasks. Then, you should utilize them to implement the following functional interfaces with lambda expressions, following the original logic of those in PA1.
+All of the above functions can take lambda repression as parameters. These functions will be used as helper functions in the following tasks. Then, you should utilize them to implement the following functions with lambda expressions in `QueryOnNode`, following the original logic of those in PA1.
 
 1. `public Consumer<Integer> findFuncWithArgGtN`
 2. `public Supplier<HashMap<String, Integer>> calculateOp2Nums`
 3. `public Function<String, Map<String, Long>> calculateNode2Nums`
-4. `public Supplier<HashMap<String, Integer>> processNodeFreq`
+4. `public Supplier<List<Map.Entry<String, Integer>>> processNodeFreq`
 
-Moreover, you should finish the following methods within `ASTManagerEngine` by achieving the requried functionalities using the above functional interfaces.
-1. `userInterfaceCommonOp`
-2. `userInterfaceCountNum`
-3. `userInterfaceSortByChild`
 
 #### Task 2: Support code search of five patterns with lambda expressions (70%)
 
 <!--@bowen, you can add more tasks on top-->
 
-Task 1 only focuses on querying the attributes of singleton nodes. In task 2, you are required to support the code searching for the following patterns, which consider the correlation between multiple nodes. We have given the sample code that conforms to the patterns to ease your understanding. You should utilize the functions mentioned earlier, e.g., `filter` and `groupingBy`, as much as possible. 
+Task 1 only focuses on querying the attributes of singleton nodes. In task 2, you are required to support the code searching for the following patterns, which consider the correlation between multiple nodes. We have given the sample code that conforms to the patterns to ease your understanding. You should utilize the functions mentioned earlier, e.g., `filter`, as much as possible. 
 
 <table>
 <tr>
-<td> Code Pattern  </td> <td> Code Example </td>
+<td> Code Pattern  </td> <td> TODO Methods  </td>  <td> Code Example </td>
 </tr>
 
 <tr>
 <td> All the comparison expressions with "=="</td>
+<td> QueryOnMethod.<br>findEqualCompareInFunc </td>
+
 <td>
 
 ```python
@@ -98,6 +108,7 @@ def foo():
 
 <tr>
 <td> Functions using a boolean parameter as an if-condition </td>
+<td> QueryOnMethod.<br>findFuncWithBoolParam </td>
 <td>
 
 ```Python
@@ -116,6 +127,7 @@ def toggle_light(turn_on: bool):
 
 <tr>
 <td> Function parameters that are never read from or assigned to before it's read  </td>
+<td> QueryOnMethod.<br>findUnusedParamInFunc </td>
 <td>
 
 ```Python
@@ -133,6 +145,7 @@ def foo(param1, param2, param3):
 
 <tr>
 <td> Find all functions that are directly called by some functions other than B</td>
+<td> QueryOnMethod.<br>findDirectCalledOtherB </td>
 <td>
 
 ```python
@@ -152,6 +165,7 @@ def C():
 
 <tr>
 <td> Can method A directly or transitively call method B  </td>
+<td> QueryOnMethod.<br>answerIfACalledB </td>
 <td>
 
 ```Python
@@ -177,6 +191,7 @@ def foo():
 
 <tr>
 <td>All the superclasses of A</td>
+<td> </td>
 <td>
 
 ```python
@@ -194,6 +209,7 @@ class A(B):  # superclasses of A: B, C
 
 <tr>
 <td> Classes having a subclass  </td>
+<td>  </td>
 <td>
 
 ```Python
@@ -219,6 +235,7 @@ emp.display2()
 
 <tr>
 <td> Overriding methods of classes </td>
+<td>  </td>
 <td>
 
 ```Python
@@ -244,6 +261,7 @@ child.common_method()   # Output: Overridden method in ChildClass
 
 <tr>
 <td>All the methods of A</td>
+<td>  </td>
 <td>
 
 ```python
@@ -264,7 +282,12 @@ class A(B):  # methods: foo(), bar(), baz()
 
 
 <tr>
+<<<<<<< HEAD
 <td>All the classes that possess a main function</td>
+=======
+<td>All the classes with main function</td>
+<td>  </td>
+>>>>>>> 3b7eda8489db051557b1d453718cfc19679ac3c9
 <td>
 
 ```python
@@ -308,6 +331,40 @@ def bar():
     # no bug: the file is closed using variable g
 ```
 
+### What YOU need to do
+
+We have marked the methods you need to implement using `TODO` in the skeleton. Specifically, please
+
+- Learn three collectors, design, and implement them in `ASTElement`.
+- Fully implement the lambda expressions in the class `QueryOnNode`.
+- Fully implement the lambda expressions in the class `QueryOnMethod`.
+- Fully implement the lambda expressions in the class `QueryOnClass`.
+- @bowen, update info for bonus task
+
+**Note**: You can add more methods or even classes into the skeleton in your solution, but **DO NOT** modify existing code.
+
+You need to follow the comments on the methods to be implemented in the provided skeleton. We have provided detailed descriptions and even several hints for these methods. To convenience the testing and debugging, you can just run the `main` method of `ASTManager` to interact with the system.
+
+We use the JUnit test to verify the functionalities of all methods you implement. Please do not modify the type signatures of these functions.
+
+### How to TEST
+
+Public test cases are released in `src/test/java/hk.ust.comp3021/query` and `src/test/java/hk.ust.comp3021/misc`. Please try to test your code with `./gradlew test` before submission to ensure your implementation can pass all public test cases.
+
+We use JUnit test to validate the correctness of individual methods that you need to implement. The mapping between public test cases and methods to be tested is shown below.
+
+| Test Case      | Target Method |
+| ----------- | ----------- |
+| `ASTElementTest`        | Three collectors for AST in `ASTElement`   |
+| `QueryOnNodeTest`        | Methods in `QueryOnNode`     |
+| `QueryOnMethodTest`   | Methods in `QueryOnMethod`  |
+| `QueryOnClassTest` | Methods in `QueryOnClass` |
+| `testBonusPrintByPos` | `module.printByPos` (For Bonus Task Only) |
+@bowen, update the information for bonus task
+
+You can fix the problem of your implementation based on the failed test cases.
+
+
 ### Submission Policy
 
 Please submit your code on Canvas before the deadline **April 13, 2024, 23:59:59.** You should submit a single text file specified as follows:
@@ -340,7 +397,7 @@ We trust that you are familiar with the Honor Code of HKUST. If not, refer to [t
 
 ### Contact US
 
-If you have any questions on the PA1, please email TA Wei Chen via wei.chen@connect.ust.hk
+If you have any questions on the PA2, please email TA Wei Chen via wei.chen@connect.ust.hk
 
 ---
 
