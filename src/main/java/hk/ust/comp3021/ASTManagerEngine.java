@@ -4,20 +4,13 @@ import hk.ust.comp3021.query.*;
 import hk.ust.comp3021.utils.*;
 
 import java.io.*;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class ASTManagerEngine {
-    private final String defaultXMLFileDir;
     private final HashMap<String, ASTModule> id2ASTModules = new HashMap<>();
     public QueryOnNode queryOnNode = new QueryOnNode(id2ASTModules);
-
-    public ASTManagerEngine() {
-        defaultXMLFileDir = "resources/pythonxml/";
-    }
-
-    public String getDefaultXMLFileDir() {
-        return defaultXMLFileDir;
-    }
+    
 
     public HashMap<String, ASTModule> getId2ASTModules() {
         return id2ASTModules;
@@ -162,8 +155,8 @@ public class ASTManagerEngine {
      * Task 0: Given AST ID, parse AST from XML files
      */
 
-    public void processXMLParsing(String xmlID) {
-        ASTParser parser = new ASTParser(xmlID);
+    public void processXMLParsing(String xmlDirPath, String xmlID) {
+        ASTParser parser = new ASTParser(Paths.get(xmlDirPath).resolve("python_" + xmlID + ".xml").toString());
         parser.parse();
         if (!parser.isErr()) {
             this.id2ASTModules.put(xmlID, parser.getASTModule());
@@ -174,26 +167,31 @@ public class ASTManagerEngine {
     }
 
     public void userInterfaceParseXML() {
-        int xmlCount = countXMLFiles(this.defaultXMLFileDir);
-        System.out.println("Please specify the XML file ID to parse (0~" + xmlCount + ") or -1 for all:");
+        System.out.println("Please provide the XML directory to load");
         Scanner scan1 = new Scanner(System.in);
         if (scan1.hasNextLine()) {
-            String xmlID = scan1.nextLine();
-            if (!xmlID.equals("-1")) {
-                processXMLParsing(xmlID);
-            } else {
-                File directory = new File(this.defaultXMLFileDir);
-                if (directory.isDirectory()) {
-                    File[] files = directory.listFiles();
-                    if (files != null) {
-                        for (File file : files) {
-                            if (file.isFile() && file.getName().toLowerCase().endsWith(".xml")) {
-                                String str = file.getName().toLowerCase();
-                                int startIndex = str.indexOf('_') + 1;
-                                int endIndex = str.indexOf(".xml");
+            String xmlFileDir = scan1.nextLine();
+            int xmlCount = countXMLFiles(xmlFileDir);
+            System.out.println("Please specify the XML file ID to parse (0~" + xmlCount + ") or -1 for all:");
+            if (scan1.hasNextLine()) {
+                String xmlID = scan1.nextLine();
+                if (!xmlID.equals("-1")) {
+                    processXMLParsing(xmlFileDir, xmlID);
+                } else {
+                    File directory = new File(xmlFileDir);
+                    if (directory.isDirectory()) {
+                        File[] files = directory.listFiles();
+                        if (files != null) {
+                            for (File file : files) {
+                                if (file.isFile() && file.getName().toLowerCase().endsWith(".xml")) {
+                                    String str = file.getName().toLowerCase();
+                                    int startIndex = str.indexOf('_') + 1;
+                                    int endIndex = str.indexOf(".xml");
 
-                                if (endIndex > startIndex) {
-                                    processXMLParsing(str.substring(startIndex, endIndex));
+                                    if (endIndex > startIndex) {
+                                        processXMLParsing(xmlFileDir,
+                                                str.substring(startIndex, endIndex));
+                                    }
                                 }
                             }
                         }

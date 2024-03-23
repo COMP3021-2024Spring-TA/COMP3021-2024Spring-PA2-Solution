@@ -22,7 +22,7 @@ public class QueryOnMethod {
     public Function<String, Optional<ASTElement>> findFuncInModule = name ->
             module.filter(node -> node instanceof FunctionDefStmt)
                     .stream()
-                    .filter(func -> name.equals(module.getASTID() + "_" + ((FunctionDefStmt) func).getName()))
+                    .filter(func -> name.equals(((FunctionDefStmt) func).getName()))
                     .findFirst();
 
 

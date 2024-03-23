@@ -62,15 +62,21 @@ public class QueryOnNode {
             }
         };
 
+        Consumer<ASTElement> compOp = node -> {
+            if (node instanceof CompareExpr) {
+                ((CompareExpr) node).getOps().forEach(op -> op2Num.merge(op.getOperatorName(), 1, Integer::sum));
+                ;
+            }
+        };
+
         Consumer<ASTElement> augAssignOp = node -> {
             if (node instanceof AugAssignStmt) {
-                ASTEnumOp op = ((AugAssignStmt) node).getOp();
-                op2Num.merge(op.getOperatorName(), 1, Integer::sum);
+                op2Num.merge(((AugAssignStmt) node).getOp().getOperatorName(), 1, Integer::sum);
             }
         };
 
         id2ASTModules.values().forEach(module -> {
-            module.forEach(binOp.andThen(boolOp).andThen(unaryOp).andThen(augAssignOp));
+            module.forEach(binOp.andThen(boolOp).andThen(unaryOp).andThen(compOp).andThen(augAssignOp));
         });
         return op2Num;
     };
