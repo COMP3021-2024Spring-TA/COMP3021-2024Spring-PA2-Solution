@@ -16,15 +16,31 @@ public class QueryOnNode {
     public QueryOnNode(HashMap<String, ASTModule> id2ASTModules) {
         this.id2ASTModules = id2ASTModules;
     }
-    
+
+    /**
+     * TODO `findFuncWithArgGtN` find all functions whose # arguments > given `paramN` in all modules {@link QueryOnNode#id2ASTModules}
+     *
+     * @param paramN the number of arguments user expects
+     * @return null as PA1, simply print out all functions that satisfy the requirements with format ModuleID_FuncName_LineNo
+     * Hints1: use {@link ASTElement#filter(Predicate)} method to implement the function
+     */
     public Consumer<Integer> findFuncWithArgGtN = paramN -> {
         id2ASTModules.values().forEach(module -> {
             module.filter(node -> node instanceof FunctionDefStmt)
-                    .stream().filter(func -> ((FunctionDefStmt) func).getParamNum() >= paramN)
+                    .stream()
+                    .filter(func -> ((FunctionDefStmt) func).getParamNum() >= paramN)
                     .forEach(func -> System.out.println(module.getASTID() + "_" + ((FunctionDefStmt) func).getName() + "_" + func.getLineNo()));
         });
     };
 
+
+    /**
+     * TODO `calculateOp2Nums` count the frequency of each operator in all modules {@link QueryOnNode#id2ASTModules}
+     *
+     * @param null
+     * @return op2Num as PA1,the key is operator name, and value is the frequency
+     * Hints1: use {@link ASTElement#forEach(Consumer)} method to implement the function
+     */
     public Supplier<HashMap<String, Integer>> calculateOp2Nums = () -> {
         HashMap<String, Integer> op2Num = new HashMap<>();
 
@@ -59,13 +75,37 @@ public class QueryOnNode {
         return op2Num;
     };
 
-
+    /**
+     * TODO `calculateNode2Nums` count the frequency of each node in all modules {@link QueryOnNode#id2ASTModules}
+     *
+     * @param astID, a number to represent a specific AST or -1 for all
+     * @return node2Nums as PA1,the key is node type, and value is the frequency
+     * Hints1: use {@link ASTElement#groupingBy(Function, Collector)} method to implement the function
+     * Hints2: if astID is invalid, return empty map
+     */
     public Function<String, Map<String, Long>> calculateNode2Nums = astID -> {
-        // TODO: complete the definition of the method `calculateNode2Nums`
-        return this.id2ASTModules.get(astID).groupingBy(ASTElement::getNodeType, Collectors.counting());
+        Map<String, Long> node2Nums = new HashMap<>();
+        if (!astID.equals("-1") && id2ASTModules.containsKey(astID)) {
+            id2ASTModules.get(astID)
+                    .groupingBy(ASTElement::getNodeType, Collectors.counting())
+                    .forEach((key, value) -> node2Nums.merge(key, value, Long::sum));
+        } else if (astID.equals("-1")) {
+            id2ASTModules.keySet().forEach(key -> id2ASTModules.get(key)
+                    .groupingBy(ASTElement::getNodeType, Collectors.counting())
+                    .forEach((nodeKey, nodeValue) -> node2Nums.merge(nodeKey, nodeValue, Long::sum)));
+        }
+        return node2Nums;
     };
 
-    public Supplier<HashMap<String, Integer>> processNodeFreq = () -> {
+    /**
+     * TODO `processNodeFreq` sort all functions in all modules {@link QueryOnNode#id2ASTModules} based on the number of nodes in FunctionDefStmt subtree
+     *
+     * @param null
+     * @return a list of entries sorted in descending order where the key is function name 
+     *         with format ModuleID_FuncName_LineNo, and value is the # nodes
+     * Hints1: use {@link ASTElement#forEach(Consumer)} method to implement the function
+     */
+    public Supplier<List<Map.Entry<String, Integer>>> processNodeFreq = () -> {
         HashMap<String, Integer> funcName2NodeNum = new HashMap<>();
 
         id2ASTModules.values().forEach(module -> {
@@ -83,7 +123,12 @@ public class QueryOnNode {
                             entry.getValue(),
                             (value1, value2) -> value1));
         });
-        return funcName2NodeNum;
+                
+        return funcName2NodeNum
+                .entrySet()
+                .stream()
+                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                .toList();
     };
 
 

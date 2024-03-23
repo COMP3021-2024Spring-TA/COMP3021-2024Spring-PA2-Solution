@@ -209,10 +209,10 @@ public class ASTManagerEngineTest {
         }
 
         assertEquals(engine.getId2ASTModules().size(), 837);
-        HashMap<String, Integer> funcName2NodeNum = engine.queryOnNode.processNodeFreq.get();
+        List<Map.Entry<String, Integer>> funcName2NodeNum = engine.queryOnNode.processNodeFreq.get();
         assertEquals(funcName2NodeNum.size(), 1126);
-        assertEquals(Collections.max(funcName2NodeNum.values()), 221);
-        assertEquals(Collections.min(funcName2NodeNum.values()), 6);
+        assertEquals(funcName2NodeNum.get(0).getValue(), 221);
+        assertEquals(funcName2NodeNum.get(funcName2NodeNum.size() - 1).getValue(), 6);
     }
     
 }

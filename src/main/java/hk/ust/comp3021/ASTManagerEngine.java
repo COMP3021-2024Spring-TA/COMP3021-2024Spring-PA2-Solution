@@ -240,19 +240,8 @@ public class ASTManagerEngine {
         Scanner scan1 = new Scanner(System.in);
         if (scan1.hasNextLine()) {
             String astID = scan1.nextLine();
-            if (!astID.equals("-1")) {
-                if (id2ASTModules.containsKey(astID)) {
-                    queryOnNode.calculateNode2Nums.apply(astID)
-                            .forEach((key, value) -> System.out.println(astID + key + " node with frequency " + value));
-                }
-            } else {
-                HashMap<String, Long> totNode2Num = new HashMap<>();
-                id2ASTModules.keySet().forEach(key ->
-                        queryOnNode.calculateNode2Nums.apply(key)
-                                .forEach((nodeKey, nodeValue) -> totNode2Num.merge(nodeKey, nodeValue, Long::sum))
-                );
-                totNode2Num.forEach((node, num) -> System.out.println("All" + node + " node with frequency " + num + "\n"));
-            }
+            queryOnNode.calculateNode2Nums.apply(astID).forEach((key, value) ->
+                    System.out.println(astID + key + " node with frequency " + value));
         }
     }
 
@@ -260,10 +249,8 @@ public class ASTManagerEngine {
      * Task 4: Sort all functions based on # children nodes
      */
     public void userInterfaceSortByChild() {
-        queryOnNode.processNodeFreq.get()
-                .entrySet()
-                .stream()
-                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+        queryOnNode.processNodeFreq
+                .get()
                 .forEach(entry -> System.out.println("Func " + entry.getKey() + " has complexity " + entry.getValue()));
     }
 
