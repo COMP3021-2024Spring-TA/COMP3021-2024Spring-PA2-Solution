@@ -282,12 +282,8 @@ class A(B):  # methods: foo(), bar(), baz()
 
 
 <tr>
-<<<<<<< HEAD
-<td>All the classes that possess a main function</td>
-=======
 <td>All the classes with main function</td>
 <td>  </td>
->>>>>>> 3b7eda8489db051557b1d453718cfc19679ac3c9
 <td>
 
 ```python
@@ -322,7 +318,7 @@ def foo():
     # correct usage
 ```
 
-In this task, you don't need to consider a simplified version of Python programs: (1) there are no function calls other than `open` and `close`. (2) no conditional statements like `if`, `else`, `while`, and `for`. However, you need to handle a case where variables may be copied to other variables. For instance, in the following code example, there is no bug because the variable `f` is copied to `g` and `g` closes the file.
+In this task, you only need to consider a simplified version of Python programs: (1) there are no function calls other than `open` and `close`. (2) there are no conditional statements like `if`, `else`, `while`, and `for`. However, you need to handle a case where variables may be copied to other variables. For instance, in the following code example, there is no bug because the variable `f` is copied to `g` and `g` closes the file.
 ```python
 def bar():
     f = open()
