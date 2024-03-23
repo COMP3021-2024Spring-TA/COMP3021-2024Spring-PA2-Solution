@@ -24,58 +24,68 @@ Before task specification, we first explain the grading policy as follows for yo
 | Public test cases (Task 1 + Task 2 + Task 3 + Bonus Task) | 30%   | (# of passing tests / # of provided tests) * 30%             |
 | Hidden test cases (Task 1 + Task 2 + Task 3 + Bonus Task) | 50%   | (# of passing tests / # of provided tests) * 50%             |
 
-### What YOU need to do
+### Task Description
 
-We have marked the methods you need to implement using `TODO` in the skeleton. The specifications of each task are shown below.
+The specifications of each task are shown below.
 
 
 #### Task 1: Rewrite tasks in PA1 with lambda expression (30%)
 
 First, we need to understand the mechanism of common collectors and the functional interface. You are requested to implement the following functional interface fully in the class `ASTElement`.
 
-1. Implementing the following method to mimic the behavior of `Stream.filter` on AST.
-   ```Java
-   /**
-    * @param: predicate representing a boolean-valued function that takes ASTElement as input parameter and returns a bool result
-    * @return: an ArrayList of ASTElement where predicate returns true
-    */
-   public ArrayList<ASTElement> filter(Predicate<ASTElement> predicate);
-   ```
-2. Implementing the following method to mimic the behavior of `Collectors.groupingBy` on AST.
-   ```Java
-   /**
-    * @param: classifier representing a function that classifies an ASTElement argument and produces an object of generic type K
-    *         collector representing a collector used to accumulate the ASTElement object into result D, and A is an intermediate accumulation type
-    * @return: a Map where keys are of type K and values are of type D
-    */
-   public <K, D, A> Map<K, D> groupingBy(Function<ASTElement, K> classifier,
-                                        Collector<ASTElement, A, D> collector);
-   ```
-3. Implementing the following method to mimic `Iterable.forEach` on AST.
+1. Implementing a method in `ASTElement` named `filter` to mimic the behavior of `Stream.filter` on AST.
    ```Java
     /**
-    * @param: consumer representing an operation that accepts ASTElement as input and performs some action on it without returning any result.
-    */
-   public void forEach(Consumer<ASTElement> action);
+     * TODO `filter` mimic {@link java.util.stream.Stream#filter(Predicate)} but operates on AST tree structure instead of List 
+     * TODO please design the function by yourself to pass complication and the provided test cases
+     *
+     * @param predicate representing a boolean-valued function that takes ASTElement as input parameter and returns a bool result
+     * @return an ArrayList of ASTElement where predicate returns true
+     * 
+     * Hints: traverse the tree and put those satisfy predicates into array list
+     */
+   ```
+2. Implementing a method in `ASTElement` named `groupingBy` to mimic the behavior of `Collectors.groupingBy` on AST.
+   ```Java
+    /**
+     * TODO `groupingBy` mimic {@link java.util.stream.Collectors#groupingBy(Function, Collector)} )} but operates on AST tree structure instead of List 
+     * TODO please design the function by yourself to pass complication and the provided test cases
+     *
+     * @param classifier representing a function that classifies an ASTElement argument and produces the classification result with generic type
+     * @param collector representing a collector used to accumulate the ASTElement object into results
+     * @return a map whose key and value are all generic types
+     * 
+     * Hints: traverse the tree and group them if they belong to the same categories
+     * Hints: please refer to the usage of {@link java.util.stream.Collectors#groupingBy(Function, Collector)}} to learn more about this method
+     */
+   ```
+3. Implementing a method in `ASTElement` named `forEach` to mimic `Iterable.forEach` on AST.
+   ```Java
+    /**
+     * TODO `forEach` mimic {@link Iterable#forEach(Consumer)} but operates on AST tree structure instead of List 
+     * TODO please design the function by yourself to pass complication and the provided test cases
+     *
+     * @param action representing an operation that accepts ASTElement as input and performs some action 
+     *               on it without returning any result.
+     * @return null
+     * 
+     * Hints: traverse the tree and perform the action on every node in the tree
+     */
    ```
 
-All of the above functions can take lambda repression as parameters. These functions will be used as helper functions in the following tasks. Then, you should utilize them to implement the following functional interfaces with lambda expressions, following the original logic of those in PA1.
+All of the above functions can take lambda repression as parameters. These functions will be used as helper functions in the following tasks. Then, you should utilize them to implement the following functions with lambda expressions in `QueryOnNode`, following the original logic of those in PA1.
 
 1. `public Consumer<Integer> findFuncWithArgGtN`
 2. `public Supplier<HashMap<String, Integer>> calculateOp2Nums`
 3. `public Function<String, Map<String, Long>> calculateNode2Nums`
-4. `public Supplier<HashMap<String, Integer>> processNodeFreq`
+4. `public Supplier<List<Map.Entry<String, Integer>>> processNodeFreq`
 
-Moreover, you should finish the following methods within `ASTManagerEngine` by achieving the requried functionalities using the above functional interfaces.
-1. `userInterfaceCommonOp`
-2. `userInterfaceCountNum`
-3. `userInterfaceSortByChild`
 
 #### Task 2: Support code search of five patterns with lambda expressions (70%)
 
 <!--@bowen, you can add more tasks on top-->
 
-Task 1 only focuses on querying the attributes of singleton nodes. In task 2, you are required to support the code searching for the following patterns, which consider the correlation between multiple nodes. We have given the sample code that conforms to the patterns to ease your understanding. You should utilize the functions mentioned earlier, e.g., `filter` and `groupingBy`, as much as possible. 
+Task 1 only focuses on querying the attributes of singleton nodes. In task 2, you are required to support the code searching for the following patterns, which consider the correlation between multiple nodes. We have given the sample code that conforms to the patterns to ease your understanding. You should utilize the functions mentioned earlier, e.g., `filter`, as much as possible. 
 
 <table>
 <tr>
@@ -84,7 +94,7 @@ Task 1 only focuses on querying the attributes of singleton nodes. In task 2, yo
 
 <tr>
 <td> All the comparison expressions with "=="</td>
-<td> findEqualCompareInFunc </td>
+<td> QueryOnMethod.findEqualCompareInFunc </td>
 
 <td>
 
@@ -100,7 +110,7 @@ def foo():
 
 <tr>
 <td> Functions using a boolean parameter as an if-condition </td>
-<td> findFuncWithBoolParam </td>
+<td> QueryOnMethod.findFuncWithBoolParam </td>
 <td>
 
 ```Python
@@ -119,7 +129,7 @@ def toggle_light(turn_on: bool):
 
 <tr>
 <td> Function parameters that are never read from or assigned to before it's read  </td>
-<td> findUnusedParamInFunc </td>
+<td> QueryOnMethod.findUnusedParamInFunc </td>
 <td>
 
 ```Python
@@ -137,7 +147,7 @@ def foo(param1, param2, param3):
 
 <tr>
 <td> Find all functions that are directly called by some functions other than B</td>
-<td> findDirectCalledOtherB </td>
+<td> QueryOnMethod.findDirectCalledOtherB </td>
 <td>
 
 ```python
@@ -157,7 +167,7 @@ def C():
 
 <tr>
 <td> Can method A directly or transitively call method B  </td>
-<td> answerIfACalledB </td>
+<td> QueryOnMethod.answerIfACalledB </td>
 <td>
 
 ```Python
