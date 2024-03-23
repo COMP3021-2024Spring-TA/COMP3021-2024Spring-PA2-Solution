@@ -335,7 +335,7 @@ We use JUnit test to validate the correctness of individual methods that you nee
 
 | Test Case      | Target Method |
 | ----------- | ----------- |
-| `ASTElementTest`        | Three functional interfaces    |
+| `ASTElementTest`        | Three collectors for AST in `ASTElement`   |
 | `QueryOnNodeTest`        | Methods in `QueryOnNode`     |
 | `QueryOnMethodTest`   | Methods in `QueryOnMethod`  |
 | `QueryOnClassTest` | Methods in `QueryOnClass` |
