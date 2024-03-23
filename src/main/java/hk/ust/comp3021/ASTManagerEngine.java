@@ -36,16 +36,16 @@ public class ASTManagerEngine {
             System.out.println("  7: Given func name, find all unused parameters");
             System.out.println("  8: Given name of func B, find all functions being directly called by functions other than B");
             System.out.println("  9: Can func A directly or transitively call by method B");
+
+            // PA2 tasks code patterns for class  10-14
             System.out.println("  10: Given name of class A, find all the super classes of it.");
             System.out.println("  11: Given the names of two classes, A and B, check whether A has super class B.");
             System.out.println("  12: Find all the overriding methods in all classes.");
             System.out.println("  13: Given the name of a class, find all the methods that it possesses.");
             System.out.println("  14: Find all the classes that possesses main function.");
-            
-
-            // PA2 tasks code patterns for class  10-14
-
+        
             // Bonus Task 15
+            System.out.println("  15: An API misuse bud detector.");
 
             System.out.println("  16: Exit");
             System.out.println("----------------------------------------------------------------------");
@@ -119,7 +119,7 @@ public class ASTManagerEngine {
                         break;
                     }
                     case 15: {
-
+                        bugDetector();
                         break;
                     }
                     default: {
@@ -395,6 +395,15 @@ public class ASTManagerEngine {
         Scanner scan2 = new Scanner(System.in);
         System.out.println("Answer is " + queryOnClass.findClassesWithMain.get());
         
+    }
+
+    /*
+     * Task 15: API misuse bug detector
+     */
+    public void bugDetector() {
+        String queryID = this.parseQueryASTID();
+        BugDetector budDetector = new BugDetector(id2ASTModules.get(queryID));
+        System.out.println("Answer is " + budDetector.detect.get());   
     }
 
 

@@ -264,7 +264,7 @@ class A(B):  # methods: foo(), bar(), baz()
 
 
 <tr>
-<td>All the classes with main function</td>
+<td>All the classes that possess a main function</td>
 <td>
 
 ```python
@@ -287,11 +287,26 @@ class C: # No
 
 
 #### Bonus Task: Implement an API misuse bug detector (10%)
+In this task, we will write a bud detector to check for unclosed files. For instance, in the following code example, the function `bar` contains a bug because the file `f` is opened but not closed. The function `foo` does not contain a bug because the file `f` was opened and closed correctly.
+```python
+def bar():
+    f = open()
+    # a bug: file not closed.
 
+def foo():
+    f = open()
+    close(f) 
+    # correct usage
+```
 
-@Bowen, we need an example here.
-
-
+In this task, you don't need to consider a simplified version of Python programs: (1) there are no function calls other than `open` and `close`. (2) no conditional statements like `if`, `else`, `while`, and `for`. However, you need to handle a case where variables may be copied to other variables. For instance, in the following code example, there is no bug because the variable `f` is copied to `g` and `g` closes the file.
+```python
+def bar():
+    f = open()
+    g = f
+    g.close()
+    # no bug: the file is closed using variable g
+```
 
 ### Submission Policy
 

@@ -17,7 +17,8 @@ public class QueryOnClass {
         this.module = module;
     }
 
-    public BiFunction<String, ASTModule, Optional<ASTElement>> findClassInModule = (name, curModule) ->
+    // Helper
+    private BiFunction<String, ASTModule, Optional<ASTElement>> findClassInModule = (name, curModule) ->
         curModule.filter(node-> node instanceof ClassDefStmt)
             .stream()
             .filter(clazz -> name.equals(((ClassDefStmt) clazz).getName()))
@@ -45,7 +46,9 @@ public class QueryOnClass {
         return findSuperClasses.apply(classA).contains(classB);
     };
 
-    Function<String, List<String>> findDirectMethods = (classA) -> {
+
+    // Helper
+    private Function<String, List<String>> findDirectMethods = (classA) -> {
         List<String> results = new ArrayList<String>();
         ClassDefStmt clazz = (ClassDefStmt) findClassInModule.apply(classA, module).get();
         clazz.getChildren().forEach(node -> {
