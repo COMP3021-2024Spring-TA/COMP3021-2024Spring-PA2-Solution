@@ -1,0 +1,11 @@
+class Baz:
+    def main():
+        return 0
+    def foo(self):
+        return 0
+class Foo(Baz):
+    def foo(self):
+        return 0
+class Bar(Foo):
+    def foo(self):
+        return 0
