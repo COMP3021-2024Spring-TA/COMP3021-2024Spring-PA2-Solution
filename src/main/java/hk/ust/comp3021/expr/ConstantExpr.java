@@ -25,15 +25,4 @@ public class ConstantExpr extends ASTExpr {
         return children;
     }
 
-    @Override
-    public String toString() {
-        return this.value;
-    }
-
-    @Override
-    public void printByPos(StringBuilder str) {
-        this.fillStartBlanks(str);
-        str.append(this.value);
-        this.fillEndBlanks(str);
-    }
 }

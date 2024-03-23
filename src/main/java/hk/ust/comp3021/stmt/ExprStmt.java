@@ -20,11 +20,5 @@ public class ExprStmt extends ASTStmt {
         children.add(value);
         return children;
     }
-
-    @Override
-    public void printByPos(StringBuilder str) {
-        this.fillStartBlanks(str);
-        value.printByPos(str);
-        this.fillEndBlanks(str);
-    }
+    
 }

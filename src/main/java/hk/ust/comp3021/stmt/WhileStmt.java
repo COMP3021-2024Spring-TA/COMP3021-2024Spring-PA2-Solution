@@ -33,22 +33,6 @@ public class WhileStmt extends ASTStmt {
         children.addAll(orelse);
         return children;
     }
-
-    @Override
-    public void printByPos(StringBuilder str) {
-        this.fillStartBlanks(str);
-        str.append("while");
-        test.printByPos(str);
-        str.append(":");
-        for (ASTStmt bodyStmt: body) {
-            bodyStmt.printByPos(str);
-        }
-        for (ASTStmt orelseStmt: orelse) {
-            str.append("else");
-            orelseStmt.printByPos(str);
-        }
-        this.fillEndBlanks(str);
-    }
-
+    
 
 }

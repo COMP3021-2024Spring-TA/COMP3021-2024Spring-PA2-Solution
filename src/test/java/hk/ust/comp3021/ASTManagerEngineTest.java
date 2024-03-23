@@ -43,7 +43,7 @@ public class ASTManagerEngineTest {
         PrintStream originalPrintStream = System.out;
         System.setOut(printStream);
 
-        engine.findFuncWithArgGtN.accept(4);
+        engine.queryOnNode.findFuncWithArgGtN.accept(4);
         System.setOut(originalPrintStream);
         String printedOutput = outputStream.toString();
 
@@ -63,7 +63,7 @@ public class ASTManagerEngineTest {
         for (int i = 0; i < xmlFileTot; i++) {
            engine.processXMLParsing(String.valueOf(i));
         }
-        HashMap<String, Integer> op2Num = engine.calculateOp2Nums.get();
+        HashMap<String, Integer> op2Num = engine.queryOnNode.calculateOp2Nums.get();
         HashMap<String, Integer> expectedOp2Num = new HashMap<>();
 
         expectedOp2Num.put("And", 253);
@@ -109,7 +109,7 @@ public class ASTManagerEngineTest {
         for (int i = 0; i < xmlFileTot; i++) {
             engine.processXMLParsing(String.valueOf(i));
         }
-        Map<String, Long> node2Num = engine.calculateNode2Nums.apply("0");
+        Map<String, Long> node2Num = engine.queryOnNode.calculateNode2Nums.apply("0");
         Map<String, Long> expectedNode2Num = new HashMap<>();
         expectedNode2Num.put("Module", 1L);
         expectedNode2Num.put("ClassDef", 1L);
@@ -149,7 +149,7 @@ public class ASTManagerEngineTest {
 
         HashMap<String, Long> totNode2Num = new HashMap<>();
         for (String key : engine.getId2ASTModules().keySet()) {
-            Map<String, Long> node2Num = engine.calculateNode2Nums.apply(key);
+            Map<String, Long> node2Num = engine.queryOnNode.calculateNode2Nums.apply(key);
             for (Map.Entry<String, Long> entry : node2Num.entrySet()) {
                 if (totNode2Num.containsKey(entry.getKey())) {
                     Long currentValue = totNode2Num.get(entry.getKey());
@@ -198,72 +198,7 @@ public class ASTManagerEngineTest {
         expectedNode2Num.put("UnaryOp", 489L);
         assertEquals(expectedNode2Num, totNode2Num);
     }
-
-
-    @Tag(TestKind.PUBLIC)
-    @Test
-    void testCalledFuncOnXML1() {
-        ASTManagerEngine engine = new ASTManagerEngine();
-        engine.processXMLParsing("0");
-
-        HashMap<String, Set<String>> func2CalledFuncs = engine.calculateCalledFunc();
-        HashMap<String, Set<String>> expectedMap = new HashMap<>();
-        
-        expectedMap.put("0_sortList_19", Set.of("0_self.bubbleSort_20"));
-        expectedMap.put("0_bubbleSort_2", new HashSet<>());
-        assertEquals(func2CalledFuncs, expectedMap);
-    }
-
-    @Tag(TestKind.PUBLIC)
-    @Test
-    void testCalledFuncOnXML26() {
-        ASTManagerEngine engine = new ASTManagerEngine();
-        engine.processXMLParsing("26");
-
-        HashMap<String, Set<String>> func2CalledFuncs = engine.calculateCalledFunc();
-        HashMap<String, Set<String>> expectedMap = new HashMap<>();
-
-        expectedMap.put("26_horspool_2", Set.of("26_len_3", "26_generateBadCharTable_5", "26_bc_table.get_14"));
-        expectedMap.put("26_generateBadCharTable_19", Set.of("26_len_20", "26_dict_21", "26_range_23"));
-        assertEquals(func2CalledFuncs, expectedMap);
-    }
-
-    @Test
-    void testCalledFuncOnXML833() {
-        ASTManagerEngine engine = new ASTManagerEngine();
-        engine.processXMLParsing("833");
-
-        HashMap<String, Set<String>> func2CalledFuncs = engine.calculateCalledFunc();
-        HashMap<String, Set<String>> expectedMap = new HashMap<>();
-
-        expectedMap.put("833_printList_24", Set.of("833_print_27", "833_print_32", "833_print_34"));
-        expectedMap.put("833_push_17", Set.of("833_Node_19"));
-        expectedMap.put("833___init___4", Set.of("833___init___5", "833_super_5"));
-        expectedMap.put("833___init___12", Set.of("833___init___13", "833_super_13"));
-        expectedMap.put("833_printMiddle_36", Set.of("833_print_46", "833_print_48"));
-        assertEquals(func2CalledFuncs, expectedMap);
-    }
-
-
-    @Tag(TestKind.PUBLIC)
-    @Test
-    void testCalledFuncOnXMLAll() {
-        ASTManagerEngine engine = new ASTManagerEngine();
-        int xmlFileTot = engine.countXMLFiles(engine.getDefaultXMLFileDir());
-        for (int i = 0; i < xmlFileTot; i++) {
-            engine.processXMLParsing(String.valueOf(i));
-        }
-
-        HashMap<String, Set<String>> func2CalledFuncs = engine.calculateCalledFunc();
-        assertEquals(func2CalledFuncs.size(), 1126);
-
-        Set<String> mergedSet = new HashSet<>();
-        for (Set<String> set : func2CalledFuncs.values()) {
-            mergedSet.addAll(set);
-        }
-        assertEquals(mergedSet.size(), 2573);
-    }
-
+    
     @Tag(TestKind.PUBLIC)
     @Test
     public void testProcessNodeFreq() {
@@ -274,40 +209,10 @@ public class ASTManagerEngineTest {
         }
 
         assertEquals(engine.getId2ASTModules().size(), 837);
-        HashMap<String, Integer> funcName2NodeNum = engine.processNodeFreq.get();
+        HashMap<String, Integer> funcName2NodeNum = engine.queryOnNode.processNodeFreq.get();
         assertEquals(funcName2NodeNum.size(), 1126);
         assertEquals(Collections.max(funcName2NodeNum.values()), 221);
         assertEquals(Collections.min(funcName2NodeNum.values()), 6);
     }
     
-
-    @Tag(TestKind.PUBLIC)
-    @Test
-    public void testBonusPrintByPos() {
-        ASTManagerEngine engine = new ASTManagerEngine();
-        engine.processXMLParsing("0");
-        StringBuilder stringBuilder = new StringBuilder("");
-        engine.getId2ASTModules().get("0").printByPos(stringBuilder);
-        String expectedOutput = "class Solution:\n" +
-                "    def bubbleSort(self, head: ListNode):\n" +
-                "        node_i = head\n" +
-                "        tail = None\n" +
-                "\n" +
-                "        while node_i:\n" +
-                "            node_j = head\n" +
-                "            while node_j and node_j.next != tail:\n" +
-                "                if node_j.val > node_j.next.val:\n" +
-                "\n" +
-                "                    node_j.val, node_j.next.val = node_j.next.val, node_j.val\n" +
-                "                node_j = node_j.next\n" +
-                "\n" +
-                "            tail = node_j\n" +
-                "            node_i = node_i.next\n" +
-                "\n" +
-                "        return head\n" +
-                "\n" +
-                "    def sortList(self, head: Optional[ListNode]) -> Optional[ListNode]:\n" +
-                "        return self.bubbleSort(head)";
-        assertEquals(expectedOutput, stringBuilder.toString());
-    }
 }

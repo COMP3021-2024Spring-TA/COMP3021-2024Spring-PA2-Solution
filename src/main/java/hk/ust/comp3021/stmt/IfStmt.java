@@ -33,40 +33,4 @@ public class IfStmt extends ASTStmt {
         children.addAll(orelse);
         return children;
     }
-    
-    @Override
-    public void printByPos(StringBuilder str) {
-        fillStartBlanks(str);
-        int curIndent = countNowColOffset(str);
-        str.append("if ");
-        test.printByPos(str);
-        str.append(":");
-        for (ASTStmt bodyStmt: body) {
-            bodyStmt.printByPos(str);
-        }
-        
-        IfStmt curOrElse = this;
-        while (curOrElse.orelse != null 
-                && curOrElse.orelse.size() == 1 
-                && curOrElse.orelse.get(0) instanceof IfStmt) {
-            curOrElse = (IfStmt) curOrElse.orelse.get(0);
-            str.append("\n");
-            str.append(" ".repeat(curIndent));
-            str.append("elif");
-            curOrElse.test.printByPos(str);
-            str.append(":");
-            for (ASTStmt bodyStmt: curOrElse.body) {
-                bodyStmt.printByPos(str);
-            }
-        }
-        if (curOrElse.orelse != null && !curOrElse.orelse.isEmpty()) {
-            str.append("\n");
-            str.append(" ".repeat(curIndent));
-            str.append("else:");
-            for (ASTStmt orElseBody: curOrElse.orelse) {
-                orElseBody.printByPos(str);
-            }
-        }
-        fillEndBlanks(str);
-    }
 }

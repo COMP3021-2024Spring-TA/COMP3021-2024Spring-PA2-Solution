@@ -44,15 +44,6 @@ public class ASTModule extends ASTElement {
         return children;
     }
     
-    @Override
-    public void printByPos(StringBuilder str) {
-        ArrayList<ASTElement> sortedBody = this.getChildren();
-        ASTElement.elementSort(sortedBody);
-
-        for (ASTElement child: sortedBody) {
-            child.printByPos(str);
-        }
-    }
 
     public String getASTID() {
         return astID;

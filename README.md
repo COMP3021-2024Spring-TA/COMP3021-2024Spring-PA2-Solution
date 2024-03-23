@@ -9,8 +9,7 @@
 PA2 aims to practice the lambda expression and generics. **ASTManager** should be enhanced to support the following additional functionalities:
 
 - Task 1: Finish generic tree traversal skeleton that takes lambda expressions as the node visitor and rewrite the task in PA1 (30%)
-- Task 2: Support code searching of five patterns with lambda expressions. (50%)
-- Task 3: Rewrite the given Python code recovery code with lambda expressions without the guidance of positional information. (20%)
+- Task 2: Support code searching of ten patterns with lambda expressions. (70%)
 - Bonus Task: Support simple bug detection with lambda expressions. (10%)
 
 Similar to PA1, each test case is an XML file that represents a Python AST.
@@ -72,7 +71,7 @@ Moreover, you should finish the following methods within `ASTManagerEngine` by a
 2. `userInterfaceCountNum`
 3. `userInterfaceSortByChild`
 
-#### Task 2: Support code search of five patterns with lambda expressions (50%)
+#### Task 2: Support code search of five patterns with lambda expressions (70%)
 
 <!--@bowen, you can add more tasks on top-->
 
@@ -291,58 +290,6 @@ class C: # No
 
 </table>
 
-#### Task 3: Rewrite the given Python code recovery code （20%）
-
-In PA1, the Python code recovery task is set as a bonus task, and you can use positional information to help you get the recovery process aligned with the original Python code. In PA2, we release the implementation of PA1, but now you need to rewrite the code to satisfy the following two requirements:
-
-- **DO NOT** use positional information. You need to recover the Python code following the Python format. For instance, we should add indents and new lines when there is an `if` condition.
-- **USE** the aforementioned helper functions and lambda expressions to finish the code.
-
-A Sample
-```Java
-import java.util.function.Function;
-
-// Define a functional interface for handling AST nodes
-@FunctionalInterface
-interface NodeHandler {
-    String generateCode(ASTNode node);
-}
-
-class ASTNode {
-    // AST node properties and methods
-}
-
-class PythonCodeGenerator {
-    public static void main(String[] args) {
-        // Example of handling a specific type of AST node with a lambda expression
-        NodeHandler binaryOperationHandler = (node) -> {
-            // Assuming 'node' has left, operator, and right properties
-            ASTNode left = ...; // retrieve the left node
-            ASTNode right = ...; // retrieve the right node
-            String operator = ...; // retrieve the operator
-            return generateCode(left) + operator + generateCode(right);
-        };
-
-        // More handlers for different types of AST nodes can be defined here
-
-        // Function to convert the AST to Python code
-        Function<ASTNode, String> generateCode = (ASTNode node) -> {
-            // Switch or if-else statements to handle different types of nodes
-            // Delegate to the appropriate NodeHandler
-            if (node.type.equals("BinaryOperation")) {
-                return binaryOperationHandler.generateCode(node);
-            }
-            // Additional type checks and handlers here...
-            return "";
-        };
-
-        // Example usage
-        ASTNode rootNode = ...; // This would be the root of the AST
-        String pythonCode = generateCode.apply(rootNode);
-        System.out.println(pythonCode);
-    }
-}
-```
 
 #### Bonus Task: Implement an API misuse bug detector (10%)
 

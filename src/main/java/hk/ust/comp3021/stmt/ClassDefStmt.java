@@ -54,44 +54,6 @@ public class ClassDefStmt extends ASTStmt {
     }
     
 
-    @Override
-    public void printByPos(StringBuilder str) {
-        this.fillStartBlanks(str);
-        for (ASTExpr list : decoratorList) {
-            str.append('@');
-            list.printByPos(str);
-        }
-        str.append("class ").append(this.name);
-
-        if (!bases.isEmpty() || !keywords.isEmpty()) {
-            str.append("(");
-            boolean comma = false;
-
-            for (ASTExpr base : bases) {
-                if (comma) {
-                    str.append(",");
-                } else {
-                    comma = true;
-                }
-                base.printByPos(str);
-            }
-            for (ASTKeyWord keyword : keywords) {
-                if (comma) {
-                    str.append(",");
-                } else {
-                    comma = true;
-                }
-                keyword.printByPos(str);
-            }
-
-        }
-        str.append(":");
-        for (ASTStmt bodyStmt : body) {
-            bodyStmt.printByPos(str);
-        }
-        this.fillEndBlanks(str);
-    }
-
 }
 
 

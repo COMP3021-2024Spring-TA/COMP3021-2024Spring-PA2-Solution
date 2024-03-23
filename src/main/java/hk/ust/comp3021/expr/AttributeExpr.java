@@ -49,14 +49,6 @@ public class AttributeExpr extends ASTExpr {
         children.add(value);
         return children;
     }
-
-    @Override
-    public void printByPos(StringBuilder str) {
-        this.fillStartBlanks(str);
-        value.printByPos(str);
-        str.append(".");
-        str.append(attr);
-        this.fillEndBlanks(str);
-    }
+    
 
 }

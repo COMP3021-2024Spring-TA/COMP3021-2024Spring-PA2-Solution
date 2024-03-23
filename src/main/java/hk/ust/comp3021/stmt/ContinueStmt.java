@@ -16,10 +16,4 @@ public class ContinueStmt extends ASTStmt {
         return children;
     }
 
-    @Override
-    public void printByPos(StringBuilder str) {
-        this.fillStartBlanks(str);
-        str.append("continue");
-        this.fillEndBlanks(str);
-    }
 }

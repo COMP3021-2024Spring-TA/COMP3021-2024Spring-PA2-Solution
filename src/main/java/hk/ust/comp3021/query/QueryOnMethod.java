@@ -10,32 +10,35 @@ import java.util.function.*;
 import java.util.stream.*;
 
 public class QueryOnMethod {
-
-    private HashMap<String, ASTModule> id2ASTModules = null;
     
-    public QueryOnMethod(HashMap<String, ASTModule> id2ASTModules) {
-        this.id2ASTModules = id2ASTModules;
+    ASTModule module = null;
+    
+    public QueryOnMethod(ASTModule module) {
+        this.module = module;
     }
-    
-    public BiFunction<String, ASTModule, Optional<ASTElement>> findFuncInModule = (name, curModule) ->
-            curModule.filter(node -> node instanceof FunctionDefStmt)
+        
+    public Function<String, Optional<ASTElement>> findFuncInModule = name ->
+            module.filter(node -> node instanceof FunctionDefStmt)
                     .stream()
-                    .filter(func -> name.equals(curModule.getASTID() + "_" + ((FunctionDefStmt) func).getName()))
+                    .filter(func -> name.equals(module.getASTID() + "_" + ((FunctionDefStmt) func).getName()))
                     .findFirst();
     
+    /*
+    * @ param
+    * @ return
+     */
+    // TODO: please finish the implementation of this function
     public Function<String, List<String>> findEqualCompareInFunc = funcName -> {
         List<String> results = new ArrayList<>();
-
-        String moduleId = Arrays.stream(funcName.split("_")).findFirst().get();
-        ASTModule curModule = id2ASTModules.get(moduleId);
         
-        if (findFuncInModule.apply(funcName, curModule).isPresent()) {
-            ASTElement func = findFuncInModule.apply(funcName, curModule).get();
+        if (findFuncInModule.apply(funcName).isPresent()) {
+            ASTElement func = findFuncInModule.apply(funcName).get();
             results.addAll(func.filter(node -> node instanceof CompareExpr)
                     .stream()
                     .map(expr -> (CompareExpr) expr)
                     .filter(expr -> expr.getOps().stream().anyMatch(op -> op.getOperatorName().equals("Eq")))
-                    .map(Object::toString)
+                    .map(expr -> expr.getLineNo() + ":" + expr.getColOffset() + "-" +
+                            expr.getEndLineNo() + ":" + expr.getEndColOffset())
                     .toList());
         }
         return results;
@@ -53,28 +56,20 @@ public class QueryOnMethod {
                 .anyMatch(arg -> hasBoolName.test(arg.getAnnotation()));
 
 
-        List<String> results = new ArrayList<>();
-        id2ASTModules.values().stream().forEach(module -> {
-            results.addAll(module.filter(node -> node instanceof FunctionDefStmt)
-                    .stream()
-                    .filter(func -> hasAstArg.test(func))
-                    .map(func -> (FunctionDefStmt) func)
-                    .map(func -> module.getASTID() + "_" + func.getName() + "_" + func.getLineNo())
-                    .collect(Collectors.toList()));
-
-        });
-        return results;
+        return module.filter(node -> node instanceof FunctionDefStmt)
+                .stream()
+                .filter(func -> hasAstArg.test(func))
+                .map(func -> (FunctionDefStmt) func)
+                .map(func -> module.getASTID() + "_" + func.getName() + "_" + func.getLineNo())
+                .collect(Collectors.toList());
     };
     
     public Function<String, List<String>> findUnusedParamInFunc = funcName -> {
         List<String> results = new ArrayList<>();
         
         // find all functions whose name matches funcName
-        String moduleId = Arrays.stream(funcName.split("_")).findFirst().get();
-        ASTModule curModule = id2ASTModules.get(moduleId);
-
-        if (findFuncInModule.apply(funcName, curModule).isPresent()) {
-            ASTElement func = findFuncInModule.apply(funcName, curModule).get();
+        if (findFuncInModule.apply(funcName).isPresent()) {
+            ASTElement func = findFuncInModule.apply(funcName).get();
             Map<String, ASTElement> arg2FirstReadLoc = new HashMap<>();
 
             Map<String, List<ASTElement>> readVariables = func.filter(node -> node instanceof ASTArguments.ASTArg)
@@ -132,11 +127,9 @@ public class QueryOnMethod {
     
     public Function<String, List<String>> findDirectCalledOtherB = funcName -> {
         List<String> results = new ArrayList<>();
-
-        String moduleId = Arrays.stream(funcName.split("_")).findFirst().get();
-        ASTModule curModule = id2ASTModules.get(moduleId);
+        
         Map<FunctionDefStmt, List<ASTElement>> func2CalledFuncs =
-                curModule.filter(func -> func instanceof FunctionDefStmt)
+                module.filter(func -> func instanceof FunctionDefStmt)
                         .stream()
                         .map(func -> (FunctionDefStmt) func)
                         .collect(Collectors.toMap(func -> func,
@@ -147,12 +140,12 @@ public class QueryOnMethod {
                 .forEach(entry -> entry.getValue().forEach(callee -> {
                     if (getCallExprName.apply(callee).isPresent()) {
                         
-                        String calleeName = moduleId + "_" + getCallExprName.apply(callee).get();
-                        if (findFuncInModule.apply(calleeName, curModule).isPresent()) {
+                        String calleeName = getCallExprName.apply(callee).get();
+                        if (findFuncInModule.apply(calleeName).isPresent()) {
                             if (!callee2AllCallers.containsKey(calleeName)) {
                                 callee2AllCallers.put(calleeName, new ArrayList<>());
                             }
-                            callee2AllCallers.get(calleeName).add(moduleId + "_" + entry.getKey().getName());
+                            callee2AllCallers.get(calleeName).add(entry.getKey().getName());
                         }
                     }
                 }));
@@ -174,8 +167,6 @@ public class QueryOnMethod {
         if (!moduleIdA.equals(moduleIdB)) {
             return false;
         }
-        ASTModule curModule = id2ASTModules.get(moduleIdA);
-        
         List<String> tobeProcessed = new ArrayList<>();
         tobeProcessed.add(funcNameA);
 
@@ -186,11 +177,11 @@ public class QueryOnMethod {
             if (curFuncName.equals(funcNameB)) {
                 return true;
             }
-            if (!findFuncInModule.apply(curFuncName, curModule).isPresent()) {
+            if (!findFuncInModule.apply(curFuncName).isPresent()) {
                 continue;
             }
 
-            ASTElement curFuncNode = findFuncInModule.apply(curFuncName, curModule).get();
+            ASTElement curFuncNode = findFuncInModule.apply(curFuncName).get();
             for (ASTElement called : findAllCalledFuncs.apply(curFuncNode)) {
                 if (!getCallExprName.apply(called).isPresent()) {
                     continue;

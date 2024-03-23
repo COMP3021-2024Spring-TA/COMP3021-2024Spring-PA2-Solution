@@ -27,15 +27,5 @@ public class AssignStmt extends ASTStmt {
         return children;
     }
     
-    @Override
-    public void printByPos(StringBuilder str) {
-        this.fillStartBlanks(str);
-        for (ASTExpr target: targets) {
-            target.printByPos(str);
-            str.append(" =");
-        }
-        value.printByPos(str);
-        this.fillEndBlanks(str);
-    }
 }
 

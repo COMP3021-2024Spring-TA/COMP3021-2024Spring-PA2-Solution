@@ -25,13 +25,4 @@ public class ReturnStmt extends ASTStmt {
         return children;
     }
     
-    @Override
-    public void printByPos(StringBuilder str) {
-        this.fillStartBlanks(str);
-        str.append("return");
-        if (value != null) {
-            value.printByPos(str);
-        }
-        this.fillEndBlanks(str);
-    }
 }

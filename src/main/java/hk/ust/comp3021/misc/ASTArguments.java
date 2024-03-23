@@ -38,19 +38,7 @@ public class ASTArguments extends ASTElement {
             return children;
         }
         
-
-        @Override
-        public void printByPos(StringBuilder str) {
-            this.fillStartBlanks(str);
-            str.append(this.arg);
-
-            if (annotation != null) {
-                str.append(":");
-                annotation.printByPos(str);
-            }
-            this.fillEndBlanks(str);
-        }
-
+        
         @Override
         public String getNodeType() {
             return "arg";
@@ -82,24 +70,7 @@ public class ASTArguments extends ASTElement {
         }
 
     }
-
-
-    @Override
-    public void printByPos(StringBuilder str) {
-        List<ASTElement> children = this.getChildren();
-        ASTElement.elementSort(children);
-
-        for (int i = 0; i < children.size(); i++) {
-            if (i >= 1 && children.get(i - 1) instanceof ASTArg) {
-                str.append(",");
-            }
-            if (children.get(i) instanceof ASTExpr) {
-                str.append("=");
-            }
-            children.get(i).printByPos(str);
-        }
-    }
-
+    
     /*
     * Return the number of ASTArg child nodes
     */

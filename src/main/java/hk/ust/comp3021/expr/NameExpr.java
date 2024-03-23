@@ -30,15 +30,4 @@ public class NameExpr extends ASTExpr {
         return children;
     }
     
-    @Override
-    public void printByPos(StringBuilder str) {
-        fillStartBlanks(str);
-        str.append(this.id);
-        fillEndBlanks(str);
-    }
-
-    @Override
-    public String toString() {
-        return this.id;
-    }
 }

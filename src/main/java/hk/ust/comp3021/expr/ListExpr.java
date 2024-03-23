@@ -26,21 +26,4 @@ public class ListExpr extends ASTExpr {
         return children;
     }
 
-    @Override
-    public void printByPos(StringBuilder str) {
-        fillStartBlanks(str);
-        str.append("[");
-        boolean write_comma = false;
-        for (ASTExpr elt: elts) {
-            if (write_comma) {
-                str.append(", ");
-            } else {
-                write_comma = true;
-            }
-            elt.printByPos(str);
-        }
-        str.append("]");
-        fillEndBlanks(str);
-    }
-
 }

@@ -25,13 +25,5 @@ public class SubscriptExpr extends ASTExpr {
         children.add(slice);
         return children;
     }
-    @Override
-    public void printByPos(StringBuilder str) {
-        this.fillStartBlanks(str);
-        value.printByPos(str);
-        str.append("[");
-        slice.printByPos(str);
-        str.append("]");
-        this.fillEndBlanks(str);
-    }
+
 }

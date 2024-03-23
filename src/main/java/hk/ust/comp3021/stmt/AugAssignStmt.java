@@ -30,15 +30,5 @@ public class AugAssignStmt extends ASTStmt {
         children.add(value);
         return children;
     }
-
-    @Override
-    public void printByPos(StringBuilder str) {
-        this.fillStartBlanks(str);
-        target.printByPos(str);
-        str.append(" ");
-        op.printByPos(str);
-        str.append("=");
-        value.printByPos(str);
-        this.fillEndBlanks(str);
-    }
+    
 }

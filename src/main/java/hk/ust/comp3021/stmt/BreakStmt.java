@@ -14,11 +14,4 @@ public class BreakStmt extends ASTStmt {
         ArrayList<ASTElement> children = new ArrayList<>();
         return children;
     }
-
-    @Override
-    public void printByPos(StringBuilder str) {
-        this.fillStartBlanks(str);
-        str.append("break");
-        this.fillEndBlanks(str);
-    }
 }

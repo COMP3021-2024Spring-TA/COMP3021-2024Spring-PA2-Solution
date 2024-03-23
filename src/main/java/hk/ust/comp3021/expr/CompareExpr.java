@@ -34,27 +34,5 @@ public class CompareExpr extends ASTExpr {
         children.addAll(comparators);
         return children;
     }
-
-    @Override
-    public void printByPos(StringBuilder str) {
-        fillStartBlanks(str);
-        left.printByPos(str);
-        for (int i = 0; i < ops.size(); i++) {
-            str.append(" ");
-            ops.get(i).printByPos(str);
-            comparators.get(i).printByPos(str);
-        }
-        fillEndBlanks(str);
-    }
-
-    @Override
-    public String toString() {
-        String ret = "";
-        ret += left.toString();
-        for (int i = 0; i < ops.size(); i++) {
-            ret += " " +  ops.get(i).toString() + " " 
-                    + comparators.get(i).toString();
-        }
-        return ret;
-    }
+    
 }

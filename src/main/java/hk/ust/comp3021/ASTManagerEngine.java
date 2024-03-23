@@ -1,25 +1,16 @@
 package hk.ust.comp3021;
 
-import hk.ust.comp3021.expr.*;
-import hk.ust.comp3021.misc.*;
-import hk.ust.comp3021.query.QueryOnMethod;
-import hk.ust.comp3021.stmt.*;
+import hk.ust.comp3021.query.*;
 import hk.ust.comp3021.utils.*;
 
 import java.io.*;
 import java.util.*;
-import java.util.AbstractMap;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 public class ASTManagerEngine {
     private final String defaultXMLFileDir;
     private final HashMap<String, ASTModule> id2ASTModules = new HashMap<>();
+    public QueryOnNode queryOnNode = new QueryOnNode(id2ASTModules);
 
-    private QueryOnMethod queryOnMethod = new QueryOnMethod(id2ASTModules);
-    
     public ASTManagerEngine() {
         defaultXMLFileDir = "resources/pythonxml/";
     }
@@ -32,6 +23,7 @@ public class ASTManagerEngine {
         return id2ASTModules;
     }
 
+
     public void userInterface() {
         System.out.println("----------------------------------------------------------------------");
         System.out.println("ASTManager is running...");
@@ -43,20 +35,21 @@ public class ASTManagerEngine {
             // PA1 tasks, need to be rewritten with lambda expression
             System.out.println("  1: Print all functions with # arguments greater than user specified N");
             System.out.println("  2: Find the most commonly used operators in all ASTs");
-            System.out.println("  3: Print all functions names and the functions invoked by each function");
-            System.out.println("  4: Given AST ID, count the number of all node types");
-            System.out.println("  5: Sort all functions based on # children nodes");
-            System.out.println("  6: Given AST ID, recover Python Code (Bonus Task)");
-            // PA2 tasks code patterns for methods
-            System.out.println("  7: Given func name, find all comparison expressions with \"==\"");
-            System.out.println("  8: Find all functions using boolean parameter as an if-condition");
-            System.out.println("  9: Given func name, find all unused parameters");
-            System.out.println("  10: Given name of func B, find all functions being directly called by functions other than B");
-            System.out.println("  11: Can func A directly or transitively call by method B or C");
+            System.out.println("  3: Given AST ID, count the number of all node types");
+            System.out.println("  4: Sort all functions based on # children nodes");
 
-            // PA2 tasks code patterns for class 12-16
-            
-            System.out.println("  17: Exit");
+            // PA2 tasks code patterns for methods
+            System.out.println("  5: Given func name, find all comparison expressions with \"==\"");
+            System.out.println("  6: Find all functions using boolean parameter as an if-condition");
+            System.out.println("  7: Given func name, find all unused parameters");
+            System.out.println("  8: Given name of func B, find all functions being directly called by functions other than B");
+            System.out.println("  9: Can func A directly or transitively call by method B");
+
+            // PA2 tasks code patterns for class  10-14
+
+            // Bonus Task 15
+
+            System.out.println("  16: Exit");
             System.out.println("----------------------------------------------------------------------");
             Scanner scan1 = new Scanner(System.in);
             if (scan1.hasNextInt()) {
@@ -80,46 +73,62 @@ public class ASTManagerEngine {
                         break;
                     }
                     case 3: {
-                        userInterfaceCallFuncs();
-                        break;
-                    }
-                    case 4: {
                         userInterfaceCountNum();
                         break;
                     }
-                    case 5: {
+                    case 4: {
                         userInterfaceSortByChild();
                         break;
                     }
+                    case 5: {
+                        userInterfaceFindEqual();
+                        break;
+                    }
                     case 6: {
-                        userInterfaceRecoverCode();
+                        userInterfaceFindBoolAsIf();
                         break;
                     }
                     case 7: {
-                        queryOnMethod.findEqualCompareInFunc.apply("1_foo");
+                        userInterfaceFindUnused();
                         break;
                     }
                     case 8: {
-                        queryOnMethod.findFuncWithBoolParam.get();
+                        userInterfaceCallOtherB();
                         break;
                     }
                     case 9: {
-                        queryOnMethod.findUnusedParamInFunc.apply("3_foo");
+                        userInterfaceDirectOrTransCall();
                         break;
                     }
                     case 10: {
-                       System.out.println(queryOnMethod.findDirectCalledOtherB.apply("4_B"));
-                       break;
+
+                        break;
                     }
                     case 11: {
-                       System.out.println(queryOnMethod.answerIfACalledB.test("5_foo", "5_baz"));
-                       break;
+
+                        break;
+                    }
+                    case 12: {
+
+                        break;
+                    }
+                    case 13: {
+
+                        break;
+                    }
+                    case 14: {
+
+                        break;
+                    }
+                    case 15: {
+
+                        break;
                     }
                     default: {
 
                     }
                 }
-                if (i == 17) {
+                if (i == 16) {
                     break;
                 }
             } else {
@@ -128,7 +137,6 @@ public class ASTManagerEngine {
         }
     }
 
-    
 
     public int countXMLFiles(String dirPath) {
         int count = 0;
@@ -198,16 +206,6 @@ public class ASTManagerEngine {
     /*
      * Task 1: Print all functions with # arguments greater than user specified N
      */
-
-    public Consumer<Integer> findFuncWithArgGtN = paramN -> {
-        id2ASTModules.values().forEach(module -> {
-            module.filter(node -> node instanceof FunctionDefStmt)
-                    .stream().filter(func -> ((FunctionDefStmt) func).getParamNum() >= paramN)
-                    .forEach(func -> System.out.println(module.getASTID() + "_" + ((FunctionDefStmt) func).getName() + "_" + func.getLineNo()));
-        });
-    };
-    
-
     public void userInterfaceParamNum() {
         System.out.println("Please indicate the value of N (recommended range 0~5):");
         Scanner scan2 = new Scanner(System.in);
@@ -216,116 +214,27 @@ public class ASTManagerEngine {
             try {
                 int number = Integer.parseInt(paramN);
                 System.out.println("Parsed number: " + number);
-                findFuncWithArgGtN.accept(number);
+                queryOnNode.findFuncWithArgGtN.accept(number);
             } catch (NumberFormatException e) {
                 System.out.println("Error! Invalid number format");
             }
-
         }
     }
 
     /*
      * Task 2: Find the most commonly used operators in all ASTs
      */
-
-    /*
-     * Calculate the frequency of each node in the AST
-     * @return: HashMap that records the mapping from operator name to the
-     *          frequency of this operator
-     */
-
-    public Supplier<HashMap<String, Integer>> calculateOp2Nums = () -> {
-        HashMap<String, Integer> op2Num = new HashMap<>();
-
-        Consumer<ASTElement> binOp = node -> {
-            if (node instanceof BinOpExpr) {
-                op2Num.merge(((BinOpExpr) node).getOp().getOperatorName(), 1, Integer::sum);
-            }
-        };
-
-        Consumer<ASTElement> boolOp = node -> {
-            if (node instanceof BoolOpExpr) {
-                op2Num.merge(((BoolOpExpr) node).getOp().getOperatorName(), 1, Integer::sum);
-            }
-        };
-
-        Consumer<ASTElement> unaryOp = node -> {
-            if (node instanceof UnaryOpExpr) {
-                op2Num.merge(((UnaryOpExpr) node).getOp().getOperatorName(), 1, Integer::sum);
-            }
-        };
-
-        Consumer<ASTElement> augAssignOp = node -> {
-            if (node instanceof AugAssignStmt) {
-                ASTEnumOp op = ((AugAssignStmt) node).getOp();
-                op2Num.merge(op.getOperatorName(), 1, Integer::sum);
-            }
-        };
-
-        id2ASTModules.values().forEach(module -> {
-            module.forEach(binOp.andThen(boolOp).andThen(unaryOp).andThen(augAssignOp));
-        });
-        return op2Num;
-    };
-    
     public void userInterfaceCommonOp() {
-        HashMap<String, Integer> op2Num = calculateOp2Nums.get();
-        Map.Entry<String, Integer> maxEntry = Collections.max(op2Num.entrySet(), 
-                Comparator.comparing(Map.Entry::getValue));
-        System.out.println("Most common operator is " + maxEntry.getKey()
-                + " with frequency " + maxEntry.getValue());
+        HashMap<String, Integer> op2Num = queryOnNode.calculateOp2Nums.get();
+        Map.Entry<String, Integer> maxEntry = Collections.max(op2Num.entrySet(),
+                Map.Entry.comparingByValue());
+        System.out.println("Most common operator is " + maxEntry.getKey() + " with frequency " + maxEntry.getValue());
     }
 
 
     /*
-     * Task 3: Print all functions names and the functions invoked by each function")
+     * Task 3: Given AST ID, count the number of all node types
      */
-
-    /*
-     * First, you need to find all declarative functions, whose node is FunctionDefStmt.
-     * Then, starting from the node, find all CallExpr nodes,
-     * Finally, obtain the called function name.
-     *
-     * Hints: we have prepared some methods for you, e.g., getCalledFuncName.
-     *
-     * @return: Hashmap that stores the mapping from function name
-     *          to the set of functions that invokes
-     */
-    public HashMap<String, Set<String>> calculateCalledFunc() {
-        HashMap<String, Set<String>> func2CalledFuncs = new HashMap<String, Set<String>>();
-//        for (String key : id2ASTModules.keySet()) {
-//            ASTModule module = id2ASTModules.get(key);
-//            for (FunctionDefStmt func : module.getAllFunctions()) {
-//                Set<String> calledFuncNames = new HashSet<String>();
-//                for (CallExpr call : func.getAllCalledFunc()) {
-//                    calledFuncNames.add(module.getASTID() + "_" + call.getCalledFuncName() + "_" + call.getLineNo());
-//                }
-//                func2CalledFuncs.put(module.getASTID() + "_" + func.getName() + "_" + func.getLineNo(), calledFuncNames);
-//            }
-//        }
-        return func2CalledFuncs;
-    }
-
-    public void userInterfaceCallFuncs() {
-        HashMap<String, Set<String>> func2CalledFuncs = calculateCalledFunc();
-
-        for (Map.Entry<String, Set<String>> entry : func2CalledFuncs.entrySet()) {
-            String curFunc = entry.getKey();
-            for (String calledFunc : entry.getValue()) {
-                System.out.println("Func " + curFunc + " invokes func " + calledFunc);
-            }
-        }
-    }
-
-    /*
-     * Task 4: Given AST ID, count the number of all node types
-     */
-
-    public Function<String, Map<String, Long>> calculateNode2Nums = astID -> {
-        // TODO: complete the definition of the method `calculateNode2Nums`
-        return this.id2ASTModules.get(astID).groupingBy(ASTElement::getNodeType, Collectors.counting());
-    };
-    
     public void userInterfaceCountNum() {
         System.out.println("Please specify the AST ID to count Node (" + id2ASTModules.keySet() + ") or -1 for all:");
         Scanner scan1 = new Scanner(System.in);
@@ -333,16 +242,14 @@ public class ASTManagerEngine {
             String astID = scan1.nextLine();
             if (!astID.equals("-1")) {
                 if (id2ASTModules.containsKey(astID)) {
-                    calculateNode2Nums.apply(astID).entrySet().stream().forEach(
-                            entry -> System.out.println(astID + entry.getKey() + " node with frequency " + entry.getValue())
-                    );
+                    queryOnNode.calculateNode2Nums.apply(astID)
+                            .forEach((key, value) -> System.out.println(astID + key + " node with frequency " + value));
                 }
             } else {
                 HashMap<String, Long> totNode2Num = new HashMap<>();
                 id2ASTModules.keySet().forEach(key ->
-                        calculateNode2Nums.apply(key).forEach(
-                                (nodeKey, nodeValue) -> totNode2Num.merge(nodeKey, nodeValue, Long::sum)
-                        )
+                        queryOnNode.calculateNode2Nums.apply(key)
+                                .forEach((nodeKey, nodeValue) -> totNode2Num.merge(nodeKey, nodeValue, Long::sum))
                 );
                 totNode2Num.forEach((node, num) -> System.out.println("All" + node + " node with frequency " + num + "\n"));
             }
@@ -350,64 +257,100 @@ public class ASTManagerEngine {
     }
 
     /*
-     * Task 5: Sort all functions based on # children nodes
+     * Task 4: Sort all functions based on # children nodes
      */
-
-    /*
-     * First, you need to find all declarative functions, whose node is FunctionDefStmt.
-     * Then, starting from the node, find all children nodes and get the number of children
-     * nodes as the complexity of the function.
-     *
-     * @return: Hashmap that stores the mapping from function name
-     *          to the number of children nodes
-     */
-    public Supplier<HashMap<String, Integer>> processNodeFreq = () -> {
-        HashMap<String, Integer> funcName2NodeNum = new HashMap<>();
-
-        id2ASTModules.values().forEach(module -> {
-            module.filter(node -> node instanceof FunctionDefStmt)
-                    .stream()
-                    .map(func -> {
-                        final int[] nodeCount = {0};
-                        func.forEach(node -> nodeCount[0]++);
-                        String uniqueFuncName = module.getASTID() + "_" +
-                                ((FunctionDefStmt) func).getName() + "_" + func.getLineNo();
-                        return new AbstractMap.SimpleEntry<>(uniqueFuncName, nodeCount[0]);
-                    })
-                    .forEach(entry -> funcName2NodeNum.merge(
-                            entry.getKey(),
-                            entry.getValue(),
-                            (value1, value2) -> value1));
-        });
-        return funcName2NodeNum;
-    };
-    
     public void userInterfaceSortByChild() {
-        HashMap<String, Integer> funcName2NodeNum = processNodeFreq.get();
-
-        funcName2NodeNum.entrySet()
+        queryOnNode.processNodeFreq.get()
+                .entrySet()
                 .stream()
                 .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
                 .forEach(entry -> System.out.println("Func " + entry.getKey() + " has complexity " + entry.getValue()));
     }
 
+
     /*
-     * Task 6: Recover the Python code from its AST
+     * Task 5: Given func name, find all comparison expressions with \"==\"
      */
-    public void userInterfaceRecoverCode() {
-        System.out.println("Please specify the AST ID to recover code (" + id2ASTModules.keySet() + ")");
-        Scanner scan1 = new Scanner(System.in);
-        if (scan1.hasNextLine()) {
-            String astID = scan1.nextLine();
-            if (id2ASTModules.containsKey(astID)) {
-                ASTModule module = id2ASTModules.get(astID);
-                System.out.println("Python Code " + astID);
-                StringBuilder stringBuilder = new StringBuilder("");
-                module.printByPos(stringBuilder);
-                System.out.println(stringBuilder);
-            } else {
-                System.out.println("Invalid AST ID " + astID + "!");
+    public void userInterfaceFindEqual() {
+        String queryID = this.parseQueryASTID();
+        QueryOnMethod queryOnMethod = new QueryOnMethod(id2ASTModules.get(queryID));
+        System.out.println("Please indicate the func name to be queried (Format: funcName, e.g., foo)");
+        Scanner scan2 = new Scanner(System.in);
+        if (scan2.hasNextLine()) {
+            String funcName = scan2.nextLine();
+            queryOnMethod.findEqualCompareInFunc.apply(funcName).forEach(System.out::println);
+        }
+
+    }
+
+
+    /*
+     * Task 6: Find all functions using boolean parameter as an if-condition
+     */
+    public void userInterfaceFindBoolAsIf() {
+        String queryID = this.parseQueryASTID();
+        QueryOnMethod queryOnMethod = new QueryOnMethod(id2ASTModules.get(queryID));
+        queryOnMethod.findFuncWithBoolParam.get().forEach(System.out::println);
+    }
+
+    /*
+     * Task 7: Given func name, find all unused parameters
+     */
+    public void userInterfaceFindUnused() {
+        String queryID = this.parseQueryASTID();
+        QueryOnMethod queryOnMethod = new QueryOnMethod(id2ASTModules.get(queryID));
+        System.out.println("Please indicate the func name to be queried (Format: funcName, e.g., foo)");
+        Scanner scan2 = new Scanner(System.in);
+
+        if (scan2.hasNextLine()) {
+            String funcName = scan2.nextLine();
+            queryOnMethod.findUnusedParamInFunc.apply(funcName).forEach(System.out::println);
+        }
+    }
+
+    /*
+     * Task 8: Given name of func B, find all functions being directly called by functions other than B
+     */
+    public void userInterfaceCallOtherB() {
+        String queryID = this.parseQueryASTID();
+        QueryOnMethod queryOnMethod = new QueryOnMethod(id2ASTModules.get(queryID));
+        System.out.println("Please indicate the name of function B (Format: funcName, e.g., foo)");
+        Scanner scan2 = new Scanner(System.in);
+        if (scan2.hasNextLine()) {
+            String funcName = scan2.nextLine();
+            queryOnMethod.findDirectCalledOtherB.apply(funcName).forEach(System.out::println);
+        }
+    }
+
+    /*
+     * Task 9: Given name of func B, find all functions being directly called by functions other than B
+     */
+    public void userInterfaceDirectOrTransCall() {
+        String queryID = this.parseQueryASTID();
+        QueryOnMethod queryOnMethod = new QueryOnMethod(id2ASTModules.get(queryID));
+        System.out.println("Please indicate the name of function A and B (Format: funcName, e.g., foo)");
+        Scanner scan2 = new Scanner(System.in);
+        if (scan2.hasNextLine()) {
+            String funcNameA = scan2.nextLine();
+            if (scan2.hasNextLine()) {
+                String funcNameB = scan2.nextLine();
+                System.out.println("Answer is " + queryOnMethod.answerIfACalledB.test(funcNameA, funcNameB));
             }
         }
     }
+
+
+    private String parseQueryASTID() {
+        System.out.println("Please specify the AST ID to query (" + id2ASTModules.keySet() + ")");
+        Scanner scan0 = new Scanner(System.in);
+        while (scan0.hasNextLine()) {
+            String tobeQueriedID = scan0.nextLine();
+            if (id2ASTModules.containsKey(tobeQueriedID)) {
+                return tobeQueriedID;
+            }
+            System.out.println("Invalid! Please specify the AST ID to query (" + id2ASTModules.keySet() + ")");
+        }
+        return "";
+    }
 }
+

@@ -28,20 +28,5 @@ public class BoolOpExpr extends ASTExpr {
         children.addAll(values);
         return children;
     }
-
-    @Override
-    public void printByPos(StringBuilder str) {
-        this.fillStartBlanks(str);
-        boolean write_op = false;
-        for (ASTExpr value : values) {
-            if (write_op) {
-                str.append(" ");
-                this.op.printByPos(str);
-            } else {
-                write_op = true;
-            }
-            value.printByPos(str);
-        }
-        this.fillEndBlanks(str);
-    }
+    
 }

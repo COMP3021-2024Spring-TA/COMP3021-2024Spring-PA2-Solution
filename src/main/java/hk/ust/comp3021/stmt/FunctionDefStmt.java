@@ -76,28 +76,5 @@ public class FunctionDefStmt extends ASTStmt {
         }
         return children;
     }
-    
-    @Override
-    public void printByPos(StringBuilder str) {
-        this.fillStartBlanks(str);
-        for (ASTExpr list : decoratorList) {
-            str.append('@');
-            list.printByPos(str);
-        }
-        str.append("def ").append(this.name).append("(");
-        args.printByPos(str);
-        str.append(")");
-
-        if (returns != null) {
-            str.append(" ->");
-            returns.printByPos(str);
-        }
-
-        str.append(":");
-        for (ASTStmt bodyStmt : body) {
-            bodyStmt.printByPos(str);
-        }
-        this.fillEndBlanks(str);
-    }
 
 }

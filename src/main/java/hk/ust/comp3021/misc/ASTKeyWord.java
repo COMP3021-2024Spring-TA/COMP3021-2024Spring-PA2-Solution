@@ -31,17 +31,5 @@ public class ASTKeyWord extends ASTElement {
     public String getNodeType() {
         return "keyword";
     }
-
-    @Override
-    public void printByPos(StringBuilder str) {
-        fillStartBlanks(str);
-        if (arg != null) {
-            str.append(arg);
-            str.append("=");
-        } else {
-            str.append("**");
-        }
-        value.printByPos(str);
-        fillEndBlanks(str);
-    }
+    
 }

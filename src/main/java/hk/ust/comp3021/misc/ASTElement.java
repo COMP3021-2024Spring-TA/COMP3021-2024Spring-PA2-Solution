@@ -18,7 +18,6 @@ public abstract class ASTElement {
         this.endColOffset = -1;
     }
 
-
     public ASTElement(int lineno, int colOffset, int endLineno, int endColOffset) {
         this.lineno = lineno;
         this.colOffset = colOffset;
@@ -57,97 +56,14 @@ public abstract class ASTElement {
         return this.endColOffset;
     }
 
-    public static int countNowLineNo(StringBuilder str) {
-        int frequency = 0;
-        for (int i = 0; i < str.length(); i++) {
-            if (str.charAt(i) == '\n') {
-                frequency++;
-            }
-        }
-        return frequency;
-    }
-
-    public static int countNowColOffset(StringBuilder str) {
-        String splitedStr = str.toString();
-        String[] lines = splitedStr.split("\n");
-        if (lines.length > 0) {
-            String lastLine = lines[lines.length - 1];
-            return lastLine.length();
-        } else {
-            return 0;
-        }
-    }
-
-    public void fillStartBlanks(StringBuilder str) {
-        int curLineNo = countNowLineNo(str) + 1;
-        int curColOffset = countNowColOffset(str);
-
-        str.append("\n".repeat(this.getLineNo() - curLineNo));
-        if (this.getLineNo() == curLineNo) {
-            str.append(" ".repeat(this.getColOffset() - curColOffset));
-        } else {
-            str.append(" ".repeat(this.getColOffset()));
-        }
-    }
-
-    public void fillEndBlanks(StringBuilder str) {
-        int curLineNo = countNowLineNo(str) + 1;
-        int curColOffset = countNowColOffset(str);
-
-        str.append("\n".repeat(this.getEndLineNo() - curLineNo));
-        str.append(" ".repeat(this.getEndColOffset() - curColOffset));
-    }
-
-    public int compareTo(ASTElement other) {
-        if (this.lineno != other.lineno) {
-            return Integer.compare(this.lineno, other.lineno);
-        } else if (this.colOffset != other.colOffset) {
-            return Integer.compare(this.colOffset, other.colOffset);
-        } else if (this.endLineno != other.endLineno) {
-            return Integer.compare(this.endLineno, other.endLineno);
-        } else {
-            return Integer.compare(this.endColOffset, other.endColOffset);
-        }
-    }
-
-    public static void elementSort(List<ASTElement> list) {
-        int n = list.size();
-        for (int i = 0; i < n - 1; i++) {
-            for (int j = 0; j < n - i - 1; j++) {
-                ASTElement obj1 = list.get(j);
-                ASTElement obj2 = list.get(j + 1);
-                if (obj1.compareTo(obj2) > 0) {
-                    Collections.swap(list, j, j + 1);
-                }
-            }
-        }
-    }
-
     public abstract String getNodeType();
-
-    /*
-     * Two abstract methods in ASTElement. You need to implement them in subclasses.
-     */
-
-    /*
-     * Print the corresponding Python Code from current AST Node (Bonus Task)
-     * Please learn the mapping between AST node and their Python code from given resources
-     * We have provided several functions for you to ease the implementation
-     * (1) countNowLineNo: count how many lines so far in the given str, which is the current line number
-     * (2) countNowColOffset: count how many characters in the last line, which is the current column offset
-     * (3) fillStartBlanks: add essential blanks and new lines to make sure the lineNo and colOffset of str are equal to
-     *     the required lineNo and colOffset of current node.
-     * (4) fillEndBlanks: add essential blanks and new lines to make sure the lineNo and colOffset of str are equal to
-     *     the required endLineNo and endColOffset of current node.
-     */
-    public abstract void printByPos(StringBuilder str);
-
+    
     /*
      * Return direct children of current node, which are fields whose type is `ASTElement`.
      * Noticed that field whose class type is `ASTEnumOp` should not be regarded as children.
      */
     public abstract ArrayList<ASTElement> getChildren();
-    
+
     public ArrayList<ASTElement> filter(Predicate<ASTElement> predicate) {
         ArrayList<ASTElement> filteredNodes = new ArrayList<>();
 
@@ -160,7 +76,7 @@ public abstract class ASTElement {
         }
         return filteredNodes;
     }
-    
+
     public void forEach(Consumer<ASTElement> action) {
         action.accept(this);
 
@@ -168,14 +84,10 @@ public abstract class ASTElement {
             child.forEach(action);
         }
     }
-    
-//    public void stream(Supplier<>) {
-//        
-//    }
 
     public <K, D, A> Map<K, D> groupingBy(Function<ASTElement, K> classifier,
-                                        Collector<ASTElement, A, D> collector) {
-        
+                                          Collector<ASTElement, A, D> collector) {
+
         Map<K, A> hashMap = new HashMap<>();
         groupingByRecursive(classifier, collector, hashMap);
         Map<K, D> results = new HashMap<>();
@@ -184,31 +96,19 @@ public abstract class ASTElement {
         }
         return results;
     }
-    
+
     public <K, A> void groupingByRecursive(Function<ASTElement, K> classifier,
-                                          Collector<ASTElement, A, ?> collector,
-                                          Map<K, A> results) {
+                                           Collector<ASTElement, A, ?> collector,
+                                           Map<K, A> results) {
 
 
         K key = classifier.apply(this);
         A container = results.computeIfAbsent(key, k -> collector.supplier().get());
         collector.accumulator().accept(container, this);
-        
-        for (ASTElement child: this.getChildren()) {
+
+        for (ASTElement child : this.getChildren()) {
             child.groupingByRecursive(classifier, collector, results);
         }
     }
-    
-    
-    
 
-    public <T> T reduce(T identify, BinaryOperator<T> accumulator) {
-        T curValue = identify;
-        for (ASTElement child : this.getChildren()) {
-            curValue = accumulator.apply(curValue, child.reduce(identify, accumulator));
-        }
-        return curValue;
-    }
-    
-    
 }
