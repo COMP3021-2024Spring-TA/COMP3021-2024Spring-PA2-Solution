@@ -12,9 +12,7 @@ PA2 aims to practice the lambda expression and generics. **ASTManager** should b
 - Task 2: Support code searching of ten patterns with lambda expressions. (70%)
 - Bonus Task: Support simple bug detection with lambda expressions. (10%)
 
-Similar to PA1, each test case is an XML file that represents a Python AST.
-
-Before task specification, we first explain the grading policy as follows for your reference so that you will get it.
+Similar to PA1, each test case is an XML file that represents a Python AST. The XML files used to test rewrite logics of PA1 are resided in `resources/pythonxmlPA1` while those for ten code patterns and bonus tasks are located in `resources/pythonxml`. Before task specification, we first explain the grading policy as follows for your reference so that you will get it.
 
 | Item                                                      | Ratio | Notes                                                        |
 | --------------------------------------------------------- | ----- | ------------------------------------------------------------ |
@@ -318,11 +316,11 @@ class C: # No
 
 We have marked the methods you need to implement using `TODO` in the skeleton. Specifically, please
 
-- Learn three functional interfaces, design, and implement them in `ASTElement`.
+- Learn three collectors, design, and implement them in `ASTElement`.
 - Fully implement the lambda expressions in `QueryOnNode`.
 - Fully implement the lambda expressions in `QueryOnMethod`.
 - Fully implement the methods in the class `QueryOnClass`.
-- @bowen, update info for bonus taks
+- @bowen, update info for bonus task
 
 
 You need to follow the comments on the methods to be implemented in the provided skeleton. We have provided detailed descriptions and even several hints for these methods. To convenience the testing and debugging, you can just run the `main` method of `ASTManager` to interact with the system.
