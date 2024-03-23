@@ -45,7 +45,7 @@ public class ASTManagerEngine {
             System.out.println("  14: Find all the classes that possesses main function.");
         
             // Bonus Task 15
-            System.out.println("  15: An API misuse bud detector.");
+            System.out.println("  15: An API misuse bud detector. Return the list of function names that contain a bug.");
 
             System.out.println("  16: Exit");
             System.out.println("----------------------------------------------------------------------");
@@ -398,7 +398,7 @@ public class ASTManagerEngine {
     }
 
     /*
-     * Task 15: API misuse bug detector
+     * Task 15: API misuse bug detector. Returns the list of function names that contain a bug.
      */
     public void bugDetector() {
         String queryID = this.parseQueryASTID();
