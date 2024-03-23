@@ -6,13 +6,13 @@ import java.util.*;
 
 
 public class ASTParser {
-    private final String xmlFileID;
+    private final String xmlFilePath;
     private boolean isErr;
     private XMLNode rootXMLNode;
     private ASTModule rootASTModule;
 
-    public ASTParser(String xmlFileID) {
-        this.xmlFileID = xmlFileID;
+    public ASTParser(String xmlFilePath) {
+        this.xmlFilePath = xmlFilePath;
 
         this.isErr = false;
         this.rootXMLNode = null;
@@ -37,7 +37,14 @@ public class ASTParser {
         // obtain the module node as the first child of ast node
         rootXMLNode = rootXMLNode.getChildByIdx(0);
         // create AST Tree and return the root node ASTModule
-        rootASTModule = new ASTModule(rootXMLNode, xmlFileID);
+        // Find the index of "_" and ".xml"
+        int startIndex = xmlFilePath.indexOf("_") + 1;
+        int endIndex = xmlFilePath.indexOf(".xml");
+
+        if (startIndex != -1 && endIndex != -1 && startIndex < endIndex) {
+            String astID = xmlFilePath.substring(startIndex, endIndex);
+            rootASTModule = new ASTModule(rootXMLNode, astID);
+        }
     }
 
     /**
@@ -69,7 +76,7 @@ public class ASTParser {
             String line;
             Stack<XMLNode> nodeStack = new Stack<>();
 
-            String xmlFileName = Paths.get("resources/pythonxml/", "python_" + xmlFileID + ".xml").toString();
+            String xmlFileName = Paths.get(xmlFilePath).toString();
 
             BufferedReader reader = new BufferedReader(new FileReader(xmlFileName));
 

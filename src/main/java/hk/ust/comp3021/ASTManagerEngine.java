@@ -1,23 +1,15 @@
 package hk.ust.comp3021;
-
 import hk.ust.comp3021.query.*;
 import hk.ust.comp3021.utils.*;
 
 import java.io.*;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class ASTManagerEngine {
-    private final String defaultXMLFileDir;
     private final HashMap<String, ASTModule> id2ASTModules = new HashMap<>();
     public QueryOnNode queryOnNode = new QueryOnNode(id2ASTModules);
-
-    public ASTManagerEngine() {
-        defaultXMLFileDir = "resources/pythonxml/";
-    }
-
-    public String getDefaultXMLFileDir() {
-        return defaultXMLFileDir;
-    }
+    
 
     public HashMap<String, ASTModule> getId2ASTModules() {
         return id2ASTModules;
@@ -44,6 +36,12 @@ public class ASTManagerEngine {
             System.out.println("  7: Given func name, find all unused parameters");
             System.out.println("  8: Given name of func B, find all functions being directly called by functions other than B");
             System.out.println("  9: Can func A directly or transitively call by method B");
+            System.out.println("  10: Given name of class A, find all the super classes of it.");
+            System.out.println("  11: Given the names of two classes, A and B, check whether A has super class B.");
+            System.out.println("  12: Find all the overriding methods in all classes.");
+            System.out.println("  13: Given the name of a class, find all the methods that it possesses.");
+            System.out.println("  14: Find all the classes that possesses main function.");
+            
 
             // PA2 tasks code patterns for class  10-14
 
@@ -101,23 +99,23 @@ public class ASTManagerEngine {
                         break;
                     }
                     case 10: {
-
+                        userInterfaceFindSuperClasses();
                         break;
                     }
                     case 11: {
-
+                        userInterfaceHaveSuperClass();
                         break;
                     }
                     case 12: {
-
+                        userInterfaceFindOverridingMethods();
                         break;
                     }
                     case 13: {
-
+                        userInterfaceFindAllMethods();
                         break;
                     }
                     case 14: {
-
+                        userInterfaceFindClassesWithMain();
                         break;
                     }
                     case 15: {
@@ -162,8 +160,8 @@ public class ASTManagerEngine {
      * Task 0: Given AST ID, parse AST from XML files
      */
 
-    public void processXMLParsing(String xmlID) {
-        ASTParser parser = new ASTParser(xmlID);
+    public void processXMLParsing(String xmlDirPath, String xmlID) {
+        ASTParser parser = new ASTParser(Paths.get(xmlDirPath).resolve("python_" + xmlID + ".xml").toString());
         parser.parse();
         if (!parser.isErr()) {
             this.id2ASTModules.put(xmlID, parser.getASTModule());
@@ -174,26 +172,31 @@ public class ASTManagerEngine {
     }
 
     public void userInterfaceParseXML() {
-        int xmlCount = countXMLFiles(this.defaultXMLFileDir);
-        System.out.println("Please specify the XML file ID to parse (0~" + xmlCount + ") or -1 for all:");
+        System.out.println("Please provide the XML directory to load");
         Scanner scan1 = new Scanner(System.in);
         if (scan1.hasNextLine()) {
-            String xmlID = scan1.nextLine();
-            if (!xmlID.equals("-1")) {
-                processXMLParsing(xmlID);
-            } else {
-                File directory = new File(this.defaultXMLFileDir);
-                if (directory.isDirectory()) {
-                    File[] files = directory.listFiles();
-                    if (files != null) {
-                        for (File file : files) {
-                            if (file.isFile() && file.getName().toLowerCase().endsWith(".xml")) {
-                                String str = file.getName().toLowerCase();
-                                int startIndex = str.indexOf('_') + 1;
-                                int endIndex = str.indexOf(".xml");
+            String xmlFileDir = scan1.nextLine();
+            int xmlCount = countXMLFiles(xmlFileDir);
+            System.out.println("Please specify the XML file ID to parse (0~" + xmlCount + ") or -1 for all:");
+            if (scan1.hasNextLine()) {
+                String xmlID = scan1.nextLine();
+                if (!xmlID.equals("-1")) {
+                    processXMLParsing(xmlFileDir, xmlID);
+                } else {
+                    File directory = new File(xmlFileDir);
+                    if (directory.isDirectory()) {
+                        File[] files = directory.listFiles();
+                        if (files != null) {
+                            for (File file : files) {
+                                if (file.isFile() && file.getName().toLowerCase().endsWith(".xml")) {
+                                    String str = file.getName().toLowerCase();
+                                    int startIndex = str.indexOf('_') + 1;
+                                    int endIndex = str.indexOf(".xml");
 
-                                if (endIndex > startIndex) {
-                                    processXMLParsing(str.substring(startIndex, endIndex));
+                                    if (endIndex > startIndex) {
+                                        processXMLParsing(xmlFileDir,
+                                                str.substring(startIndex, endIndex));
+                                    }
                                 }
                             }
                         }
@@ -240,19 +243,8 @@ public class ASTManagerEngine {
         Scanner scan1 = new Scanner(System.in);
         if (scan1.hasNextLine()) {
             String astID = scan1.nextLine();
-            if (!astID.equals("-1")) {
-                if (id2ASTModules.containsKey(astID)) {
-                    queryOnNode.calculateNode2Nums.apply(astID)
-                            .forEach((key, value) -> System.out.println(astID + key + " node with frequency " + value));
-                }
-            } else {
-                HashMap<String, Long> totNode2Num = new HashMap<>();
-                id2ASTModules.keySet().forEach(key ->
-                        queryOnNode.calculateNode2Nums.apply(key)
-                                .forEach((nodeKey, nodeValue) -> totNode2Num.merge(nodeKey, nodeValue, Long::sum))
-                );
-                totNode2Num.forEach((node, num) -> System.out.println("All" + node + " node with frequency " + num + "\n"));
-            }
+            queryOnNode.calculateNode2Nums.apply(astID).forEach((key, value) ->
+                    System.out.println(astID + key + " node with frequency " + value));
         }
     }
 
@@ -260,10 +252,8 @@ public class ASTManagerEngine {
      * Task 4: Sort all functions based on # children nodes
      */
     public void userInterfaceSortByChild() {
-        queryOnNode.processNodeFreq.get()
-                .entrySet()
-                .stream()
-                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+        queryOnNode.processNodeFreq
+                .get()
                 .forEach(entry -> System.out.println("Func " + entry.getKey() + " has complexity " + entry.getValue()));
     }
 
@@ -337,6 +327,74 @@ public class ASTManagerEngine {
                 System.out.println("Answer is " + queryOnMethod.answerIfACalledB.test(funcNameA, funcNameB));
             }
         }
+    }
+
+    /*
+     * Task 10: Given name of class A, find all the super classes of it.
+     */
+    public void userInterfaceFindSuperClasses() {
+        String queryID = this.parseQueryASTID();
+        QueryOnClass queryOnClass = new QueryOnClass(id2ASTModules.get(queryID));
+        System.out.println("Please indicate the name of the class");
+        Scanner scan2 = new Scanner(System.in);
+        if (scan2.hasNextLine()) {
+            String className = scan2.nextLine();
+            System.out.println("Answer is " + queryOnClass.findSuperClasses.apply(className));
+        }
+    }
+
+    /*
+     * Task 11: Given the names of two classes, A and B, check whether A has super class B.
+     */
+    public void userInterfaceHaveSuperClass() {
+        String queryID = this.parseQueryASTID();
+        QueryOnClass queryOnClass = new QueryOnClass(id2ASTModules.get(queryID));
+        System.out.println("Please indicate the two classes");
+        Scanner scan2 = new Scanner(System.in);
+        if (scan2.hasNextLine()) {
+            String classA = scan2.nextLine();
+            if(scan2.hasNextLine()) {
+                String classB = scan2.nextLine();
+                System.out.println("Answer is " + queryOnClass.haveSuperClass.apply(classA, classB));
+            }
+            
+        }
+    }
+
+
+    /*
+     * Task 12: Find all the overriding methods in all classes.
+     */
+    public void userInterfaceFindOverridingMethods() {
+        String queryID = this.parseQueryASTID();
+        QueryOnClass queryOnClass = new QueryOnClass(id2ASTModules.get(queryID));
+        Scanner scan2 = new Scanner(System.in);
+        System.out.println("Answer is " + queryOnClass.findOverridingMethods.get());
+    }
+
+    /*
+     * Task 13: Given the name of a class, find all the methods that it possesses.
+     */
+    public void userInterfaceFindAllMethods() {
+        String queryID = this.parseQueryASTID();
+        QueryOnClass queryOnClass = new QueryOnClass(id2ASTModules.get(queryID));
+        System.out.println("Please indicate the the class");
+        Scanner scan2 = new Scanner(System.in);
+        if (scan2.hasNextLine()) {
+            String className = scan2.nextLine();
+            System.out.println("Answer is " + queryOnClass.findAllMethods.apply(className));
+        }
+    }
+
+     /*
+     * Task 14: Find all the classes that possesses main function.
+     */
+    public void userInterfaceFindClassesWithMain() {
+        String queryID = this.parseQueryASTID();
+        QueryOnClass queryOnClass = new QueryOnClass(id2ASTModules.get(queryID));
+        Scanner scan2 = new Scanner(System.in);
+        System.out.println("Answer is " + queryOnClass.findClassesWithMain.get());
+        
     }
 
 

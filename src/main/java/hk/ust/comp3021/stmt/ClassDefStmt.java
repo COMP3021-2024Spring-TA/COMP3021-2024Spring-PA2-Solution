@@ -52,6 +52,10 @@ public class ClassDefStmt extends ASTStmt {
 
         return children;
     }
+
+    public String getName() {
+        return this.name;
+    }
     
 
 }

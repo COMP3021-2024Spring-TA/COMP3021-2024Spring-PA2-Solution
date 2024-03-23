@@ -25,6 +25,10 @@ public class IfStmt extends ASTStmt {
         }
     }
 
+    public ASTExpr getTest() {
+        return test;
+    }
+
     @Override
     public ArrayList<ASTElement> getChildren() {
         ArrayList<ASTElement> children = new ArrayList<>();

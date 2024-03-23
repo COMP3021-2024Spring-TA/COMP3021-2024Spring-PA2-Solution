@@ -1,5 +1,6 @@
 package hk.ust.comp3021.misc;
 
+import hk.ust.comp3021.query.QueryOnNode;
 import hk.ust.comp3021.utils.*;
 import java.util.*;
 import java.util.function.*;
@@ -64,6 +65,15 @@ public abstract class ASTElement {
      */
     public abstract ArrayList<ASTElement> getChildren();
 
+    /**
+     * TODO `filter` mimic {@link java.util.stream.Stream#filter(Predicate)} but operates on AST tree structure instead of List 
+     * TODO please design the function by yourself to pass complication and the provided test cases
+     *
+     * @param predicate representing a boolean-valued function that takes ASTElement as input parameter and returns a bool result
+     * @return an ArrayList of ASTElement where predicate returns true
+     * 
+     * Hints: traverse the tree and put those satisfy predicates into array list
+     */
     public ArrayList<ASTElement> filter(Predicate<ASTElement> predicate) {
         ArrayList<ASTElement> filteredNodes = new ArrayList<>();
 
@@ -72,18 +82,43 @@ public abstract class ASTElement {
         }
 
         for (ASTElement child : this.getChildren()) {
-            filteredNodes.addAll(child.filter(predicate));
+            if(child != null)
+                filteredNodes.addAll(child.filter(predicate));
         }
         return filteredNodes;
     }
 
+    /**
+     * TODO `forEach` mimic {@link Iterable#forEach(Consumer)} but operates on AST tree structure instead of List 
+     * TODO please design the function by yourself to pass complication and the provided test cases
+     *
+     * @param action representing an operation that accepts ASTElement as input and performs some action 
+     *               on it without returning any result.
+     * @return null
+     * 
+     * Hints: traverse the tree and perform the action on every node in the tree
+     */
+    
     public void forEach(Consumer<ASTElement> action) {
         action.accept(this);
 
         for (ASTElement child : this.getChildren()) {
-            child.forEach(action);
+            if(child != null)
+                child.forEach(action);
         }
     }
+
+    /**
+     * TODO `groupingBy` mimic {@link java.util.stream.Collectors#groupingBy(Function, Collector)} )} but operates on AST tree structure instead of List 
+     * TODO please design the function by yourself to pass complication and the provided test cases
+     *
+     * @param classifier representing a function that classifies an ASTElement argument and produces the classification result with generic type
+     * @param collector representing a collector used to accumulate the ASTElement object into results
+     * @return a map whose key and value are all generic types
+     * 
+     * Hints: traverse the tree and group them if they belong to the same categories
+     * Hints: please refer to the usage of {@link java.util.stream.Collectors#groupingBy(Function, Collector)}} to learn more about this method
+     */
 
     public <K, D, A> Map<K, D> groupingBy(Function<ASTElement, K> classifier,
                                           Collector<ASTElement, A, D> collector) {
@@ -107,7 +142,8 @@ public abstract class ASTElement {
         collector.accumulator().accept(container, this);
 
         for (ASTElement child : this.getChildren()) {
-            child.groupingByRecursive(classifier, collector, results);
+            if(child != null)
+                child.groupingByRecursive(classifier, collector, results);
         }
     }
 

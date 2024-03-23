@@ -29,7 +29,7 @@ public abstract class ASTStmt extends ASTElement {
      * Create ASTStmt from the XNL Node based on the tag name
      *
      * @param node: the XML Node from which to generate ASTStmt
-     * @return: created ASTStmt
+     * @return created ASTStmt
      *
      * You may need to remove the `return null` from the skeleton.
      */
