@@ -322,6 +322,7 @@ We have marked the methods you need to implement using `TODO` in the skeleton. S
 - Fully implement the lambda expressions in the class `QueryOnClass`.
 - @bowen, update info for bonus task
 
+**Note**: You can add more methods or even classes into the skeleton in your solution, but **DO NOT** modify existing code.
 
 You need to follow the comments on the methods to be implemented in the provided skeleton. We have provided detailed descriptions and even several hints for these methods. To convenience the testing and debugging, you can just run the `main` method of `ASTManager` to interact with the system.
 
