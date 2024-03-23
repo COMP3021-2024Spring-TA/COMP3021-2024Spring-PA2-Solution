@@ -104,6 +104,7 @@ public class QueryOnNode {
      * @return a list of entries sorted in descending order where the key is function name 
      *         with format ModuleID_FuncName_LineNo, and value is the # nodes
      * Hints1: use {@link ASTElement#forEach(Consumer)} method to implement the function
+     * Hint2: note that `countChildren` method is removed, please do not use this method
      */
     public Supplier<List<Map.Entry<String, Integer>>> processNodeFreq = () -> {
         HashMap<String, Integer> funcName2NodeNum = new HashMap<>();
