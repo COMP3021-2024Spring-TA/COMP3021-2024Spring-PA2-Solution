@@ -92,7 +92,7 @@ Task 1 only focuses on querying the attributes of singleton nodes. In task 2, yo
 
 <tr>
 <td> All the comparison expressions with "=="</td>
-<td> QueryOnMethod.findEqualCompareInFunc </td>
+<td> QueryOnMethod.<br>findEqualCompareInFunc </td>
 
 <td>
 
@@ -108,7 +108,7 @@ def foo():
 
 <tr>
 <td> Functions using a boolean parameter as an if-condition </td>
-<td> QueryOnMethod.findFuncWithBoolParam </td>
+<td> QueryOnMethod.<br>findFuncWithBoolParam </td>
 <td>
 
 ```Python
@@ -127,7 +127,7 @@ def toggle_light(turn_on: bool):
 
 <tr>
 <td> Function parameters that are never read from or assigned to before it's read  </td>
-<td> QueryOnMethod.findUnusedParamInFunc </td>
+<td> QueryOnMethod.<br>findUnusedParamInFunc </td>
 <td>
 
 ```Python
@@ -145,7 +145,7 @@ def foo(param1, param2, param3):
 
 <tr>
 <td> Find all functions that are directly called by some functions other than B</td>
-<td> QueryOnMethod.findDirectCalledOtherB </td>
+<td> QueryOnMethod.<br>findDirectCalledOtherB </td>
 <td>
 
 ```python
@@ -165,7 +165,7 @@ def C():
 
 <tr>
 <td> Can method A directly or transitively call method B  </td>
-<td> QueryOnMethod.answerIfACalledB </td>
+<td> QueryOnMethod.<br>answerIfACalledB </td>
 <td>
 
 ```Python
