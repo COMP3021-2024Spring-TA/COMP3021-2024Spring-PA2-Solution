@@ -37,7 +37,7 @@ public class QueryOnClass {
      * @return returns true if B is A's super class, otherwise false.
      * Hint1: you can just reuse {@link QueryOnClass#findSuperClasses}
      */
-    public BiFunction<String, String, Boolean> haveSuperClass ;
+    public BiFunction<String, String, Boolean> haveSuperClass;
 
 
     /**
