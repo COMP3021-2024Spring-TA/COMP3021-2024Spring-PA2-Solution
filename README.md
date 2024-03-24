@@ -306,26 +306,74 @@ class C: # No
 
 
 #### Bonus Task: Implement an API misuse bug detector (10%)
-In this task, we will write a bud detector to check for unclosed files. For instance, in the following code example, the function `bar` contains a bug because the file `f` is opened but not closed. The function `foo` does not contain a bug because the file `f` was opened and closed correctly.
+In this task, we will write a bug detector to check for unclosed files. To understand this concept, let's look at the following code example. 
+
 ```python
+def foo():
+    f = open()
+    # do something...
+    f.close()
+    # correct usage
+
 def bar():
     f = open()
     # a bug: file not closed.
-
-def foo():
-    f = open()
-    close(f) 
-    # correct usage
 ```
 
-In this task, you only need to consider a simplified version of Python programs: (1) there are no function calls other than `open` and `close`. (2) there are no conditional statements like `if`, `else`, `while`, and `for`. However, you need to handle a case where variables may be copied to other variables. For instance, in the following code example, there is no bug because the variable `f` is copied to `g` and `g` closes the file.
+In this example, the function `bar()` contains a bug, as the file `f` is opened but not closed before the function exits. On the contrary, the function `foo()` shows the correct usage of files, because it first opens a file `f` and then closes it (`f.close()`) before the function exits.
+
+Of course, file operations in real-world programs can be more complex. But in this task, we have simplified the assumption of the input Python programs: 
++ An input Python program only contains several functions. 
++ Each function does not have parameters.
++ In each function, there will ONLY be three kinds of statements.
+    1. file open (e.g. `XXX = open()`)
+    2. file close (e.g. `XXX.close()`)
+    3. assignments between file variables (e.g. `YYY = XXX`, `ZZZ = YYY = XXX`)
+
+Therefore, it means you will NOT be given a Python program, including language features such as function calls (`foo1`, `foo2`) and if branches(`foo3`).
++ function calls
 ```python
-def bar():
+def foo1():
+    f = open()
+    foo2(f)
+
+def foo2(f):
+    f.close()
+
+def foo3():
+    f = open()
+    if 1+1 >= 2:
+        f.close()
+    else:
+        f.close()
+```
+
+Nevertheless, the complexity of the Python programs will be augmented based on the third point. Consider the following code examples.
+```python
+def bar1():
     f = open()
     g = f
-    g.close()
-    # no bug: the file is closed using variable g
+    g.close() 
+    # No bug
+
+def bar2():
+    f = open() # File 1
+    g = open() # File 2
+    a = g
+    b = f
+    a.close()  # File 1 closed
+    b.close()  # File 2 closed
+    # No bug
+
+def bar3():
+    f = open() # File 1
+    g = open() # File 2
+    f = g
+    f.close() # bug! File 1 has not been closed!
 ```
+As shown in `bar1`, the file variable `f` is assigned to a new variable `g`. Then, the opened file is closed by `g.close()`. Additionally, you need to consider the situation in which there are multiple files. For example, `bar2` opens two files by `f = open()` and `g = open()`, and safely closes them. However, in `bar3`, the file opened at `f = open()` is not closed, due to the assignment `f = g`, where `f` is covered by the value of `g` (i.e. the file opened at `g = open()`).
+
+Hint: you can keep track of the status of the opened files by mimicking the execution of the function.
 
 ### What YOU need to do
 
@@ -335,7 +383,7 @@ We have marked the methods you need to implement using `TODO` in the skeleton. S
 - Fully implement the lambda expressions in the class `QueryOnNode`.
 - Fully implement the lambda expressions in the class `QueryOnMethod`.
 - Fully implement the lambda expressions in the class `QueryOnClass`.
-- @bowen, update info for bonus task
+- Fully implement the lambda expressions in the class `BugDetector`.
 
 **Note**: You can add more methods or even classes into the skeleton in your solution, but **DO NOT** modify existing code.
 
