@@ -81,13 +81,11 @@ All of the above functions can take lambda repression as parameters. These funct
 
 #### Task 2: Support code search of five patterns with lambda expressions (70%)
 
-<!--@bowen, you can add more tasks on top-->
-
 Task 1 only focuses on querying the attributes of singleton nodes. In task 2, you are required to support the code searching for the following patterns, which consider the correlation between multiple nodes. We have given the sample code that conforms to the patterns to ease your understanding. You should utilize the functions mentioned earlier, e.g., `filter`, as much as possible. 
 
 <table>
 <tr>
-<td> Code Pattern  </td> <td> TODO Methods  </td>  <td> Code Example </td>
+<td> Code Pattern  </td> <td> <b>TODO Methods</b>  </td>  <td> Code Example </td>
 </tr>
 
 <tr>
@@ -191,7 +189,7 @@ def foo():
 
 <tr>
 <td>All the superclasses of A</td>
-<td> </td>
+<td> QueryOnClass.<br>findSuperClasses</td>
 <td>
 
 ```python
@@ -208,8 +206,8 @@ class A(B):  # superclasses of A: B, C
 
 
 <tr>
-<td> Classes having a subclass  </td>
-<td>  </td>
+<td> Check if class B is a super class of class A </td>
+<td> QueryOnClass.<br>haveSuperClass </td>
 <td>
 
 ```Python
@@ -222,11 +220,6 @@ class Person():
 class Employee(Person):
     def display2(self):
         print("This is subclass")
-		
-emp = Employee()  # creating object of subclass
- 
-emp.display1()
-emp.display2()
 ```
 
 </td>
@@ -235,7 +228,7 @@ emp.display2()
 
 <tr>
 <td> Overriding methods of classes </td>
-<td>  </td>
+<td>  QueryOnClass.<br>findOverridingMethods </td>
 <td>
 
 ```Python
@@ -261,7 +254,7 @@ child.common_method()   # Output: Overridden method in ChildClass
 
 <tr>
 <td>All the methods of A</td>
-<td>  </td>
+<td> QueryOnClass.<br>findAllMethods </td>
 <td>
 
 ```python
@@ -283,7 +276,7 @@ class A(B):  # methods: foo(), bar(), baz()
 
 <tr>
 <td>All the classes with main function</td>
-<td>  </td>
+<td> QueryOnClass.<br>findClassesWithMain </td>
 <td>
 
 ```python
@@ -330,8 +323,7 @@ Of course, file operations in real-world programs can be more complex. But in th
     2. file close (e.g. `XXX.close()`)
     3. assignments between file variables (e.g. `YYY = XXX`, `ZZZ = YYY = XXX`)
 
-Therefore, it means you will NOT be given a Python program, including language features such as function calls (`foo1`, `foo2`) and if branches(`foo3`).
-+ function calls
+Therefore, it means you will **NOT** be given a Python program, including language features such as function calls (`foo1`, `foo2`) and if branches (`foo3`) as the one shown below.
 ```python
 def foo1():
     f = open()
@@ -397,14 +389,13 @@ Public test cases are released in `src/test/java/hk.ust.comp3021/query` and `src
 
 We use JUnit test to validate the correctness of individual methods that you need to implement. The mapping between public test cases and methods to be tested is shown below.
 
-| Test Case      | Target Method |
-| ----------- | ----------- |
-| `ASTElementTest`        | Three collectors for AST in `ASTElement`   |
-| `QueryOnNodeTest`        | Methods in `QueryOnNode`     |
-| `QueryOnMethodTest`   | Methods in `QueryOnMethod`  |
-| `QueryOnClassTest` | Methods in `QueryOnClass` |
-| `testBonusPrintByPos` | `module.printByPos` (For Bonus Task Only) |
-@bowen, update the information for bonus task
+| Test Case      | Target Method                                  |
+| ----------- |------------------------------------------------|
+| `ASTElementTest`        | Three collectors for AST in `ASTElement`       |
+| `QueryOnNodeTest`        | Methods in `QueryOnNode`                       |
+| `QueryOnMethodTest`   | Methods in `QueryOnMethod`                     |
+| `QueryOnClassTest` | Methods in `QueryOnClass`                      |
+| `BugDetectorTest` | Methods in `BugDetector` (For Bonus Task Only) |
 
 You can fix the problem of your implementation based on the failed test cases.
 

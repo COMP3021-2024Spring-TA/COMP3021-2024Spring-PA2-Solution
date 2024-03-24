@@ -2,9 +2,7 @@ package hk.ust.comp3021.query;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -46,8 +44,8 @@ public class QueryOnClassTest {
         List<String> superClasses = queryOnClass.findOverridingMethods.get();
 
         // there are two overriding of `foo`
-        List<String> expectedOutput = List.of("baz", "foo", "foo");
-        assertEquals(expectedOutput.size(), expectedOutput.size());
+        List<String> expectedOutput = new ArrayList<>(Arrays.asList("baz", "foo", "foo"));
+        assertEquals(expectedOutput.size(), superClasses.size());
         for (String superClass : superClasses) {
             int index = expectedOutput.indexOf(superClass);
             if(index != -1) {
