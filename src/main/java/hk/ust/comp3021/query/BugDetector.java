@@ -20,5 +20,5 @@ public class BugDetector {
      * {@link QueryOnClass#module}
      * @return results List of strings of names of the functions
      */
-    public Supplier<List<String>> detect = () -> {return null;};
+    public Supplier<List<String>> detect;
 }
