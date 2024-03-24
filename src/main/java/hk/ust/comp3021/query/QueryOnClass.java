@@ -78,7 +78,9 @@ public class QueryOnClass {
     /**
      * TODO Returns all the overriding methods within the current module 
      * {@link QueryOnClass#module}
-     * @return results List of strings of the names of overriding methods
+     * @return results List of strings of the names of overriding methods. 
+     * Note: If there are multiple overriding functions with the same name, please include name
+     * in the result list for MULTIPLE times. You can refer to the test case.
      * Hint1: you can implement a helper function that first finds the methods that a class
      *  directly contains.
      * Hint2: you can reuse the results of {@link QueryOnClass#findSuperClasses}
@@ -106,6 +108,7 @@ public class QueryOnClass {
      * {@link QueryOnClass#module}
      * @param className the name of the class
      * @return results List of strings of names of the methods it possesses
+     * Note: the same function name should appear in the list only once, due to overriding.
      * Hint1: you can implement a helper function that first finds the methods that a class
      *  directly contains.
      * Hint2: you can reuse the results of {@link QueryOnClass#findSuperClasses}
