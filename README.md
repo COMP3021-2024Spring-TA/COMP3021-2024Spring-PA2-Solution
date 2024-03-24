@@ -369,7 +369,7 @@ def bar3():
     f = open() # File 1
     g = open() # File 2
     f = g
-    f.close() # bug! File 1 has not been closed!
+    f.close() # Bug! File 1 has not been closed!
 ```
 As shown in `bar1`, the file variable `f` is assigned to a new variable `g`. Then, the opened file is closed by `g.close()`. Additionally, you need to consider the situation in which there are multiple files. For example, `bar2` opens two files by `f = open()` and `g = open()`, and safely closes them. However, in `bar3`, the file opened at `f = open()` is not closed, due to the assignment `f = g`, where `f` is covered by the value of `g` (i.e. the file opened at `g = open()`).
 
