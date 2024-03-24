@@ -19,8 +19,8 @@ Similar to PA1, each input is an XML file that represents a Python AST. The XML 
 | Keeping your GitHub repository private                    | 5%    | You must keep your repository **priavte** at all times.      |
 | Having at least three commits on different days           | 5%    | You should commit three times during different days in your repository |
 | Code style                                                | 10%   | You get 10% by default, and every 5 warnings from CheckStyle deducts 1%. |
-| Public test cases (Task 1 + Task 2 + Task 3 + Bonus Task) | 30%   | (# of passing tests / # of provided tests) * 30%             |
-| Hidden test cases (Task 1 + Task 2 + Task 3 + Bonus Task) | 50%   | (# of passing tests / # of provided tests) * 50%             |
+| Public test cases (Task 1 + Task 2 + Bonus Task) | 30%   | (# of passing tests / # of provided tests) * 30%             |
+| Hidden test cases (Task 1 + Task 2 + Bonus Task) | 50%   | (# of passing tests / # of provided tests) * 50%             |
 
 ### Task Description
 
