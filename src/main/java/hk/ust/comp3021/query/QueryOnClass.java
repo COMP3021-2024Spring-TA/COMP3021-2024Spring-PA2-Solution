@@ -57,7 +57,7 @@ public class QueryOnClass {
      * {@link QueryOnClass#module}
      * @param className the name of the class
      * @return results List of strings of names of the methods it possesses
-     * Note: each function name should only appear in the list once.
+     * Note: the same function name should appear in the list only once, due to overriding.
      * Hint1: you can implement a helper function that first finds the methods that a class
      *  directly contains.
      * Hint2: you can reuse the results of {@link QueryOnClass#findSuperClasses}
