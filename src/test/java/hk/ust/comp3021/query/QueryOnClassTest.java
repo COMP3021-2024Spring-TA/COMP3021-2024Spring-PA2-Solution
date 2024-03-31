@@ -6,6 +6,9 @@ import java.util.*;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import java.util.stream.Stream;
 
 import hk.ust.comp3021.ASTManagerEngine;
 import hk.ust.comp3021.utils.TestKind;
@@ -78,5 +81,26 @@ public class QueryOnClassTest {
         Set<String> expectedOutput = Set.of("Baz", "Bar", "Foo");
         assertEquals(expectedOutput, new HashSet<String>(classesWithMain));
     }
+
+    @Tag(TestKind.HIDDEN)
+    @ParameterizedTest
+    @MethodSource("dataFindSuperClasses")
+    public void testFindSuperClassesHidden(String caseID, String inputFunc, Set<String> expectedOutput) {
+        ASTManagerEngine engine = new ASTManagerEngine();
+        engine.processXMLParsing("resources/pythonxml", caseID);
+        QueryOnClass queryOnClass = new QueryOnClass(engine.getId2ASTModules().get(caseID));
+        List<String> superClasses = queryOnClass.findSuperClasses.apply(inputFunc);
+
+        assertEquals(expectedOutput, new HashSet<>(superClasses));
+    }
+
+    private static Stream<Object[]> dataFindSuperClasses() {
+        return Stream.of(
+            new Object[] {"7", "Bar", Set.of("Foo", "Baz")},
+            new Object[] {"7", "Foo", Set.of()}
+        );
+    }
+
+
 
 }
