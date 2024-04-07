@@ -183,32 +183,40 @@ public class QueryOnMethod {
      */
     public Function<String, List<String>> findDirectCalledOtherB = funcName -> {
         List<String> results = new ArrayList<>();
-        if (findFuncInModule.apply(funcName).isPresent()) {
-            Map<FunctionDefStmt, List<ASTElement>> func2CalledFuncs = module
-                    .filter(func -> func instanceof FunctionDefStmt)
-                    .stream()
-                    .map(func -> (FunctionDefStmt) func)
-                    .collect(Collectors.toMap(func -> func,
-                            func -> findAllCalledFuncs.apply(func)));
 
-            Map<String, List<String>> callee2AllCallers = new HashMap<>();
-            func2CalledFuncs.forEach((key, value) -> value.forEach(callee -> {
-                if (getCallExprName.apply(callee).isPresent()) {
-                    String calleeName = getCallExprName.apply(callee).get();
-                    if (findFuncInModule.apply(calleeName).isPresent()) {
-                        if (!callee2AllCallers.containsKey(calleeName)) {
-                            callee2AllCallers.put(calleeName, new ArrayList<>());
-                        }
-                        callee2AllCallers.get(calleeName).add(key.getName());
+        Map<FunctionDefStmt, List<ASTElement>> func2CalledFuncs = module
+                .filter(func -> func instanceof FunctionDefStmt)
+                .stream()
+                .map(func -> (FunctionDefStmt) func)
+                .collect(Collectors.toMap(func -> func,
+                        func -> findAllCalledFuncs.apply(func)));
+
+        Map<String, List<String>> callee2AllCallers = new HashMap<>();
+        func2CalledFuncs.forEach((key, value) -> value.forEach(callee -> {
+            if (getCallExprName.apply(callee).isPresent()) {
+                String calleeName = getCallExprName.apply(callee).get();
+                if (findFuncInModule.apply(calleeName).isPresent()) {
+                    if (!callee2AllCallers.containsKey(calleeName)) {
+                        callee2AllCallers.put(calleeName, new ArrayList<>());
                     }
+                    callee2AllCallers.get(calleeName).add(key.getName());
                 }
-            }));
+            }
+        }));
+        
+        if (findFuncInModule.apply(funcName).isPresent()) {
             results.addAll(callee2AllCallers
                     .entrySet()
                     .stream()
                     .filter(entry -> entry.getValue()
                             .stream()
                             .anyMatch(callerName -> !callerName.equals(funcName)))
+                    .map(Map.Entry::getKey).toList());
+        } else {
+            results.addAll(callee2AllCallers
+                    .entrySet()
+                    .stream()
+                    .filter(entry -> !entry.getValue().isEmpty())
                     .map(Map.Entry::getKey).toList());
         }
         return results;

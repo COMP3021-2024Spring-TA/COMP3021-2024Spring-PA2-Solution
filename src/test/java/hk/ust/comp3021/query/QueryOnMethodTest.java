@@ -61,6 +61,10 @@ public class QueryOnMethodTest {
         List<String> params = queryOnMethod.findDirectCalledOtherB.apply("B");
         Set<String> expectedOutput = Set.of("A");
         assertEquals(expectedOutput, new HashSet<>(params));
+
+        params = queryOnMethod.findDirectCalledOtherB.apply("D");
+        expectedOutput = Set.of("A");
+        assertEquals(expectedOutput, new HashSet<>(params));
     }
 
     @Tag(TestKind.PUBLIC)
