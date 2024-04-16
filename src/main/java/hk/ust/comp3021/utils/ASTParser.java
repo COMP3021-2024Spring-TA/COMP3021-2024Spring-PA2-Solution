@@ -5,11 +5,14 @@ import java.nio.file.Paths;
 import java.util.*;
 
 
-public class ASTParser {
+public class ASTParser implements Runnable{
     private final String xmlFilePath;
     private boolean isErr;
     private XMLNode rootXMLNode;
     private ASTModule rootASTModule;
+
+    private HashMap<String, ASTModule>id2ASTModules;
+    private String xmlID;
 
     public ASTParser(String xmlFilePath) {
         this.xmlFilePath = xmlFilePath;
@@ -17,6 +20,29 @@ public class ASTParser {
         this.isErr = false;
         this.rootXMLNode = null;
         this.rootASTModule = null;
+    }
+
+    public ASTParser(String xmlDirPath, String xmlID, HashMap<String, ASTModule>id2ASTModules) {
+        this.xmlFilePath = Paths.get(xmlDirPath).resolve("python_" + xmlID + ".xml").toString();
+        this.xmlID = xmlID;
+        this.id2ASTModules = id2ASTModules;
+
+        this.isErr = false;
+        this.rootXMLNode = null;
+        this.rootASTModule = null;
+    }
+
+    // TODO
+    public void run() {
+        parse();
+        if(!isErr()) {
+            synchronized(this.id2ASTModules) {
+                this.id2ASTModules.put(xmlID, getASTModule());
+            }
+            System.out.println("Parse " + this.xmlFilePath + " Succeed! The XML file is loaded!");
+        } else {
+            System.out.println("Parse " + this.xmlFilePath + " Failed! ");
+        }
     }
 
     public boolean isErr() {
@@ -34,6 +60,7 @@ public class ASTParser {
     public void parse() {
         // parse the XML Tree into rootXMLNode
         parse2XMLNode();
+        if(isErr()) return;
         // obtain the module node as the first child of ast node
         rootXMLNode = rootXMLNode.getChildByIdx(0);
         // create AST Tree and return the root node ASTModule

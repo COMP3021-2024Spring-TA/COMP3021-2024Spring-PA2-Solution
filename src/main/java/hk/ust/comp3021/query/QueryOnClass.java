@@ -8,12 +8,65 @@ import hk.ust.comp3021.utils.*;
 import java.util.*;
 import java.util.function.*;
 
-public class QueryOnClass {
+public class QueryOnClass implements Runnable{
 
+    String id = null;
     ASTModule module = null;
+    HashMap<String, List<String>> id2QueryResults = null;
+    List<String> queryRunningOrder = null;
+    int numOfQueryBefore = 0;
+    List<QueryOnClass> notifyList = new ArrayList<>(); // Added.
+
 
     public QueryOnClass(ASTModule module) {
         this.module = module;
+    }
+
+    public QueryOnClass(String id, ASTModule module, HashMap<String, List<String>> id2QueryResults, List<String> queryRunningOrder) {
+        this.id = id;
+        this.module = module;
+        this.id2QueryResults = id2QueryResults;
+        this.queryRunningOrder = queryRunningOrder;
+    }
+
+
+    public synchronized void increase() {
+        numOfQueryBefore += 1;
+    }
+
+    public synchronized void decrease() {
+        numOfQueryBefore -= 1;
+    }
+
+    // TODO
+    public void runsBefore(QueryOnClass o) {
+        notifyList.add(o);
+    }
+
+    // TODO
+    public void run() {
+        while(true) {
+            synchronized(this) {
+                if(numOfQueryBefore <= 0) {
+                    break;
+                }
+            }
+            
+        }
+
+        synchronized(queryRunningOrder) {
+            queryRunningOrder.add(id);
+        }
+        
+        List<String> result = findClassesWithMain.get();
+        synchronized(id2QueryResults) {
+            id2QueryResults.put(id, result);
+        }
+
+        for(QueryOnClass notified : notifyList) {
+            notified.decrease();
+        }
+        System.out.println(id + " Finished");
     }
 
     // Helper function
@@ -139,6 +192,7 @@ public class QueryOnClass {
         });
         return results;
     };
+
 
 }
 

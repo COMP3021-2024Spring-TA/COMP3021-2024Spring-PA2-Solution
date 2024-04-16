@@ -6,13 +6,26 @@ import java.io.*;
 import java.nio.file.Paths;
 import java.util.*;
 
+import javax.management.Query;
+
 public class ASTManagerEngine {
     private final HashMap<String, ASTModule> id2ASTModules = new HashMap<>();
     public QueryOnNode queryOnNode = new QueryOnNode(id2ASTModules);
+    private List<String> queryRunningOrder = new ArrayList<String>();
+    private HashMap<String, List<String>> id2QueryResults = new HashMap<>();
+
     
 
     public HashMap<String, ASTModule> getId2ASTModules() {
         return id2ASTModules;
+    }
+
+    public List<String> getQueryRunningOrder() {
+        return queryRunningOrder;
+    }
+
+    public HashMap<String, List<String>> getQueryResults() {
+        return id2QueryResults;
     }
 
 
@@ -170,6 +183,60 @@ public class ASTManagerEngine {
             System.out.println("AST " + xmlID + " Failed! Please check your implementation!");
         }
     }
+
+    public void processingXMLParsingParallel(String xmlDirPath, List<String> xmlIDs) {
+        List<Thread> threads = new ArrayList<>();
+        for(String xmlID : xmlIDs) {
+            Runnable parserTask = new ASTParser(xmlDirPath, xmlID, id2ASTModules);
+            Thread thread = new Thread(parserTask);
+            threads.add(thread);
+        }
+
+        for(Thread thread : threads) {
+            thread.start();
+        }
+
+        try {
+            for(Thread thread: threads) {
+                thread.join();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void findClassesWithMainParallel(HashMap<String, List<String>> orderRelations) {
+        List<Thread> threads = new ArrayList<>();
+        HashMap<String, QueryOnClass> id2Query = new HashMap<>();
+        for(String id : id2ASTModules.keySet()) {
+            ASTModule module = id2ASTModules.get(id);
+            QueryOnClass query = new QueryOnClass(id, module, id2QueryResults, queryRunningOrder);
+            threads.add(new Thread(query));
+            id2Query.put(id, query);
+        }
+
+        for(String id : orderRelations.keySet()) {
+            for(String afterId : orderRelations.get(id)) {
+                QueryOnClass theQuery = id2Query.get(id);
+                QueryOnClass afterQuery = id2Query.get(afterId);
+                afterQuery.increase();
+                theQuery.runsBefore(afterQuery);
+            }
+        }
+        for(Thread thread : threads) {
+            thread.start();
+        }
+
+        try {
+            for(Thread thread: threads) {
+                thread.join(3000);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } 
+
+    }
+
 
     public void userInterfaceParseXML() {
         System.out.println("Please provide the XML directory to load");
