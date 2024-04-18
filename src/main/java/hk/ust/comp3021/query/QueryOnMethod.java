@@ -237,18 +237,19 @@ public class QueryOnMethod {
         if (findFuncInModule.apply(funcNameA).isPresent() && findFuncInModule.apply(funcNameB).isPresent()) {
             List<String> tobeProcessed = new ArrayList<>();
             tobeProcessed.add(funcNameA);
-
+            boolean if_fisrt = true;
+            
             while (!tobeProcessed.isEmpty()) {
                 String curFuncName = tobeProcessed.get(0);
                 tobeProcessed.remove(0);
 
-                if (curFuncName.equals(funcNameB)) {
+                if (curFuncName.equals(funcNameB) && !if_fisrt) {
                     return true;
                 }
                 if (findFuncInModule.apply(curFuncName).isEmpty()) {
                     continue;
                 }
-
+                if_fisrt = false;
                 ASTElement curFuncNode = findFuncInModule.apply(curFuncName).get();
                 for (ASTElement called : findAllCalledFuncs.apply(curFuncNode)) {
                     if (getCallExprName.apply(called).isEmpty()) {
