@@ -123,4 +123,35 @@ tasks {
         useuniqueclassmembernames()
         optimizationpasses(5)
     }
+    
+    val hiddenTest by creating(Test::class) {
+        useJUnitPlatform {
+            includeTags("hidden")
+        }
+        testClassesDirs = sourceSets["test"].output.classesDirs
+        classpath = sourceSets["test"].runtimeClasspath
+
+        // Configure test logging
+        testLogging {
+            events("passed", "skipped", "failed")
+//            showStandardStreams = true
+//            exceptionFormat = TestExceptionFormat.FULL
+        }
+    }
+
 }
+
+tasks.test {
+    // Configure test logging
+    testLogging {
+        // Define which events to log to the console
+        events("passed", "skipped", "failed")
+
+        // Additional options can include:
+        // showStandardStreams = true
+        // exceptionFormat = TestExceptionFormat.FULL  // Or SHORT, MINIMAL
+    }
+}
+
+
+

@@ -5,6 +5,8 @@ import hk.ust.comp3021.utils.*;
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public abstract class ASTElement {
     private int lineno;
@@ -104,6 +106,17 @@ public abstract class ASTElement {
         for (ASTElement child : this.getChildren()) {
             child.forEach(action);
         }
+    }
+
+    public Stream<ASTElement> stream() {
+        List<ASTElement> elements = new ArrayList<>();
+        
+        elements.add(this);
+        
+        for (ASTElement child: this.getChildren()) {
+            elements.addAll(child.stream().toList());
+        }
+        return elements.stream();
     }
 
     /**
