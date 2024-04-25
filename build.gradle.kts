@@ -139,18 +139,23 @@ tasks {
         }
     }
 
-}
 
-tasks.test {
-    // Configure test logging
-    testLogging {
-        // Define which events to log to the console
-        events("passed", "skipped", "failed")
+    val publicTest by creating(Test::class) {
+        useJUnitPlatform {
+            includeTags("public")
+        }
+        testClassesDirs = sourceSets["test"].output.classesDirs
+        classpath = sourceSets["test"].runtimeClasspath
 
-        // Additional options can include:
-        // showStandardStreams = true
-        // exceptionFormat = TestExceptionFormat.FULL  // Or SHORT, MINIMAL
+        // Configure test logging
+        testLogging {
+            events("passed", "skipped", "failed")
+//            showStandardStreams = true
+//            exceptionFormat = TestExceptionFormat.FULL
+        }
     }
+
+    
 }
 
 
