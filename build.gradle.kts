@@ -154,9 +154,15 @@ tasks {
 //            exceptionFormat = TestExceptionFormat.FULL
         }
     }
-
+    
     
 }
 
+tasks.test {
+    // Conditionally disable the test task based on a project property
+    onlyIf {
+        !project.hasProperty("skipTests")
+    }
+}
 
 

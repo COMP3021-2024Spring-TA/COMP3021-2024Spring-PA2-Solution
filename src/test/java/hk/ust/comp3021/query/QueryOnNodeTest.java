@@ -138,7 +138,7 @@ public class QueryOnNodeTest {
     /*
      * Print all functions with # arguments greater than user-specified N
      */
-    @Tag(TestKind.PUBLIC)
+    @Tag(TestKind.HIDDEN)
     @Test
     public void testPrintedInformationAllOn3() {
         ASTManagerEngine engine = new ASTManagerEngine();
@@ -159,7 +159,7 @@ public class QueryOnNodeTest {
         assertEquals(338, computedOutput.size());
     }
 
-    @Tag(TestKind.PUBLIC)
+    @Tag(TestKind.HIDDEN)
     @Test
     public void testPrintedInformationAllOn4() {
         ASTManagerEngine engine = new ASTManagerEngine();
@@ -185,7 +185,7 @@ public class QueryOnNodeTest {
      * Find the most commonly used operators in all ASTs
      */
 
-    @Tag(TestKind.PUBLIC)
+    @Tag(TestKind.HIDDEN)
     @Test
     void testCalculateOp2NumsOn100() {
         ASTManagerEngine engine = new ASTManagerEngine();
@@ -228,7 +228,7 @@ public class QueryOnNodeTest {
     /*
      * Given AST ID, count the number of all node types.
      */
-    @Tag(TestKind.PUBLIC)
+    @Tag(TestKind.HIDDEN)
     @Test
     void testTotCalculateNode400() {
         ASTManagerEngine engine = new ASTManagerEngine();
@@ -278,7 +278,7 @@ public class QueryOnNodeTest {
         assertEquals(expectedNode2Num, totNode2Num);
     }
 
-    @Tag(TestKind.PUBLIC)
+    @Tag(TestKind.HIDDEN)
     @Test
     void testTotCalculateNode2Num() {
         ASTManagerEngine engine = new ASTManagerEngine();
@@ -333,7 +333,7 @@ public class QueryOnNodeTest {
     /*
      * Sort all functions based on # children nodes
      */
-    @Tag(TestKind.PUBLIC)
+    @Tag(TestKind.HIDDEN)
     @Test
     public void testProcessNodeFreq1() {
         ASTManagerEngine engine = new ASTManagerEngine();
@@ -370,7 +370,7 @@ public class QueryOnNodeTest {
 
     }
 
-    @Tag(TestKind.PUBLIC)
+    @Tag(TestKind.HIDDEN)
     @Test
     public void testProcessNodeFreq2() {
         ASTManagerEngine engine = new ASTManagerEngine();
